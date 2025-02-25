@@ -1,4 +1,15 @@
 stages:
+  fetch_swe_bench_runs:
+    cmd: >-
+      python -m src.fetch_swe_bench_runs
+      --annotations data/external/ensembled_annotations_public.csv
+      --output-file data/external/swe_bench_runs.jsonl
+    deps:
+      - src/fetch_swe_bench_runs.py
+    outs:
+      - data/external/swe_bench_runs.jsonl
+    frozen: true
+
   filter_out_partial_agents:
     cmd: >-
       python -m src.filter_out_partial_agents
@@ -9,6 +20,17 @@ stages:
       - src/filter_out_partial_agents.py
     outs:
       - data/processed/runs/ga_agents.jsonl
+
+  calculate_baseline_statistics:
+    cmd: >-
+      python -m src.calculate_baseline_statistics
+      --input-file data/external/all_runs.jsonl
+    deps:
+      - data/external/all_runs.jsonl
+      - src/calculate_baseline_statistics.py
+    metrics:
+      - metrics/baseline_statistics.yaml:
+          cache: false
 
   filter_aird_runs:
     cmd: >-
@@ -36,7 +58,7 @@ stages:
       - src/wrangle/bar_by_time_allocation.py
     params:
       - n_bootstrap
-      - stages.wrangle_bar_by_time_allocation
+      - rebench_best_of_k_parameters
     outs:
       - data/processed/wrangled/bar_by_time_allocation.jsonl
     desc: Compute mean scores and hierarchical confidence intervals for final time limit.
@@ -62,84 +84,111 @@ stages:
       --input-score-at-k data/processed/runs/aird.jsonl
       --output-score-at-k data/processed/wrangled/score_at_k.jsonl
       --n-bootstrap ${n_bootstrap}
-      --time-limits 1800 7200
     deps:
       - src/wrangle/score_at_k.py
       - data/processed/runs/aird.jsonl
     params:
       - log_level
       - n_bootstrap
+      - rebench_best_of_k_parameters
     outs:
       - data/processed/wrangled/score_at_k.jsonl
 
-  wrangle_logistic_regression:
-    matrix:
-      weighting: ["equal_task_weight", "invsqrt_task_weight"]
-      categories: ["ftr"]
-      regularization: [0.01, 0.1]
-    cmd: >-
-      python -m src.wrangle.logistic
-      --input-file data/external/all_runs.jsonl
-      --output-file data/wrangled/logistic_regression_${item.weighting}_${item.regularization}_${item.categories}.csv
-      --weighting ${item.weighting}
-      --regularization ${item.regularization}
-      --bootstrap-file data/wrangled/bootstrap/${item.weighting}-${item.categories}-${item.regularization}.csv
-      --categories ${item.categories}
-    deps:
-      - src/wrangle/logistic.py
-      - data/external/all_runs.jsonl
-      - data/wrangled/bootstrap/${item.weighting}-${item.categories}-${item.regularization}.csv
-    outs:
-      - data/wrangled/logistic_regression_${item.weighting}_${item.regularization}_${item.categories}.csv
-
   wrangle_bootstrap_logistic:
-    matrix:
-      weighting: ["equal_task_weight", "invsqrt_task_weight"]
-      categories: ["ftr"]
-      regularization: [0.01, 0.1]
-    cmd: >-
-      python -m src.wrangle.bootstrap
-      --input-file data/external/all_runs.jsonl
-      --output-file data/wrangled/bootstrap/${item.weighting}-${item.categories}-${item.regularization}.csv
-      --weights-col ${item.weighting}
-      --categories ${item.categories}
-      --n-bootstrap 500
-    deps:
-      - src/wrangle/bootstrap.py
-      - src/wrangle/logistic.py
-      - data/external/all_runs.jsonl
-    outs:
-      - data/wrangled/bootstrap/${item.weighting}-${item.categories}-${item.regularization}.csv
-    desc: Compute bootstrapped logistic regression results
+    foreach: &foreach_logistic
+      headline: ${figs.plot_logistic_regression.headline}
+      single_line_2023_ga_rebench: ${figs.plot_logistic_regression.single_line_2023_ga_rebench}
+      swe_bench: ${figs.plot_logistic_regression.swe_bench}
+    do:
+      cmd: >-
+        python -m src.wrangle.bootstrap
+        --fig-name ${key}
+        --runs-file data/external/${item.runs_file}.jsonl
+        --output-bootstrap-horizons-file data/wrangled/bootstrap/${key}.csv
+        --n-bootstrap 500
+      deps:
+        - src/wrangle/bootstrap.py
+        - src/wrangle/logistic.py
+        - src/utils/logistic.py
+        - data/external/${item.runs_file}.jsonl
+      params:
+        - figs.plot_logistic_regression.${key}
+      outs:
+        - data/wrangled/bootstrap/${key}.csv
+      desc: Compute bootstrapped logistic regression results
+
+  wrangle_logistic_regression:
+    foreach: *foreach_logistic
+    do:
+      cmd: >-
+        python -m src.wrangle.logistic
+        --fig-name ${key}
+        --runs-file data/external/${item.runs_file}.jsonl
+        --output-logistic-fits-file data/wrangled/logistic_fits/${key}.csv
+        --release-dates data/external/release_dates.yaml
+        --bootstrap-file data/wrangled/bootstrap/${key}.csv
+      deps:
+        - data/external/${item.runs_file}.jsonl
+        - data/external/release_dates.yaml
+        - data/wrangled/bootstrap/${key}.csv
+        - src/wrangle/logistic.py
+      params:
+        - figs.plot_logistic_regression.${key}
+      outs:
+        - data/wrangled/logistic_fits/${key}.csv
 
   # Plot
 
-  plot_bar_chart:
+  plot_bar_chart_weighted_scores:
     matrix:
-      weighting: ["invsqrt_task_weight"]
-      boot_set: ["None"]
-      pass_at_k_sampling: ["None"]
-      regularization: [0.1]
+      fig_name: [headline]
     cmd: >-
-      python -m src.plot.bar_chart
-      --metrics-file data/wrangled/logistic_regression_${item.weighting}_${item.regularization}_ftr.csv
-      --output-file plots/bar_chart/${item.weighting}.${plot_format}
+      python -m src.plot.bar_chart_weighted_scores
+      --fig-name horizon_plots:${item.fig_name}
+      --metrics-file data/wrangled/logistic_fits/${item.fig_name}.csv
+      --release-dates data/external/release_dates.yaml
+      --output-file plots/bar_chart_weighted_scores/${item.fig_name}.${plot_format}
       --log-level ${log_level}
-      --weighting ${item.weighting}
-      --boot-set ${item.boot_set}
-      --pass-at-k-sampling ${item.pass_at_k_sampling}
-      --params params.yaml:plots
     deps:
-      - data/wrangled/logistic_regression_${item.weighting}_${item.regularization}_ftr.csv
-      - src/plot/bar_chart.py
+      - src/plot/bar_chart_weighted_scores.py
       - src/utils/plots.py
+      - data/external/release_dates.yaml
+      - data/wrangled/logistic_fits/${item.fig_name}.csv
     params:
-      - plots
       - log_level
       - plot_format
+      - plots
+      - stages.plot_bar_chart_weighted_scores
     plots:
-      - plots/bar_chart/${item.weighting}.${plot_format}
-    desc: Generate bar chart of agent horizon.
+      - plots/bar_chart_weighted_scores/${item.fig_name}.${plot_format}
+    desc: Generate bar chart of weighted scores.
+
+  # plot_bar_chart:
+  #   matrix:
+  #     weighting: ["invsqrt_task_weight"]
+  #     boot_set: ["None"]
+  #     pass_at_k_sampling: ["None"]
+  #     regularization: [0.1]
+  #   cmd: >-
+  #     python -m src.plot.bar_chart
+  #     --metrics-file data/wrangled/logistic_regression_${item.weighting}_${item.regularization}_ftr.csv
+  #     --output-file plots/bar_chart/${item.weighting}.${plot_format}
+  #     --log-level ${log_level}
+  #     --weighting ${item.weighting}
+  #     --boot-set ${item.boot_set}
+  #     --pass-at-k-sampling ${item.pass_at_k_sampling}
+  #     --params params.yaml:plots
+  #   deps:
+  #     - data/wrangled/logistic_regression_${item.weighting}_${item.regularization}_ftr.csv
+  #     - src/plot/bar_chart.py
+  #     - src/utils/plots.py
+  #   params:
+  #     - plots
+  #     - log_level
+  #     - plot_format
+  #   plots:
+  #     - plots/bar_chart/${item.weighting}.${plot_format}
+  #   desc: Generate bar chart of agent horizon.
 
   plot_bar_by_time_allocation:
     cmd: >-
@@ -161,11 +210,14 @@ stages:
     desc: Generate plot of mean scores for different time limits with confidence intervals.
 
   plot_score_at_k:
+    matrix:
+      time_limit: ${rebench_best_of_k_parameters.time_limits}
     cmd: >-
       python -m src.plot.score_at_k
       --input-score-at-k data/processed/wrangled/score_at_k.jsonl
       --input-human-mean-of-percentiles data/processed/wrangled/human_mean_of_percentiles.jsonl
       --output-prefix plots/aird/score_at_k
+      --time-limit ${item.time_limit}
       --log-level ${log_level}
     deps:
       - src/plot/score_at_k.py
@@ -177,60 +229,90 @@ stages:
       - log_level
       - plot_format
       - plots
+      - rebench_best_of_k_parameters
     plots:
-      - plots/aird/score_at_k_1800.${plot_format}
-      - plots/aird/score_at_k_7200.${plot_format}
+      - plots/aird/score_at_k_${item.time_limit}.${plot_format}
     desc: Generate plot of score at k for different time limits.
 
   plot_logistic_regression:
-    matrix:
-      weighting: ["invsqrt_task_weight"]
-      categories: ["ftr"]
-      regularization: [0.1]
-      trendlines: [true, false]
-      include_task_distribution: ["full", "none"]
-      after_date: ["2024-01-01", "2023-03-13"]
-    cmd: >-
-      python -m src.plot.logistic
-      --input-file data/wrangled/logistic_regression_${item.weighting}_${item.regularization}_${item.categories}.csv
-      --runs-file data/external/all_runs.jsonl
-      --release-dates data/external/release_dates.yaml
-      --output-file plots/logistic/${item.weighting}-${item.regularization}-${item.trendlines}-${item.categories}-${item.after_date}-distr_${item.include_task_distribution}.${plot_format}
-      --log-level ${log_level}
-      --trendlines ${item.trendlines}
-      --after-date ${item.after_date}
-      --weighting "${item.weighting}"
-      --include-task-distribution ${item.include_task_distribution}
-    deps:
-      - src/plot/logistic.py
-      - data/wrangled/logistic_regression_${item.weighting}_${item.regularization}_${item.categories}.csv
-      - src/utils/plots.py
-      - data/external/release_dates.yaml
-      - matplotlibrc
-      - data/external/all_runs.jsonl
-    params:
-      - log_level
-      - plot_format
-      - plots
-      - weighting
-    plots:
-      - plots/logistic/${item.weighting}-${item.regularization}-${item.trendlines}-${item.categories}-${item.after_date}-distr_${item.include_task_distribution}.${plot_format}
-    desc: Generate plot of logistic regression results.
+    foreach:
+      double_line_all_data_retrodict_excluding_swaa: ${figs.plot_logistic_regression.double_line_all_data_retrodict_excluding_swaa}
+      double_line_all_data: ${figs.plot_logistic_regression.double_line_all_data}
+      single_line_2023_ga_rebench: ${figs.plot_logistic_regression.single_line_2023_ga_rebench}
+    do:
+      cmd: >-
+        python -m src.plot.logistic
+        --input-file data/wrangled/logistic_fits/${item.logistic_file}.csv
+        --runs-file data/external/${item.runs_file}.jsonl
+        --release-dates data/external/release_dates.yaml
+        --output-file plots/logistic/${key}.${plot_format}
+        --log-level ${log_level}
+        --script-parameter-group ${key}
+        --params-file "params.yaml"
+      deps:
+        - data/external/${item.runs_file}.jsonl
+        - data/wrangled/logistic_fits/${item.logistic_file}.csv
+        - matplotlibrc
+        - src/plot/logistic.py
+        - src/utils/plots.py
+      params:
+        - log_level
+        - plot_format
+        - plots
+        - figs.plot_logistic_regression.${key}
+      # plots:
+      #   - plots/logistic/${key}.${plot_format}
+      outs:
+        - plots/logistic/${key}.${plot_format}:
+            persist: true
+      desc: Generate plot of logistic regression results.
+
+  # plot_logistic_regression_swe_bench:
+  #   matrix:
+  #     weighting: ["invsqrt_task_weight"]
+  #     categories: ["ftr"]
+  #     regularization: [0.1]
+  #     trendlines: [true, false]
+  #     after_date: ["2024-01-01", "2023-03-13"]
+  #   cmd: >-
+  #     python -m src.plot.logistic
+  #     --input-file data/wrangled/swe_bench_logistic.csv
+  #     --runs-file data/external/swe_bench_runs.jsonl
+  #     --release-dates data/external/release_dates.yaml
+  #     --output-file plots/logistic/swe_bench/swe_bench_${item.weighting}-${item.regularization}-${item.trendlines}_${item.after_date}.${plot_format}
+  #     --log-level ${log_level}
+  #     --trendlines ${item.trendlines}
+  #     --after-date ${item.after_date}
+  #     --weighting "${item.weighting}"
+  #     --include-task-distribution=false
+  #   deps:
+  #     - src/plot/logistic.py
+  #     - data/wrangled/swe_bench_logistic.csv
+  #     - src/utils/plots.py
+  #     - data/external/release_dates.yaml
+  #     - matplotlibrc
+  #     - data/external/swe_bench_runs.jsonl
+  #   params:
+  #     - log_level
+  #     - plot_format
+  #     - plots
+  #     - weighting
+  #   plots:
+  #     - plots/logistic/swe_bench/swe_bench_${item.weighting}-${item.regularization}-${item.trendlines}_${item.after_date}.${plot_format}
+  #   desc: Generate plot of logistic regression results.
 
   plot_logistic_multiverse:
     cmd: >-
       python -m src.plot.logistic_multiverse
-      --input-file-prefix data/wrangled/logistic_regression_
+      --runs-file data/external/all_runs.jsonl
       --release-dates data/external/release_dates.yaml
+      --temp-dir data/temp/logistic_multiverse
       --output-file plots/logistic/logistic_multiverse.${plot_format}
-      --metrics-file metrics/horizon_trend/multiverse.yaml
       --log-level ${log_level}
-      --weightings "equal_task_weight,invsqrt_task_weight"
-      --regularization "0.1,0.01"
-      --categories "ftr"
+      --output-metrics-file metrics/horizon_trend/multiverse.yaml
     deps:
       - src/plot/logistic_multiverse.py
-      - src/plot/logistic.py # dependency on plot_trendline
+      - src/plot/logistic.py
       - data/wrangled/
       - data/external/release_dates.yaml
       - matplotlibrc
@@ -238,24 +320,82 @@ stages:
       - log_level
       - plot_format
       - plots
+      - figs.plot_logistic_multiverse
     plots:
       - plots/logistic/logistic_multiverse.${plot_format}
     metrics:
       - metrics/horizon_trend/multiverse.yaml
     desc: Generate plot of logistic regression results.
 
+  plot_individual_histograms:
+    foreach: ${figs.plot_individual_histograms}
+    do:
+      cmd: >-
+        python -m src.plot.individual_histograms
+        --all-runs-file data/external/all_runs.jsonl
+        --output-file plots/individual_histograms/${key}/histograms.${plot_format}
+        --plot-format ${plot_format}
+        --log-level ${log_level}
+        --script-parameter-group ${key}
+        --params-file "params.yaml"
+      deps:
+        - ${item.logistic_file}
+        - data/external/all_runs.jsonl
+        - matplotlibrc
+        - src/plot/individual_histograms.py
+        - src/utils/plots.py
+      params:
+        - log_level
+        - plot_format
+        - plots
+        - figs.plot_individual_histograms.${key}
+      # plots:
+      #   - plots/individual_histograms/${key}/histograms.${plot_format}
+      outs:
+        - plots/individual_histograms/${key}/histograms.${plot_format}:
+            persist: true
+      desc: Generate plot of logistic regression results.
+
+  plot_individual_binned_residuals:
+    foreach:
+      default: ${figs.plot_individual_histograms.default}
+    do:
+      cmd: >-
+        python -m src.plot.individual_binned_residuals
+        --all-runs-file data/external/all_runs.jsonl
+        --output-file plots/individual_histograms/${key}/binned_residuals.${plot_format}
+        --plot-format ${plot_format}
+        --log-level ${log_level}
+        --script-parameter-group ${key}
+        --params-file "params.yaml"
+      deps:
+        - ${item.logistic_file}
+        - data/external/all_runs.jsonl
+        - matplotlibrc
+        - src/plot/individual_binned_residuals.py
+        - src/utils/plots.py
+      params:
+        - log_level
+        - plot_format
+        - plots
+        - figs.plot_individual_histograms.${key}
+      plots:
+        - plots/individual_histograms/${key}/binned_residuals.${plot_format}
+      desc: Generate plot of logistic regression results.
+
   plot_logistic_individual:
     matrix:
-      weighting: ["invsqrt_task_weight"]
-      regularization: [0.01, 0.1]
+      show_p50: [true, false]
     cmd: >-
       python -m src.plot.logistic_individual
-      --input-file data/wrangled/logistic_regression_${item.weighting}_${item.regularization}_ftr.csv
-      --output-file plots/logistic_individual/${item.weighting}-${item.regularization}.${plot_format}
+      --input-file data/wrangled/logistic_fits/headline.csv
+      --output-file plots/logistic_individual/p50_${item.show_p50}.${plot_format}
       --log-level ${log_level}
+      --show-p50 ${item.show_p50}
     deps:
       - src/plot/logistic_individual.py
-      - data/wrangled/logistic_regression_${item.weighting}_${item.regularization}_ftr.csv
+      - data/wrangled/logistic_fits/headline.csv
+      - src/utils/logistic.py
       - src/utils/plots.py
       - matplotlibrc
     params:
@@ -263,35 +403,55 @@ stages:
       - plot_format
       - plots
     plots:
-      - plots/logistic_individual/${item.weighting}-${item.regularization}.${plot_format}
+      - plots/logistic_individual/p50_${item.show_p50}.${plot_format}
     desc: Generate plot of logistic regression results.
+
+  # plot_logistic_individual_swe_bench:
+  #   matrix:
+  #     show_p50: [true]
+  #   cmd: >-
+  #     python -m src.plot.logistic_individual
+  #     --input-file data/wrangled/swe_bench_logistic_fits/main.csv
+  #     --output-file plots/logistic_individual/swe_bench/swe_bench_main.${plot_format}
+  #     --log-level ${log_level}
+  #   deps:
+  #     - src/plot/logistic_individual.py
+  #     - data/wrangled/swe_bench_logistic_fits/main.csv
+  #     - src/utils/logistic.py
+  #     - src/utils/plots.py
+  #     - matplotlibrc
+  #   params:
+  #     - log_level
+  #     - plot_format
+  #     - plots
+  #   plots:
+  #     - plots/logistic_individual/swe_bench/swe_bench_main.${plot_format}
+  #   desc: Generate plot of logistic regression results.
 
   plot_bootstrap_ci:
     matrix:
-      weighting: ["invsqrt_task_weight"]
-      categories: ["ftr"]
-      after_date: ["2023-03-13", "2024-01-01"]
-      regularization: [0.1]
+      fig_name: [headline]
     cmd: >-
       python -m src.plot.bootstrap_ci
-      --input-file data/wrangled/bootstrap/${item.weighting}-${item.categories}-${item.regularization}.csv
+      --fig-name ${item.fig_name}
+      --input-file data/wrangled/bootstrap/${item.fig_name}.csv
+      --agent-summaries-file data/wrangled/logistic_fits/${item.fig_name}.csv
       --release-dates data/external/release_dates.yaml
-      --output-file plots/bootstrap/${item.weighting}-${item.categories}-${item.after_date}-${item.regularization}.${plot_format}
-      --weighting ${item.weighting}
-      --categories ${item.categories}
-      --regularization ${item.regularization}
+      --output-file plots/bootstrap/${item.fig_name}.${plot_format}
       --log-level ${log_level}
-      --n-samples 60
-      --after-date ${item.after_date}
     deps:
       - src/plot/bootstrap_ci.py
       - src/plot/logistic.py # dependency on plot_trendline
-      - data/wrangled/bootstrap/${item.weighting}-${item.categories}-${item.regularization}.csv
+      - data/wrangled/bootstrap/${item.fig_name}.csv
+      - data/wrangled/logistic_fits/${item.fig_name}.csv
       - data/external/release_dates.yaml
+      - matplotlibrc
     params:
       - log_level
       - plot_format
       - plots
+      - figs.plot_logistic_regression.headline
     plots:
-      - plots/bootstrap/${item.weighting}-${item.categories}-${item.after_date}-${item.regularization}.${plot_format}
+      - plots/bootstrap/${item.fig_name}.${plot_format}
     desc: Generate plot of bootstrap confidence intervals
+

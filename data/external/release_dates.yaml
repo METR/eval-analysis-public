@@ -11,7 +11,10 @@ date:
   Claude 3.5 Sonnet (New): 2024-10-22
   Claude 3.5 Sonnet (Old): 2024-06-20
   GPT-4 0314: 2023-03-14
-  davinci-002: 2022-03-15
-  gpt-3.5-turbo-instruct: 2022-11-30
+  GPT-4 1106: 2023-11-06
+  GPT-4 0125: 2024-01-25
+  davinci-002 (GPT-3): 2020-05-28
+  gpt-3.5-turbo-instruct: 2022-03-15
   o1: 2024-12-05
   o1-preview: 2024-09-12
+  GPT-2: 2019-02-14

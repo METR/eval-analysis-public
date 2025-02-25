@@ -1,0 +1,230 @@
+plot_logistic_regression:
+  headline:
+    runs_file: all_runs
+    trendlines:
+      - fit_type: exponential
+        caption: null
+        after_date: "2019-01-01"
+        color: blue
+        line_start_date: "2018-12-01"
+        line_end_date: "2027-01-01"
+        display_r_squared: true
+        styling: null
+    include_task_distribution: none
+    weighting: invsqrt_task_weight
+    categories: ftr
+    regularization: 0.1
+    x_lim_start: "2018-09-03"
+    x_lim_end: "2027-01-01"
+    exclude: []
+    lower_y_lim: 0.0083333 # 0.5 seconds
+    upper_y_lim: 360
+    exclude_agents:
+      - GPT-4 0125
+
+  single_line_2023_ga_rebench:
+    runs_file: all_runs
+    logistic_file: single_line_2023_ga_rebench
+    trendlines:
+      - fit_type: exponential
+        skip_annotation: false
+        caption: null
+        after_date: "2023-01-01"
+        color: blue
+        line_start_date: "2023-01-01"
+        line_end_date: "2025-04-01"
+        display_r_squared: true
+        data_file: null
+        styling:
+          linewidth: 2
+          alpha: 0.5
+          linestyle: dashed
+
+    include_task_distribution: none
+    weighting: invsqrt_task_weight
+    categories: ftr
+    regularization: 0.1
+    x_lim_start: "2022-12-01"
+    x_lim_end: "2025-04-01"
+    lower_y_lim: 0.5
+    upper_y_lim: 120
+    exclude:
+      - SWAA
+    exclude_agents:
+      - GPT-4 0125
+
+  double_line_all_data_retrodict_excluding_swaa:
+    runs_file: all_runs
+    logistic_file: double_line_all_data
+    weighting: invsqrt_task_weight
+    categories: ftr
+    regularization: 0.1
+    include_task_distribution: none
+
+    trendlines:
+      - fit_type: exponential
+        skip_annotation: false
+        caption: Actual Fit
+        after_date: "2018-01-01"
+        color: black
+        line_start_date: "2018-12-01"
+        line_end_date: "2025-07-01"
+        display_r_squared: true
+        data_file: null
+        styling:
+          linewidth: 2
+          alpha: 0.2
+          linestyle: solid
+      - fit_type: exponential
+        skip_annotation: false
+        caption: |-
+          Retrodiction Fit
+          (Fit on 2023 onwards GA + RE data ONLY)
+        after_date: "2023-01-01"
+        color: blue
+        line_start_date: "2023-01-01"
+        line_end_date: "2025-07-01"
+        display_r_squared: false
+        data_file: data/wrangled/logistic_fits/single_line_2023_ga_rebench.csv
+        styling:
+          linewidth: 2
+          alpha: 0.6
+          linestyle: dashed
+      - fit_type: exponential
+        skip_annotation: true
+        caption: Fuzzy Extension of Retrodiction Fit
+        after_date: "2023-01-01"
+        color: blue
+        line_start_date: "2018-12-01"
+        line_end_date: "2023-01-01"
+        display_r_squared: false
+        data_file: data/wrangled/logistic_fits/single_line_2023_ga_rebench.csv
+        styling:
+          linewidth: 4
+          alpha: 0.2
+          linestyle: "dotted"
+    exclude:
+      - "SWAA"
+    exclude_agents:
+      - GPT-4 0125
+    lower_y_lim: 0.0083333 # 0.5 seconds
+    upper_y_lim: 240
+    x_lim_start: "2018-09-03"
+    x_lim_end: "2025-11-06"
+
+  double_line_all_data:
+    runs_file: all_runs
+    logistic_file: headline
+    trendlines:
+      - fit_type: exponential
+        skip_annotation: false
+        caption: null
+        after_date: "2019-01-01"
+        color: blue
+        line_start_date: "2018-12-01"
+        line_end_date: "2027-01-01"
+        display_r_squared: true
+        data_file: null
+        styling: null
+      - fit_type: exponential
+        skip_annotation: false
+        caption: null
+        after_date: "2024-01-01"
+        color: red
+        line_start_date: "2023-08-01"
+        line_end_date: "2027-01-01"
+        display_r_squared: true
+        data_file: null
+        styling: null
+    include_task_distribution: none
+    weighting: invsqrt_task_weight
+    x_lim_start: "2018-09-03"
+    x_lim_end: "2027-01-01"
+    exclude: []
+    lower_y_lim: 0.0083333 # 0.5 seconds
+    upper_y_lim: 11530 # 8 days
+    exclude_agents:
+      - GPT-4 0125
+
+  swe_bench:
+    runs_file: swe_bench_runs
+    logistic_file: swe_bench
+    weighting: invsqrt_task_weight
+    regularization: 0.1
+
+plot_individual_histograms:
+  no_swaa:
+    annotate_p50: true
+    logistic_file: "data/wrangled/logistic_fits/single_line_2023_ga_rebench.csv"
+    weighting: "invsqrt_task_weight"
+    regularization: 0.1
+    categories: "ftr"
+    n_bins: 10
+    n_subplot_cols: 3
+    horizontal_lines:
+      - p_success: 0.5
+        styling:
+          color: "#b30c00"
+          linestyle: "dashed"
+          linewidth: 2.5
+          alpha: 1
+    x_lim_start: "2022-12-01"
+    x_lim_end: "2025-04-01"
+    lower_y_lim: 0
+    upper_y_lim: 1
+    exclude:
+      - "SWAA"
+    include_agents:
+      - Claude 3.5 Sonnet (New)
+      - Claude 3.5 Sonnet (Old)
+      - Claude 3 Opus
+      - o1
+      - o1-preview
+      - GPT-4o
+      - GPT-4 Turbo
+      - GPT-4 1106
+      - GPT-4 0314
+      # - gpt-3.5-turbo-instruct
+      # - davinci-002 (GPT-3)
+      # - GPT-2
+
+  default:
+    annotate_p50: true
+    logistic_file: "data/wrangled/logistic_fits/double_line_all_data.csv"
+    weighting: "invsqrt_task_weight"
+    regularization: 0.1
+    categories: "ftr"
+    n_bins: 10
+    n_subplot_cols: 3
+    horizontal_lines:
+      - p_success: 0.5
+        styling:
+          color: "#b30c00"
+          linestyle: "dashed"
+          linewidth: 2.5
+          alpha: 1
+    x_lim_start: "2022-12-01"
+    x_lim_end: "2025-04-01"
+    lower_y_lim: 0
+    upper_y_lim: 1
+    exclude: []
+    include_agents:
+      - Claude 3.5 Sonnet (New)
+      - Claude 3.5 Sonnet (Old)
+      - Claude 3 Opus
+      - o1
+      - o1-preview
+      - GPT-4o
+      - GPT-4 Turbo
+      #- GPT-4 1106
+      - GPT-4 0314
+      - gpt-3.5-turbo-instruct
+      - davinci-002 (GPT-3)
+      - GPT-2
+
+plot_logistic_multiverse:
+  exclude_agents:
+    - GPT-4 0125
+  weightings: ["equal_task_weight", "invsqrt_task_weight"]
+  regularizations: [0.1, 0.05, 0.02, 0.01]
+  categories: "ftr"

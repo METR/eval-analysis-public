@@ -38,7 +38,7 @@ def plot_logistic_regression(
     # Plot logistic curves for each agent
     for i, (_, agent_info) in enumerate(agent_summaries.groupby("agent")):
         agent_color = src.utils.plots.get_agent_color(
-            plot_params["colors"], agent_info.iloc[0]["agent"]
+            plot_params, agent_info.iloc[0]["agent"]
         )
         plot_logistic_function(ax, agent_info, agent_color)
 
@@ -47,38 +47,50 @@ def plot_logistic_regression(
     )  # type: ignore[reportArgumentType]
     # Add p50 reference lines if requested
     if show_example_p50:
-        p50 = agent_summaries.loc[1, "50%"]
+        p50 = agent_summaries["50%"].iloc[0]
         ax.vlines(p50, 0, 0.5, color="gray", linestyle="--", alpha=0.5)  # type: ignore[reportArgumentType]
         ax.scatter(p50, 0.5, color="gray", marker="o", alpha=0.8)  # type: ignore[reportArgumentType]
+        ax.text(
+            p50,
+            0.05,
+            f"50% @\n{p50:.0f} minutes",
+            color="black",
+            ha="center",
+            va="bottom",
+            fontsize=12,
+        )
 
+    ax.set_xscale("log")
     # Add empirical data points if requested
     if show_empirical_rates:
         time_buckets = [1, 4, 16, 64, 256, 960]
 
         for i, (_, agent_info) in enumerate(agent_summaries.groupby("agent")):
             agent = agent_info.iloc[0]["agent"]
-            if agent not in [
-                "Claude 3.5 Sonnet (New)",
-                "GPT-4o",
-                "o1",
-                "gpt-3.5-turbo-instruct",
-            ]:
-                continue
-            agent_color = src.utils.plots.get_agent_color(plot_params["colors"], agent)
+            agent_color = src.utils.plots.get_agent_color(plot_params, agent)
             for j in range(len(time_buckets) - 1):
                 start = time_buckets[j]
                 end = time_buckets[j + 1]
                 rate = agent_info.iloc[0][f"{start}-{end} min"]
 
                 # ax.hlines(rate, start, end, color=colors[i], linestyle="--")
-                ax.scatter(np.sqrt(start * end), rate, color=agent_color, marker="o")
+                ax.bar(
+                    (start + end) / 2,
+                    rate,
+                    width=end - start,
+                    color=agent_color,
+                    align="center",
+                    alpha=0.3,
+                )
 
     # Customize axis appearance
-    ax.set_xscale("log")
     ax.set_xticks([1, 4, 15, 60, 4 * 60, 16 * 60])
     ax.set_xticklabels(["1 min", "4 min", "15 min", "1 hr", "4 hrs", "16 hrs"])
-    ax.set_xlabel("Time horizon")
+    ax.set_xlabel("Human time-to-complete")
     ax.set_ylabel("Probability of success")
+    ax.set_title("Agent success rate vs time horizon, with logistic fit")
+
+    ax.set_ylim(0, 1)
     src.utils.plots.create_sorted_legend(ax, plot_params["legend_order"])
 
 
@@ -87,6 +99,7 @@ def main() -> None:
     parser.add_argument("--input-file", type=pathlib.Path, required=True)
     parser.add_argument("--output-file", type=pathlib.Path, required=True)
     parser.add_argument("--log-level", type=str, default="INFO")
+    parser.add_argument("--show-p50", type=str, default="false")
     args = parser.parse_args()
 
     logging.basicConfig(
@@ -97,13 +110,13 @@ def main() -> None:
     agent_summaries = pd.read_csv(args.input_file)
     params = dvc.api.params_show(stages="plot_logistic_individual")
     focus_agents = [
-        "Claude 3.5 Sonnet (New)",
-        "Claude 3.5 Sonnet (Old)",
-        "GPT-4 0314",
+        # "Claude 3.5 Sonnet (New)",
+        # "Claude 3.5 Sonnet (Old)",
+        # "GPT-4 0314",
         # "GPT-4 Turbo",
-        "GPT-4o",
-        "gpt-3.5-turbo-instruct",
-        "o1-preview",
+        # "GPT-4o",
+        # "gpt-3.5-turbo-instruct",
+        # "o1-preview",
         "o1",
     ]
 
@@ -114,7 +127,7 @@ def main() -> None:
         agent_summaries,
         focus_agents,
         show_empirical_rates=True,
-        show_example_p50=False,
+        show_example_p50=args.show_p50 == "true",
     )
 
     src.utils.plots.save_or_open_plot(args.output_file, params["plot_format"])

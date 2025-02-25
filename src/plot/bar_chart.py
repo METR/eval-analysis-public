@@ -68,8 +68,7 @@ def overall_bar_chart_weighted(
     print(f"Plotting agents {agent_ordering}")
 
     agent_colors = [
-        src.utils.plots.get_agent_color(plot_params["colors"], agent)
-        for agent in agent_ordering
+        src.utils.plots.get_agent_color(plot_params, agent) for agent in agent_ordering
     ]
     df["color"] = df["alias"].map(lambda x: agent_colors[agent_ordering.index(x)])
 

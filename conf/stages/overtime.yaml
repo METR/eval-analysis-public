@@ -1,0 +1,19 @@
+wrangle_bar_by_time_allocation:
+  time_limits: [36000]
+
+plot_bar_chart_weighted_scores:
+  focus_agents:
+    - Claude 3 Opus
+    - Claude 3.5 Sonnet (New)
+    - Claude 3.5 Sonnet (Old)
+    - GPT-4 Turbo
+    - GPT-4 0314
+    - GPT-4 1106
+    - GPT-4o
+    - davinci-002 (GPT-3)
+    - GPT-2
+    - gpt-3.5-turbo-instruct
+    - o1-preview
+    - o1
+  weighting: "invsqrt_task_weight"
+  exclude: []

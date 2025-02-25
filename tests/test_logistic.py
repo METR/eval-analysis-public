@@ -3,7 +3,7 @@ from typing import Any
 import numpy as np
 import pytest
 
-from src.wrangle.logistic import unscaled_regression
+from src.utils.logistic import logistic_regression
 
 
 def synthetic_data(
@@ -27,7 +27,7 @@ def synthetic_data(
 def test_logistic_scaled_bernoulli() -> None:
     # Generate data
     X, y = synthetic_data(1.0, -3.0, 0.0)
-    model = unscaled_regression(X, y, sample_weight=np.ones_like(y), regularization=0.1)
+    model = logistic_regression(X, y, sample_weight=np.ones_like(y), regularization=0.1)
 
     # Use pytest's built-in assert or approx
     assert model.coef_[0][0] == pytest.approx(-3.0, abs=0.1)

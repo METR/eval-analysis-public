@@ -45,7 +45,7 @@ def _calculate_percentiles_across_tasks(
 def _calculate_final_quantiles(human_scores: pd.DataFrame) -> pd.DataFrame:
     """Returns quantiles for final scores of each task."""
 
-    return _calculate_percentiles_across_tasks(human_scores, score_column="score")
+    return _calculate_percentiles_across_tasks(human_scores, score_column="score_cont")
 
 
 def wrangle_quantiles(

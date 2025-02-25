@@ -70,9 +70,7 @@ def plot_bar_by_time_allocation(
                 logging.warning(f"Negative error bars: {y_err} at {row['agent']}")
                 y_err = ([max(0, e) for e in y_err[0]], [max(0, e) for e in y_err[1]])
 
-            color = src.utils.plots.get_agent_color(
-                plot_params["colors"], row["agent"], "base"
-            )
+            color = src.utils.plots.get_agent_color(plot_params, row["agent"])
             ax.bar(
                 x,
                 row["point_estimate"],
@@ -125,11 +123,8 @@ def plot_bar_by_time_allocation(
             unique_handles.append(handle)
 
     # Add human reference line if needed
-    human_color = src.utils.plots.get_agent_color(
-        plot_params["colors"], "human", "dark"
-    )
     unique_handles.append(
-        matplotlib.lines.Line2D([0], [0], color=human_color, linestyle="--", alpha=0.8)
+        matplotlib.lines.Line2D([0], [0], color="grey", linestyle="--", alpha=0.8)
     )
     unique_labels.append("Human 8-hour score")
 
