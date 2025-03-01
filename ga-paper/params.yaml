@@ -1,0 +1,4 @@
+tasks_repo:
+  url: https://github.com/METR/mp4-tasks
+  branch: main
+  rev: 5f03a6c0045f4d9c4d6c19c268c9d8d030ef3590 # At Contamination levels (#1389)

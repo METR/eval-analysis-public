@@ -8,7 +8,7 @@ stages:
       - src/fetch_swe_bench_runs.py
     outs:
       - data/external/swe_bench_runs.jsonl
-    frozen: true
+    frozen: false
 
   filter_out_partial_agents:
     cmd: >-
@@ -32,73 +32,74 @@ stages:
       - metrics/baseline_statistics.yaml:
           cache: false
 
-  filter_aird_runs:
-    cmd: >-
-      python -m src.filter_aird_runs
-      --input-file data/external/all_runs.jsonl
-      --output-file data/processed/runs/aird.jsonl
-    deps:
-      - data/external/all_runs.jsonl
-      - src/filter_aird_runs.py
-    params:
-      - stages.filter_aird_runs
-    outs:
-      - data/processed/runs/aird.jsonl
+# Figure out what to do with these AIRD plots during pipeline refactor
+  # filter_aird_runs:
+  #   cmd: >-
+  #     python -m src.filter_aird_runs
+  #     --input-file data/external/all_runs.jsonl
+  #     --output-file data/processed/runs/aird.jsonl
+  #   deps:
+  #     - data/external/all_runs.jsonl
+  #     - src/filter_aird_runs.py
+  #   params:
+  #     - stages.filter_aird_runs
+  #   outs:
+  #     - data/processed/runs/aird.jsonl
 
   # Wrangle
-  wrangle_bar_by_time_allocation:
-    cmd: >-
-      python -m src.wrangle.bar_by_time_allocation
-      --runs-file data/processed/runs/aird.jsonl
-      --wrangled-file data/processed/wrangled/bar_by_time_allocation.jsonl
-    deps:
-      - data/processed/runs/aird.jsonl
-      - src/utils/plots.py
-      - src/stats/statistics.py
-      - src/wrangle/bar_by_time_allocation.py
-    params:
-      - n_bootstrap
-      - rebench_best_of_k_parameters
-    outs:
-      - data/processed/wrangled/bar_by_time_allocation.jsonl
-    desc: Compute mean scores and hierarchical confidence intervals for final time limit.
+  # wrangle_bar_by_time_allocation:
+  #   cmd: >-
+  #     python -m src.wrangle.bar_by_time_allocation
+  #     --runs-file data/processed/runs/aird.jsonl
+  #     --wrangled-file data/processed/wrangled/bar_by_time_allocation.jsonl
+  #   deps:
+  #     - data/processed/runs/aird.jsonl
+  #     - src/utils/plots.py
+  #     - src/stats/statistics.py
+  #     - src/wrangle/bar_by_time_allocation.py
+  #   params:
+  #     - n_bootstrap
+  #     - rebench_best_of_k_parameters
+  #   outs:
+  #     - data/processed/wrangled/bar_by_time_allocation.jsonl
+  #   desc: Compute mean scores and hierarchical confidence intervals for final time limit.
 
-  wrangle_human_mean_of_percentiles:
-    cmd: >-
-      python -m src.wrangle.human_mean_of_percentiles
-      --interpolated-scores data/processed/runs/aird.jsonl
-      --output-percentiles data/processed/wrangled/human_mean_of_percentiles.jsonl
-      --log-level ${log_level}
-    deps:
-      - src/wrangle/human_mean_of_percentiles.py
-      - data/processed/runs/aird.jsonl
-    params:
-      - log_level
-    outs:
-      - data/processed/wrangled/human_mean_of_percentiles.jsonl
-    desc: Calculate per-task percentiles of human scores over time and their mean.
+  # wrangle_human_mean_of_percentiles:
+  #   cmd: >-
+  #     python -m src.wrangle.human_mean_of_percentiles
+  #     --interpolated-scores data/processed/runs/aird.jsonl
+  #     --output-percentiles data/processed/wrangled/human_mean_of_percentiles.jsonl
+  #     --log-level ${log_level}
+  #   deps:
+  #     - src/wrangle/human_mean_of_percentiles.py
+  #     - data/processed/runs/aird.jsonl
+  #   params:
+  #     - log_level
+  #   outs:
+  #     - data/processed/wrangled/human_mean_of_percentiles.jsonl
+  #   desc: Calculate per-task percentiles of human scores over time and their mean.
 
-  wrangle_score_at_k:
-    cmd: >-
-      python -m src.wrangle.score_at_k
-      --input-score-at-k data/processed/runs/aird.jsonl
-      --output-score-at-k data/processed/wrangled/score_at_k.jsonl
-      --n-bootstrap ${n_bootstrap}
-    deps:
-      - src/wrangle/score_at_k.py
-      - data/processed/runs/aird.jsonl
-    params:
-      - log_level
-      - n_bootstrap
-      - rebench_best_of_k_parameters
-    outs:
-      - data/processed/wrangled/score_at_k.jsonl
+  # wrangle_score_at_k:
+  #   cmd: >-
+  #     python -m src.wrangle.score_at_k
+  #     --input-score-at-k data/processed/runs/aird.jsonl
+  #     --output-score-at-k data/processed/wrangled/score_at_k.jsonl
+  #     --n-bootstrap ${n_bootstrap}
+  #   deps:
+  #     - src/wrangle/score_at_k.py
+  #     - data/processed/runs/aird.jsonl
+  #   params:
+  #     - log_level
+  #     - n_bootstrap
+  #     - rebench_best_of_k_parameters
+  #   outs:
+  #     - data/processed/wrangled/score_at_k.jsonl
 
   wrangle_bootstrap_logistic:
     foreach: &foreach_logistic
-      headline: ${figs.plot_logistic_regression.headline}
-      single_line_2023_ga_rebench: ${figs.plot_logistic_regression.single_line_2023_ga_rebench}
-      swe_bench: ${figs.plot_logistic_regression.swe_bench}
+      headline: ${figs.wrangle_logistic.headline}
+      ga_rebench: ${figs.wrangle_logistic.ga_rebench}
+      swe_bench: ${figs.wrangle_logistic.swe_bench}
     do:
       cmd: >-
         python -m src.wrangle.bootstrap
@@ -112,7 +113,7 @@ stages:
         - src/utils/logistic.py
         - data/external/${item.runs_file}.jsonl
       params:
-        - figs.plot_logistic_regression.${key}
+        - figs.wrangle_logistic.${key}
       outs:
         - data/wrangled/bootstrap/${key}.csv
       desc: Compute bootstrapped logistic regression results
@@ -133,9 +134,24 @@ stages:
         - data/wrangled/bootstrap/${key}.csv
         - src/wrangle/logistic.py
       params:
-        - figs.plot_logistic_regression.${key}
+        - figs.wrangle_logistic.${key}
       outs:
         - data/wrangled/logistic_fits/${key}.csv
+
+
+  ga_swebench_comparison_table:
+    cmd: >-
+      python -m src.ga_swebench_comparison_table
+      --headline-fits-file data/wrangled/logistic_fits/headline.csv
+      --swebench-fits-file data/wrangled/logistic_fits/swe_bench.csv
+      --output-table-file data/processed/ga_swebench_comparison_table.tex
+    deps:
+      - data/wrangled/logistic_fits/headline.csv
+      - data/wrangled/logistic_fits/swe_bench.csv
+      - src/ga_swebench_comparison_table.py
+    outs:
+      - data/processed/ga_swebench_comparison_table.tex:
+          cache: false
 
   # Plot
 
@@ -209,36 +225,38 @@ stages:
       - plots/bar_by_time_allocation.${plot_format}
     desc: Generate plot of mean scores for different time limits with confidence intervals.
 
-  plot_score_at_k:
-    matrix:
-      time_limit: ${rebench_best_of_k_parameters.time_limits}
-    cmd: >-
-      python -m src.plot.score_at_k
-      --input-score-at-k data/processed/wrangled/score_at_k.jsonl
-      --input-human-mean-of-percentiles data/processed/wrangled/human_mean_of_percentiles.jsonl
-      --output-prefix plots/aird/score_at_k
-      --time-limit ${item.time_limit}
-      --log-level ${log_level}
-    deps:
-      - src/plot/score_at_k.py
-      - data/processed/wrangled/score_at_k.jsonl
-      - data/processed/wrangled/human_mean_of_percentiles.jsonl
-      - src/utils/plots.py
-      - src/stats/statistics.py
-    params:
-      - log_level
-      - plot_format
-      - plots
-      - rebench_best_of_k_parameters
-    plots:
-      - plots/aird/score_at_k_${item.time_limit}.${plot_format}
-    desc: Generate plot of score at k for different time limits.
+  # plot_score_at_k:
+  #   matrix:
+  #     time_limit: ${rebench_best_of_k_parameters.time_limits}
+  #   cmd: >-
+  #     python -m src.plot.score_at_k
+  #     --input-score-at-k data/processed/wrangled/score_at_k.jsonl
+  #     --input-human-mean-of-percentiles data/processed/wrangled/human_mean_of_percentiles.jsonl
+  #     --output-prefix plots/aird/score_at_k
+  #     --time-limit ${item.time_limit}
+  #     --log-level ${log_level}
+  #   deps:
+  #     - src/plot/score_at_k.py
+  #     - data/processed/wrangled/score_at_k.jsonl
+  #     - data/processed/wrangled/human_mean_of_percentiles.jsonl
+  #     - src/utils/plots.py
+  #     - src/stats/statistics.py
+  #   params:
+  #     - log_level
+  #     - plot_format
+  #     - plots
+  #     - rebench_best_of_k_parameters
+  #   plots:
+  #     - plots/aird/score_at_k_${item.time_limit}.${plot_format}
+  #   desc: Generate plot of score at k for different time limits.
 
   plot_logistic_regression:
     foreach:
       double_line_all_data_retrodict_excluding_swaa: ${figs.plot_logistic_regression.double_line_all_data_retrodict_excluding_swaa}
       double_line_all_data: ${figs.plot_logistic_regression.double_line_all_data}
+      p80: ${figs.plot_logistic_regression.p80}
       single_line_2023_ga_rebench: ${figs.plot_logistic_regression.single_line_2023_ga_rebench}
+      swe_bench: ${figs.plot_logistic_regression.swe_bench}
     do:
       cmd: >-
         python -m src.plot.logistic
@@ -313,9 +331,11 @@ stages:
     deps:
       - src/plot/logistic_multiverse.py
       - src/plot/logistic.py
-      - data/wrangled/
+      - src/wrangle/logistic.py
+      - src/utils/plots.py
       - data/external/release_dates.yaml
       - matplotlibrc
+      - data/external/all_runs.jsonl
     params:
       - log_level
       - plot_format

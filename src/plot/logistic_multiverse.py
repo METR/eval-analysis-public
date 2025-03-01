@@ -99,12 +99,16 @@ def main() -> None:
     for weighting, regularization in tqdm(
         itertools.product(weightings, regularizations)
     ):
+        wrangle_params = {
+            "weighting": weighting,
+            "regularization": regularization,
+            "exclude": fig_params["exclude"],
+            "success_percents": [50],
+        }
         agent_summaries = run_logistic_regressions(
             runs,
             args.release_dates,
-            weighting,
-            float(regularization),
-            exclude_task_sources=None,
+            wrangle_params,  # type: ignore
         )
 
         agent_summaries["release_date"] = pd.to_datetime(
@@ -132,6 +136,7 @@ def main() -> None:
                 upper_y_lim=8 * 60,
                 include_task_distribution="none",
                 fig=fig,
+                success_percent=50,
             )
 
         print(f"Plotting trendline for {weighting} {regularization}")
@@ -140,6 +145,7 @@ def main() -> None:
             after="2019-01-01",
             log_scale=True,
             method="OLS",
+            success_percent=50,
         )
         doubling_time = np.log(2) / reg.coef_[0]
 
@@ -167,8 +173,6 @@ def main() -> None:
                 doubling_time=doubling_time,
             )
         )
-
-    print(f"Records: {records}")
 
     doubling_times = [record.doubling_time for record in records]
     print(f"Doubling times: {doubling_times}")

@@ -3,14 +3,14 @@ from __future__ import annotations
 import argparse
 import logging
 import pathlib
-from typing import Any, cast
+from typing import Any, cast, NotRequired
 
 import matplotlib.axes
 import matplotlib.dates as mdates
 import numpy as np
 import pandas as pd
 import yaml
-from matplotlib import pyplot as plt
+from matplotlib import pyplot as plt, markers
 from matplotlib.axes import Axes
 from matplotlib.dates import date2num, num2date
 from matplotlib.figure import Figure
@@ -46,7 +46,7 @@ class ScriptParams(TypedDict):
     lower_y_lim: float
     upper_y_lim: float
     exclude: list[str]
-    title: str
+    title: NotRequired[str]
     subtitle: str
     weighting: str
     include_task_distribution: str
@@ -57,6 +57,8 @@ class ScriptParams(TypedDict):
 
 def _get_title(script_params: ScriptParams) -> str:
     # Get included task groups
+    if "title" in script_params:
+        return script_params["title"]
     task_group_names = ["General Autonomy", "SWAA", "RE-Bench"]
     included_task_groups = []
     for name in task_group_names:
@@ -175,6 +177,7 @@ def plot_horizon_graph(
     title: str,
     weight_key: str,
     exclude_agents: list[str],
+    success_percent: int,
     trendlines: list[TrendlineParams] | None = None,
     upper_y_lim: float | None = None,
     include_task_distribution: str = "none",
@@ -199,33 +202,33 @@ def plot_horizon_graph(
 
     ax.set_ylim(lower_y_lim, upper_y_lim)
 
-    agent_summaries["50%_clipped"] = agent_summaries["50%"].clip(
+    y = agent_summaries[f"p{success_percent}"]
+    y_clipped = y.clip(
         # np.finfo(float).eps, np.inf
         lower_y_lim * 1.5,
         np.inf,
     )  # clip because log scale makes 0 -> -inf
 
-    agent_summaries.loc[:, "50_low"].clip(1 / 60, np.inf)
-    agent_summaries.loc[:, "50_high"].clip(1 / 60, np.inf)
-    y = agent_summaries["50%"]
-    yerr = np.array(
-        [y - agent_summaries.loc[:, "50_low"], agent_summaries.loc[:, "50_high"] - y]
-    )
+    y_low = agent_summaries[f"p{success_percent}q10"]
+    y_high = agent_summaries[f"p{success_percent}q90"]
+
+    yerr = np.array([y - y_low, y_high - y])
     yerr = np.clip(yerr, 0, np.inf)
+
     legend_labels = []
     legend_handles = []
 
     for i, agent in enumerate(agent_summaries["agent"]):
         ax.errorbar(
             agent_summaries["release_date"].iloc[i],
-            agent_summaries["50%_clipped"].iloc[i],
+            y_clipped.iloc[i],
             yerr=[[yerr[0, i]], [yerr[1, i]]],
             **plot_style["error_bar"],
         )
         ax.grid(**plot_style["grid"])
         scatter_handle = ax.scatter(
             agent_summaries["release_date"].iloc[i],
-            agent_summaries["50%_clipped"].iloc[i],
+            y_clipped.iloc[i],
             color=agent_style[agent]["lab_color"],
             marker=agent_style[agent]["marker"],
             label=agent,
@@ -233,21 +236,19 @@ def plot_horizon_graph(
         )
 
         # If it is actually in the bounds of the plot, add to legend
-        if (
-            agent_summaries["50%_clipped"].iloc[i] > lower_y_lim
-            and agent_summaries["50%_clipped"].iloc[i] < upper_y_lim
-        ):
+        if y_clipped.iloc[i] > lower_y_lim and y_clipped.iloc[i] < upper_y_lim:
             legend_labels.append(agent)
             legend_handles.append(scatter_handle)
 
     # Add arrows for out-of-range points
-    mask_out_range = agent_summaries["50%_clipped"] != y
+    mask_out_range = y_clipped != y
     logging.info(f"masking out {mask_out_range.sum()} points")
     ax.scatter(
         agent_summaries.loc[mask_out_range, "release_date"],
-        [lower_y_lim * 1.2] * mask_out_range.sum(),  # Place at bottom of visible range
-        marker="v",  # type: ignore
+        [lower_y_lim * 1.1] * mask_out_range.sum(),  # Place at bottom of visible range
+        marker=markers.CARETDOWN,  # type: ignore
         color="black",
+        zorder=10,
     )
 
     annotations = []
@@ -295,7 +296,9 @@ def plot_horizon_graph(
         else:
             data = agent_summaries
 
-        reg, score = fit_trendline(data, trendline["after_date"], log_scale)
+        reg, score = fit_trendline(
+            data, trendline["after_date"], success_percent, log_scale=log_scale
+        )
         annotations.append(
             plot_trendline(
                 ax,
@@ -378,7 +381,7 @@ def plot_horizon_graph(
         labelpad=plot_params["xlabelpad"],
     )
     ax.set_ylabel(
-        "Human time-to-complete @\n50% chance of model success",
+        f"Human time-to-complete @\n{success_percent}% chance of model success",
         fontsize=plot_params["ax_label_fontsize"],
         labelpad=plot_params["ylabelpad"],
     )
@@ -435,6 +438,7 @@ def plot_horizon_graph(
 def fit_trendline(
     agent_summaries: pd.DataFrame,
     after: str,
+    success_percent: int,
     log_scale: bool = False,
     method: str = "OLS",
 ) -> tuple[LinearRegression, float]:
@@ -444,13 +448,15 @@ def fit_trendline(
 
     dates = pd.to_datetime(agent_summaries["release_date"])
     X = np.array([date2num(d) for d in dates]).reshape(-1, 1)
-    y_raw = agent_summaries["50%"].clip(1e-3, np.inf)
+    y_raw = agent_summaries[f"p{success_percent}"].clip(1e-3, np.inf)
     y = np.log(y_raw) if log_scale else y_raw
 
     X = X[mask]
     y = y[mask]
     if method == "WLS":
-        spread = np.log(agent_summaries["50_high"]) - np.log(agent_summaries["50_low"])
+        spread = np.log(agent_summaries[f"p{success_percent}q90"]) - np.log(
+            agent_summaries[f"p{success_percent}q10"]
+        )
         weights = 1 / (spread**2 + 1e-6)
         # replace nan with 0
         weights = np.nan_to_num(weights)[mask]
@@ -546,7 +552,10 @@ def plot_trendline(
 
 
 def plot_trendline_hyperbolic(
-    ax: matplotlib.axes.Axes, agent_summaries: pd.DataFrame, after: str
+    ax: matplotlib.axes.Axes,
+    agent_summaries: pd.DataFrame,
+    after: str,
+    success_percent: int = 50,
 ) -> dict[str, Any]:
     """Plot a trendline showing the relationship between release date and time horizon."""
 
@@ -568,7 +577,9 @@ def plot_trendline_hyperbolic(
 
     # Fit linear regression
     X = (cast(NDArray[Any], days_since_release.values)).reshape(-1, 1)
-    y_raw = agent_summaries["50%"].clip(np.finfo(float).eps.astype(float), np.inf)
+    y_raw = agent_summaries[f"p{success_percent}"].clip(
+        np.finfo(float).eps.astype(float), np.inf
+    )
     y = np.log(y_raw) if log_scale else y_raw
     X = X[mask]
     y = y[mask]
@@ -682,6 +693,7 @@ def main() -> None:
         weight_key=weighting["weight_col"],
         trendlines=fig_params["trendlines"],
         exclude_agents=fig_params["exclude_agents"],
+        success_percent=fig_params.get("success_percent", 50),
     )
 
     src.utils.plots.save_or_open_plot(args.output_file, params["plot_format"])
