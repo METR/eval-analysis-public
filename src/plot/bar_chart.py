@@ -165,13 +165,13 @@ def main(
         df = pd.read_csv(file)
 
     # Extract required columns and rename for compatibility
-    df = df[["agent", "50%", "50_low", "50_high"]].copy()
+    df = df[["agent", "p50", "p50q10", "p50q90"]].copy()
     df = df.rename(
         columns={
             "agent": "alias",
-            "50%": "score",
-            "50_low": "ci_low",
-            "50_high": "ci_high",
+            "p50": "score",
+            "p50q10": "ci_low",
+            "p50q90": "ci_high",
         }
     )
 

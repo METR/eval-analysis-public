@@ -1,0 +1,47 @@
+schema: '2.0'
+stages:
+  generate_latex_tables:
+    cmd:
+    - '[ -d /tmp/tasks ] || git clone https://github.com/METR/mp4-tasks /tmp/tasks
+      && cd /tmp/tasks && git fetch && git checkout 5f03a6c0045f4d9c4d6c19c268c9d8d030ef3590'
+    - python -m src.generate_latex_tables --task-repo-dir=/tmp/tasks --difficulty-file=../../data/external/task_difficulty.yaml
+      --blueprint-file=../../data/external/blueprints/benchmark.yaml --labels-file=../../data/external/family_labels.yaml
+      --output-dir=tables
+    deps:
+    - path: ../../data/external/blueprints/benchmark.yaml
+      hash: md5
+      md5: 1f9c24c27ca9afdbefcf31fae500199f
+      size: 8336
+    - path: ../../data/external/family_labels.yaml
+      hash: md5
+      md5: d28395c4f96f0d3e8fe4148f94e2baf7
+      size: 26980
+    - path: ../../data/external/task_difficulty.yaml
+      hash: md5
+      md5: 868f5bf6941648dde15153a9567c6014
+      size: 73402
+    - path: src/generate_latex_tables.py
+      hash: md5
+      md5: 15e06bc94fc086b9c0d1635ed17fe5aa
+      size: 23707
+    outs:
+    - path: tables/category_distribution_table.tex
+      hash: md5
+      md5: efbd947678d49fa98188f9c84703a995
+      size: 1464
+    - path: tables/contamination_distribution_table.tex
+      hash: md5
+      md5: f4ba4805f97b31092f57c735d18ef44e
+      size: 790
+    - path: tables/expertise_distribution_table.tex
+      hash: md5
+      md5: 44fbae0ebf8bf2605ab508d5c375902f
+      size: 602
+    - path: tables/family_summary_table.tex
+      hash: md5
+      md5: 1ed36667de7160497fc95bf63a74d34c
+      size: 27618
+    - path: tables/qualitative_properties_table.tex
+      hash: md5
+      md5: a791e119f6816bb3db3e727873a82d03
+      size: 709

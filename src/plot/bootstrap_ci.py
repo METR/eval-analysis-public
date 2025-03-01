@@ -60,13 +60,12 @@ def add_bootstrap_confidence_region(
 
     # Calculate predictions for each bootstrap sample
     for sample_idx in range(n_bootstraps):
-        # Create a DataFrame for this bootstrap sample
         sample_data = []
         for agent in focus_agents:
-            if agent not in bootstrap_results.columns:
+            if f"{agent}_p50" not in bootstrap_results.columns:
                 continue
             p50 = pd.to_numeric(
-                bootstrap_results[agent].iloc[sample_idx], errors="coerce"
+                bootstrap_results[f"{agent}_p50"].iloc[sample_idx], errors="coerce"
             )
             if pd.isna(p50) or np.isinf(p50) or p50 < 1e-3:
                 continue
@@ -74,9 +73,9 @@ def add_bootstrap_confidence_region(
                 {
                     "agent": agent,
                     "release_date": dates[agent],
-                    "50%": p50,
-                    "50_low": p50,
-                    "50_high": p50,
+                    "p50": p50,
+                    "p50q10": p50,
+                    "p50q90": p50,
                 }
             )
 
@@ -86,7 +85,9 @@ def add_bootstrap_confidence_region(
 
         # Fit exponential trend
         try:
-            reg, _ = fit_trendline(sample_df, after_date, log_scale=True)
+            reg, _ = fit_trendline(
+                sample_df, after_date, log_scale=True, success_percent=50
+            )
             time_x = date2num(time_points)
             predictions[sample_idx] = np.exp(reg.predict(time_x.reshape(-1, 1)))
             slope = reg.coef_[0]
@@ -175,6 +176,7 @@ def main() -> None:
         trendlines=None,
         exclude_agents=script_params["exclude_agents"],
         fig=fig,
+        success_percent=script_params.get("success_percent", 50),
     )
 
     # Add trendline from agent_summaries
@@ -183,6 +185,7 @@ def main() -> None:
         after="2019-01-01",
         log_scale=True,
         method="OLS",
+        success_percent=script_params.get("success_percent", 50),
     )
     plot_trendline(
         ax=axs[0],
