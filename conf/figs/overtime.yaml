@@ -1,6 +1,25 @@
-plot_logistic_regression:
-  headline:
+wrangle_logistic:
+  headline: &wrangle_headline
     runs_file: all_runs
+    weighting: invsqrt_task_weight
+    categories: ftr
+    regularization: 0.1
+    exclude: []
+    success_percents: [50, 80]
+
+  ga_rebench:
+    <<: *wrangle_headline
+    exclude: ["SWAA"]
+    success_percents: [50]
+
+  swe_bench:
+    <<: *wrangle_headline
+    runs_file: swe_bench_runs
+    success_percents: [50]
+
+plot_logistic_regression:
+  headline: &plot_headline
+    <<: *wrangle_headline
     trendlines:
       - fit_type: exponential
         caption: null
@@ -10,21 +29,38 @@ plot_logistic_regression:
         line_end_date: "2027-01-01"
         display_r_squared: true
         styling: null
+        data_file: null
+        skip_annotation: false
     include_task_distribution: none
-    weighting: invsqrt_task_weight
-    categories: ftr
-    regularization: 0.1
     x_lim_start: "2018-09-03"
     x_lim_end: "2027-01-01"
-    exclude: []
     lower_y_lim: 0.0083333 # 0.5 seconds
     upper_y_lim: 360
     exclude_agents:
       - GPT-4 0125
+    title: "Length of tasks AI agents have been able to complete autonomously"
+    subtitle: "for 169 software engineering, cybersecurity, general reasoning, and ML tasks"
+
+  p80:
+    <<: *plot_headline
+    logistic_file: headline
+    subtitle: 80% success rate
+    success_percent: 80
+    trendlines:
+      - fit_type: exponential
+        caption: null
+        after_date: "2020-01-01"
+        color: blue
+        line_start_date: "2019-09-01"
+        line_end_date: "2027-01-01"
+        display_r_squared: true
+        styling: null
+        data_file: null
+        skip_annotation: false
 
   single_line_2023_ga_rebench:
     runs_file: all_runs
-    logistic_file: single_line_2023_ga_rebench
+    logistic_file: ga_rebench
     trendlines:
       - fit_type: exponential
         skip_annotation: false
@@ -39,15 +75,12 @@ plot_logistic_regression:
           linewidth: 2
           alpha: 0.5
           linestyle: dashed
-
     include_task_distribution: none
     weighting: invsqrt_task_weight
-    categories: ftr
-    regularization: 0.1
     x_lim_start: "2022-12-01"
     x_lim_end: "2025-04-01"
-    lower_y_lim: 0.5
-    upper_y_lim: 120
+    lower_y_lim: 1
+    upper_y_lim: 90
     exclude:
       - SWAA
     exclude_agents:
@@ -55,11 +88,10 @@ plot_logistic_regression:
 
   double_line_all_data_retrodict_excluding_swaa:
     runs_file: all_runs
-    logistic_file: double_line_all_data
+    logistic_file: headline
     weighting: invsqrt_task_weight
-    categories: ftr
-    regularization: 0.1
     include_task_distribution: none
+    title: "50% Time Horizon Retrodicted from 2023-2024 Data"
 
     trendlines:
       - fit_type: exponential
@@ -73,7 +105,7 @@ plot_logistic_regression:
         data_file: null
         styling:
           linewidth: 2
-          alpha: 0.2
+          alpha: 0.6
           linestyle: solid
       - fit_type: exponential
         skip_annotation: false
@@ -82,27 +114,14 @@ plot_logistic_regression:
           (Fit on 2023 onwards GA + RE data ONLY)
         after_date: "2023-01-01"
         color: blue
-        line_start_date: "2023-01-01"
+        line_start_date: "2018-12-01"
         line_end_date: "2025-07-01"
         display_r_squared: false
-        data_file: data/wrangled/logistic_fits/single_line_2023_ga_rebench.csv
+        data_file: data/wrangled/logistic_fits/ga_rebench.csv
         styling:
           linewidth: 2
           alpha: 0.6
-          linestyle: dashed
-      - fit_type: exponential
-        skip_annotation: true
-        caption: Fuzzy Extension of Retrodiction Fit
-        after_date: "2023-01-01"
-        color: blue
-        line_start_date: "2018-12-01"
-        line_end_date: "2023-01-01"
-        display_r_squared: false
-        data_file: data/wrangled/logistic_fits/single_line_2023_ga_rebench.csv
-        styling:
-          linewidth: 4
-          alpha: 0.2
-          linestyle: "dotted"
+          linestyle: solid
     exclude:
       - "SWAA"
     exclude_agents:
@@ -112,53 +131,36 @@ plot_logistic_regression:
     x_lim_start: "2018-09-03"
     x_lim_end: "2025-11-06"
 
-  double_line_all_data:
-    runs_file: all_runs
-    logistic_file: headline
-    trendlines:
-      - fit_type: exponential
-        skip_annotation: false
-        caption: null
-        after_date: "2019-01-01"
-        color: blue
-        line_start_date: "2018-12-01"
-        line_end_date: "2027-01-01"
-        display_r_squared: true
-        data_file: null
-        styling: null
-      - fit_type: exponential
-        skip_annotation: false
-        caption: null
-        after_date: "2024-01-01"
-        color: red
-        line_start_date: "2023-08-01"
-        line_end_date: "2027-01-01"
-        display_r_squared: true
-        data_file: null
-        styling: null
-    include_task_distribution: none
-    weighting: invsqrt_task_weight
-    x_lim_start: "2018-09-03"
-    x_lim_end: "2027-01-01"
-    exclude: []
-    lower_y_lim: 0.0083333 # 0.5 seconds
-    upper_y_lim: 11530 # 8 days
-    exclude_agents:
-      - GPT-4 0125
 
   swe_bench:
     runs_file: swe_bench_runs
     logistic_file: swe_bench
     weighting: invsqrt_task_weight
-    regularization: 0.1
+    include_task_distribution: none
+    title: "Time Horizon for SWE-Bench Verified Tasks"
+    trendlines:
+      - fit_type: exponential
+        skip_annotation: false
+        caption: null
+        after_date: "2023-01-01"
+        color: blue
+        line_start_date: "2023-01-01"
+        line_end_date: "2025-03-14"
+        display_r_squared: true
+        data_file: null
+        styling: null
+    x_lim_start: "2023-01-01"
+    x_lim_end: "2025-03-14"
+    lower_y_lim: 0.05
+    upper_y_lim: 240
+    exclude_agents: []
+    exclude: []
 
 plot_individual_histograms:
   no_swaa:
     annotate_p50: true
-    logistic_file: "data/wrangled/logistic_fits/single_line_2023_ga_rebench.csv"
+    logistic_file: "data/wrangled/logistic_fits/ga_rebench.csv"
     weighting: "invsqrt_task_weight"
-    regularization: 0.1
-    categories: "ftr"
     n_bins: 10
     n_subplot_cols: 3
     horizontal_lines:
@@ -190,10 +192,9 @@ plot_individual_histograms:
 
   default:
     annotate_p50: true
-    logistic_file: "data/wrangled/logistic_fits/double_line_all_data.csv"
+    logistic_file: "data/wrangled/logistic_fits/headline.csv"
     weighting: "invsqrt_task_weight"
-    regularization: 0.1
-    categories: "ftr"
+    title: "Length of tasks AI agents have been able to complete autonomously"
     n_bins: 10
     n_subplot_cols: 3
     horizontal_lines:
@@ -216,15 +217,27 @@ plot_individual_histograms:
       - o1-preview
       - GPT-4o
       - GPT-4 Turbo
-      #- GPT-4 1106
+      - GPT-4 1106
       - GPT-4 0314
       - gpt-3.5-turbo-instruct
       - davinci-002 (GPT-3)
       - GPT-2
 
-plot_logistic_multiverse:
-  exclude_agents:
-    - GPT-4 0125
+
+plot_multiverse_boxplot:
   weightings: ["equal_task_weight", "invsqrt_task_weight"]
-  regularizations: [0.1, 0.05, 0.02, 0.01]
+  regularizations: [0.2, 0.1, 0.05, 0.02, 0.01]
   categories: "ftr"
+  include_agents:
+    - Claude 3.5 Sonnet (New)
+    - Claude 3.5 Sonnet (Old)
+    - Claude 3 Opus
+    - o1
+    - o1-preview
+    - GPT-4o
+    - GPT-4 Turbo
+    - GPT-4 1106
+    - GPT-4 0314
+    - gpt-3.5-turbo-instruct
+    - davinci-002 (GPT-3)
+    - GPT-2

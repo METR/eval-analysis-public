@@ -49,6 +49,8 @@ def _darken_color(color: str, factor: float = 0.7) -> tuple[float, float, float]
 
 
 def _get_title(script_params: ScriptParams) -> str:
+    if "title" in script_params:
+        return script_params["title"]
     # Get included task groups
     task_group_names = ["General Autonomy", "SWAA", "RE-Bench"]
     included_task_groups = []
