@@ -1,0 +1,79 @@
+schema: '2.0'
+stages:
+  generate_task_summaries:
+    cmd:
+    - '[ -d /tmp/tasks ] || git clone https://github.com/METR/mp4-tasks /tmp/tasks
+      && cd /tmp/tasks && git fetch && git checkout d812bf99df7bda430e329646d75d1daedb46f14b'
+    - python -m src.task_summaries --task-repo-dir=/tmp/tasks --few-shot-examples=data/summary_examples.txt
+      --model=claude-3-7-sonnet-20250219 --output-path=data/task_summaries.yaml
+    deps:
+    - path: data/summary_examples.txt
+      hash: md5
+      md5: 7ff8ff3dcec492c393a7b3ad46138ba6
+      size: 33010
+    - path: params.yaml
+      hash: md5
+      md5: 7fa71093f39c0a2d210213727f526395
+      size: 127
+    - path: src/task_summaries.py
+      hash: md5
+      md5: 0026e417069938a88735b5f136bd2e82
+      size: 10297
+    outs:
+    - path: data/task_summaries.yaml
+      hash: md5
+      md5: 358669faedfb4450de6c70efda331968
+      size: 30965
+  generate_latex_tables:
+    cmd:
+    - '[ -d /tmp/tasks ] || git clone https://github.com/METR/mp4-tasks /tmp/tasks
+      && cd /tmp/tasks && git fetch && git checkout d812bf99df7bda430e329646d75d1daedb46f14b'
+    - python -m src.generate_latex_tables --task-repo-dir=/tmp/tasks --difficulty-file=../../data/external/task_difficulty.yaml
+      --blueprint-file=../../data/external/blueprints/benchmark.yaml --labels-file=../../data/external/family_labels.yaml
+      --summaries-file=data/task_summaries.yaml --output-dir=tables
+    deps:
+    - path: ../../data/external/blueprints/benchmark.yaml
+      hash: md5
+      md5: ecf5792869a9c291dabe32fc0e9cab37
+      size: 10338
+    - path: ../../data/external/family_labels.yaml
+      hash: md5
+      md5: a94532858a939057d701c17ba8d50b14
+      size: 28279
+    - path: ../../data/external/task_difficulty.yaml
+      hash: md5
+      md5: 00104eab777f957ce6b637a4f525b414
+      size: 79798
+    - path: data/task_summaries.yaml
+      hash: md5
+      md5: 358669faedfb4450de6c70efda331968
+      size: 30965
+    - path: params.yaml
+      hash: md5
+      md5: 7fa71093f39c0a2d210213727f526395
+      size: 127
+    - path: src/generate_latex_tables.py
+      hash: md5
+      md5: 839630bdb7893db5cd75aacca753f2a6
+      size: 23547
+    outs:
+    - path: tables/category_distribution_table.tex
+      hash: md5
+      md5: ea677db8e6eb7994935d87900bf15b16
+      size: 1465
+    - path: tables/contamination_distribution_table.tex
+      hash: md5
+      md5: b96761e9faafcc1f6aae9ca6a5662d86
+      size: 791
+    - path: tables/expertise_distribution_table.tex
+      hash: md5
+      md5: d8e3a9c2600c9e8aaa5beeaddcef86e9
+      size: 602
+    - path: tables/family_summary_table.tex
+      hash: md5
+      md5: 0220ff71f762e58db6db8514a29f732d
+      size: 27623
+    - path: tables/qualitative_properties_table.tex
+      hash: md5
+      md5: 56700ddcbbd9794a3f9413527a4eb4f8
+      size: 708

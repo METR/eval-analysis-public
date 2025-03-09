@@ -1,5 +1,5 @@
 GA:
-  num_runs_all_agents: 9696
+  num_runs_all_agents: 9697
   num_tasks_with_baselines: 77
   num_tasks_with_estimates: 20
   num_unique_tasks: 97
@@ -13,5 +13,5 @@ SWAA:
   num_tasks_with_baselines: 66
   num_tasks_with_estimates: 0
   num_unique_tasks: 66
-total_runs: 17379
+total_runs: 17380
 unique_tasks: 170

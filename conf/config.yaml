@@ -11,7 +11,7 @@ weighting:
   - weight_col: equal_task_weight
     graph_snippet: Equally weighted tasks
   - weight_col: invsqrt_task_weight
-    graph_snippet: Tasks diversity-weighted (1/sqrt(# tasks in family))
+    graph_snippet: Tasks diversity-weighted
   - weight_col: null
     graph_snippet: "None"
 
@@ -31,7 +31,7 @@ rebench_best_of_k_parameters:
   max_time_limit_in_seconds: 36000
 
 plots:
-  suptitle_fontsize: 18
+  suptitle_fontsize: 14
   xlabelpad: 10
   ylabelpad: 10
   ax_label_fontsize: 14
