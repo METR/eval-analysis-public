@@ -1,0 +1,26 @@
+predicted_date:
+  Bootstrap:
+    ci_width_years: 1.837
+    q10: 2029-02-12
+    q50: 2030-01-01
+    q90: 2030-12-15
+  IID Baseline Noise:
+    ci_width_years: 0.123
+    q10: 2029-10-13
+    q50: 2029-11-02
+    q90: 2029-11-27
+  Leave-one-out:
+    ci_width_years: 0.23
+    q10: 2029-11-29
+    q50: 2030-01-30
+    q90: 2030-02-21
+  Total:
+    ci_width_years: 2.188
+    q10: 2028-07-27
+    q50: 2029-08-26
+    q90: 2030-10-04
+  Weighting/ Regularization:
+    ci_width_years: 0.203
+    q10: 2029-11-21
+    q50: 2029-12-13
+    q90: 2030-02-03

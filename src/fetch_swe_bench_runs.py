@@ -155,7 +155,7 @@ def main() -> None:
         "Claude 3.5 Sonnet (New)": "20241029_OpenHands-CodeAct-2.1-sonnet-20241022",
         "o1": "20250117_wandb_programmer_o1_crosscheck5",
         "GPT-4o": "20241028_agentless-1.5_gpt4o",
-        "gpt-4-1106-preview": "20240402_sweagent_gpt4",
+        "GPT-4 1106": "20240402_sweagent_gpt4",
     }
 
     time_estimates = get_time_estimates(args.annotations)
@@ -240,6 +240,7 @@ def main() -> None:
                 abs(df["invsqrt_task_weight"].sum() - 1) < 1e-6
             ), "invsqrt_task_weight sum is not close to 1"
             # write each row as a json object
+            df["task_source"] = "swe_bench"
             for _, row in df.iterrows():
                 f.write(json.dumps(row.to_dict()) + "\n")
 

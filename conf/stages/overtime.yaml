@@ -1,6 +1,3 @@
-wrangle_bar_by_time_allocation:
-  time_limits: [36000]
-
 plot_bar_chart_weighted_scores:
   focus_agents:
     - Claude 3 Opus

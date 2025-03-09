@@ -60,33 +60,34 @@ def add_bootstrap_confidence_region(
 
     # Calculate predictions for each bootstrap sample
     for sample_idx in range(n_bootstraps):
-        # Create a DataFrame for this bootstrap sample
-        sample_data = []
+        # Collect valid p50 values and dates for this sample
+        valid_p50s = []
+        valid_dates = []
+
         for agent in focus_agents:
-            if agent not in bootstrap_results.columns:
+            if f"{agent}_p50" not in bootstrap_results.columns:
                 continue
+
             p50 = pd.to_numeric(
-                bootstrap_results[agent].iloc[sample_idx], errors="coerce"
-            )
-            if pd.isna(p50) or np.isinf(p50) or p50 < 1e-3:
-                continue
-            sample_data.append(
-                {
-                    "agent": agent,
-                    "release_date": dates[agent],
-                    "50%": p50,
-                    "50_low": p50,
-                    "50_high": p50,
-                }
+                bootstrap_results[f"{agent}_p50"].iloc[sample_idx], errors="coerce"
             )
 
-        sample_df = pd.DataFrame(sample_data)
-        if len(sample_df) < 2:
+            if pd.isna(p50) or np.isinf(p50) or p50 < 1e-3:
+                continue
+
+            valid_p50s.append(p50)
+            valid_dates.append(dates[agent])
+
+        if len(valid_p50s) < 2:
             continue
 
         # Fit exponential trend
         try:
-            reg, _ = fit_trendline(sample_df, after_date, log_scale=True)
+            reg, _ = fit_trendline(
+                pd.Series(valid_p50s),
+                pd.Series(pd.to_datetime(valid_dates)),
+                log_scale=True,
+            )
             time_x = date2num(time_points)
             predictions[sample_idx] = np.exp(reg.predict(time_x.reshape(-1, 1)))
             slope = reg.coef_[0]
@@ -148,8 +149,12 @@ def main() -> None:
             break
     else:
         raise ValueError(f"Weighting {script_params['weighting']} not found")
-    subtitle = weighting["graph_snippet"]
-    title = _get_title(script_params)
+    subtitle = (
+        weighting["graph_snippet"]
+        if "subtitle" not in script_params
+        else script_params["subtitle"]
+    )
+    title = _get_title(script_params, script_params.get("success_percent", 50))
 
     # Create plot with two subplots
     if script_params.get("show_boxplot", False):
@@ -175,27 +180,38 @@ def main() -> None:
         trendlines=None,
         exclude_agents=script_params["exclude_agents"],
         fig=fig,
+        success_percent=script_params.get("success_percent", 50),
     )
 
     # Add trendline from agent_summaries
     reg, score = fit_trendline(
-        agent_summaries=agent_summaries,
-        after="2019-01-01",
+        agent_summaries[f"p{script_params.get('success_percent', 50)}"],
+        pd.to_datetime(agent_summaries["release_date"]),
         log_scale=True,
-        method="OLS",
+    )
+    dashed_outside = (
+        agent_summaries["release_date"].min(),
+        agent_summaries["release_date"].max(),
     )
     plot_trendline(
         ax=axs[0],
-        agent_summaries=agent_summaries,
+        dashed_outside=dashed_outside,
         plot_params=plot_params,
-        after="2019-01-01",
+        trendline_params={
+            "after_date": "2019-01-01",
+            "color": "blue",
+            "line_start_date": None,
+            "line_end_date": script_params["x_lim_end"],
+            "display_r_squared": True,
+            "data_file": None,
+            "styling": None,
+            "caption": None,
+            "skip_annotation": False,
+            "fit_type": "exponential",
+        },
         reg=reg,
         score=score,
-        line_end_date=script_params["x_lim_end"],
         log_scale=True,
-        annotate=False,
-        fit_type="exponential",
-        fit_color="black",
         method="OLS",
     )
 

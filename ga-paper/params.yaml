@@ -1,0 +1,4 @@
+tasks_repo:
+  url: https://github.com/METR/mp4-tasks
+  branch: main
+  rev: d812bf99df7bda430e329646d75d1daedb46f14b # At #1444
