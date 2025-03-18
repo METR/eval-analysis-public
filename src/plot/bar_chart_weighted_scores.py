@@ -13,7 +13,7 @@ from matplotlib.figure import Figure
 from matplotlib.ticker import FuncFormatter
 
 import src.utils.plots
-from src.plot.logistic import ScriptParams
+from src.utils.plots import ScriptParams
 
 
 def _get_title(script_params: ScriptParams) -> str:
@@ -77,7 +77,7 @@ def plot_weighted_scores(
 
     # Create figure with appropriate width
     fig, ax = plt.subplots(
-        figsize=(max(7, 0.8 * len(agent_ordering)), 5),
+        figsize=(10, 5),
         tight_layout=True,
     )
 
@@ -153,9 +153,9 @@ def main() -> None:
     logging.info("Loaded release dates")
 
     # Load plot parameters
-    params = dvc.api.params_show("public/params.yaml", deps=True)
+    params = dvc.api.params_show(stages="plot_bar_chart_weighted_scores", deps=True)
 
-    stage_params = params["stages"]["plot_bar_chart_weighted_scores"]
+    stage_params = params["figs"]["plot_bar_chart_weighted_scores"][args.fig_name]
 
     # print(f"focusing on {stage_params.get('focus_agents')}")
 

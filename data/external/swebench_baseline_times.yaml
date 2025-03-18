@@ -1,0 +1,20 @@
+buckets:
+  - under_15m:
+    time_minutes:
+      - 67
+      - 84
+      - 26
+      - 8
+  - 15m_to_1h:
+    time_minutes:
+      - 40.5
+      - 110
+      - 208.9
+  - 1h_to_4h:
+    time_minutes:
+      - 125
+      - 120
+      - 150
+sources:
+  - https://docs.google.com/document/d/1NafGLWrVpQzITbEbb9Mde4Jzk-eZC1iL6MRCpefG8fw/edit
+  - https://docs.google.com/spreadsheets/d/16PnxeC4E2iDqMnvjEZkszvGwHtHlui7cMF3NzbYFiDc/edit

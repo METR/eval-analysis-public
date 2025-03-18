@@ -3,9 +3,9 @@ import logging
 import pathlib
 from typing import Sequence
 
+import dvc.api
 import numpy as np
 import pandas as pd
-import yaml
 from matplotlib import pyplot as plt
 from scipy.special import expit
 
@@ -149,7 +149,8 @@ def main() -> None:
         format="%(asctime)s - %(levelname)s - %(message)s",
     )
 
-    params = yaml.safe_load(open(args.params_file))
+    params = dvc.api.params_show(stages="plot_individual_binned_residuals", deps=True)
+    # Shares params with plot_individual_histograms stage
     fig_params = params["figs"]["plot_individual_histograms"][
         args.script_parameter_group
     ]

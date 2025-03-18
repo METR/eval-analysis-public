@@ -1,19 +1,19 @@
 import argparse
 import logging
 import pathlib
-from typing import Literal, Sequence
+from typing import Any, Literal, Sequence
 
+import dvc.api
 import matplotlib.axes
 import numpy as np
 import pandas as pd
-import yaml
 from matplotlib import pyplot as plt
 from matplotlib.colors import to_rgb
 from scipy.special import expit
 from typing_extensions import TypedDict
 
 import src.utils.plots
-from src.utils.plots import format_time_label
+from src.utils.plots import format_time_label, logarithmic_ticks
 
 
 class horizontalLineStyling(TypedDict):
@@ -34,7 +34,6 @@ class ScriptParams(TypedDict):
     weighting: str
     regularization: float
     categories: str
-    n_bins: int
     n_subplot_cols: int
     horizontal_lines: list[HorizontalLine]
     annotate_p50: bool
@@ -49,6 +48,8 @@ def _darken_color(color: str, factor: float = 0.7) -> tuple[float, float, float]
 
 
 def _get_title(script_params: ScriptParams) -> str:
+    if "title" in script_params:
+        return script_params["title"]
     # Get included task groups
     task_group_names = ["General Autonomy", "SWAA", "RE-Bench"]
     included_task_groups = []
@@ -108,6 +109,17 @@ def _remove_excluded_task_groups(
     return all_runs
 
 
+def _get_logarithmic_bins(
+    all_agents_min_time: float, all_agents_max_time: float
+) -> np.ndarray[Any, np.dtype[np.float64]]:
+    """Get bins, enforcing that they are a subset of the xticks bins"""
+    bins = logarithmic_ticks[
+        (logarithmic_ticks >= all_agents_min_time)
+        & (logarithmic_ticks <= all_agents_max_time)
+    ]
+    return np.array(bins)
+
+
 def plot_logistic_regression_on_histogram(
     plot_params: src.utils.plots.PlotParams,
     agent_summaries: pd.DataFrame,
@@ -146,7 +158,12 @@ def plot_logistic_regression_on_histogram(
         fontsize=plot_params["suptitle_fontsize"],
         y=1.0,
     )
-    axes = axes.flatten()  # Flatten to make indexing easier
+
+    # Turn axes into a 1D array, regardless of its current shape
+    if hasattr(axes, "flatten"):
+        axes = axes.flatten()  # Flatten to make indexing easier
+    elif not hasattr(axes, "__len__"):
+        axes = [axes]
 
     all_agents_min_time, all_agents_max_time = _get_all_agents_min_max_time(
         all_runs, focus_agents
@@ -171,11 +188,7 @@ def plot_logistic_regression_on_histogram(
         task_weights = agent_runs[script_params["weighting"]]
 
         # Create log-spaced bins for histogram
-        bins = np.logspace(
-            np.log10(all_agents_min_time),
-            np.log10(all_agents_max_time),
-            script_params["n_bins"],
-        )
+        bins = _get_logarithmic_bins(all_agents_min_time, all_agents_max_time)
 
         # Calculate success rates for each bin using numpy's histogram, and weighted by weight column
         weighted_counts_success, _ = np.histogram(
@@ -353,7 +366,7 @@ def main() -> None:
         format="%(asctime)s - %(levelname)s - %(message)s",
     )
 
-    params = yaml.safe_load(open(args.params_file))
+    params = dvc.api.params_show(stages="plot_individual_histograms", deps=True)
     fig_params = params["figs"]["plot_individual_histograms"][
         args.script_parameter_group
     ]

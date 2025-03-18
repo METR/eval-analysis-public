@@ -12,11 +12,12 @@ axes.labelsize: 12
 axes.titlesize: 16
 xtick.labelsize: 11
 ytick.labelsize: 11
+legend.title_fontsize: 12
 legend.fontsize: 11
 figure.titlesize: 16
 figure.labelsize: 12
 # Make images larger and higher resolution
-figure.figsize: 7, 5
+figure.figsize: 10, 6
 figure.dpi: 150
 # Set figure facecolor to white
 figure.facecolor: white

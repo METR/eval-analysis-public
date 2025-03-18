@@ -3,10 +3,9 @@ from __future__ import annotations
 import argparse
 import logging
 import pathlib
-from typing import Any, Callable, cast
+from typing import Any
 
 import dvc.api
-import matplotlib.axes
 import matplotlib.dates as mdates
 import numpy as np
 import pandas as pd
@@ -14,14 +13,20 @@ import yaml
 from matplotlib import markers
 from matplotlib import pyplot as plt
 from matplotlib.axes import Axes
-from matplotlib.dates import date2num, num2date
+from matplotlib.dates import date2num
 from matplotlib.figure import Figure
 from numpy.typing import NDArray
+from scipy.optimize import curve_fit
 from sklearn.linear_model import LinearRegression
 from typing_extensions import Literal
 
 import src.utils.plots
-from src.utils.plots import ScriptParams, TrendlineParams
+from src.plot.logistic import (
+    FitFunctionWrapper,
+    ScriptParams,
+    TrendlineParams,
+    plot_trendline,
+)
 
 
 def _get_title(script_params: ScriptParams, success_percent: int) -> str:
@@ -38,87 +43,6 @@ def _get_title(script_params: ScriptParams, success_percent: int) -> str:
     task_groups_string = " + ".join(included_task_groups)
     title = f"{success_percent}% Time Horizon for {task_groups_string} Tasks"
     return title
-
-
-def _remove_excluded_task_groups(
-    all_runs: pd.DataFrame, script_params: ScriptParams
-) -> pd.DataFrame:
-    # Exclude tasks from runs_df
-    if "General Autonomy" in script_params["exclude"]:
-        raise ValueError(
-            "Exclusion of general autonomy has not been implemented in logistic.py, panic"
-        )
-
-    if "SWAA" in script_params["exclude"]:
-        if "run_id" not in all_runs.columns:
-            raise ValueError(
-                "Trying to exclude SWAA, which needs run_id column, but runs_df does not have run_id column"
-            )
-        all_runs = all_runs[
-            ~all_runs["run_id"].astype(str).str.contains("small_tasks_")
-        ]
-
-    if "RE-Bench" in script_params["exclude"]:
-        all_runs = all_runs[~all_runs["task_id"].astype(str).str.contains("ai_rd_")]
-    return all_runs
-
-
-def plot_task_distribution(
-    ax: matplotlib.axes.Axes,
-    runs_df: pd.DataFrame,
-    plot_params: src.utils.plots.PlotParams,
-    weight_key: str,
-) -> None:
-    """Plot a vertical histogram of the human time estimates for each run."""
-
-    # Because we're plotting the distribution of tasks, equal_task_weight is equivalent to no weight
-    use_weighting = weight_key == "invsqrt_task_weight"
-
-    data = runs_df.groupby("task_id")["human_minutes"].first().to_numpy()
-    # Make sure we use the same size bins regardless of the range we're plotting
-    log_bins = np.arange(np.log10(1 / 60), np.log10(data.max()), 0.2)
-    bins = (10**log_bins).tolist()
-
-    if use_weighting:
-        # TODO fails if agents are run different numbers of times
-        weights = runs_df.groupby("task_id")[weight_key].sum().to_numpy()
-        # Multiply data by total weight to get the weighted number of tasks
-        ax.hist(
-            data,
-            bins=bins,  # type: ignore
-            weights=weights,
-            orientation="horizontal",
-            **plot_params["task_distribution_styling"]["hist"],
-        )  # type: ignore
-        ax.set_xlabel(
-            "Number of tasks\n(Weighted)",
-            fontsize=plot_params["ax_label_fontsize"],
-            labelpad=plot_params["xlabelpad"],
-        )
-        ax.set_xticks([])  # With weighting, absolute number of runs isn't meaningful
-    else:
-        ax.hist(
-            data,
-            bins=bins,  # type: ignore
-            orientation="horizontal",
-            **plot_params["task_distribution_styling"]["hist"],
-        )  # type: ignore
-        ax.set_xlabel(
-            "Number of tasks",
-            fontsize=plot_params["ax_label_fontsize"],
-            labelpad=plot_params["xlabelpad"],
-        )
-
-    ax.grid(**plot_params["task_distribution_styling"]["grid"])
-
-    ax.set_yscale("log")
-    ax.set_yticks([])  # y ticks will be shown in main plot
-
-    ax.set_title(
-        "Task Distribution",
-        fontsize=plot_params["title_fontsize"],
-        pad=plot_params["xlabelpad"],
-    )
 
 
 def setup_fig(include_horizon_graph: bool) -> tuple[plt.Figure, Axes, Axes | None]:  # type: ignore
@@ -147,9 +71,9 @@ def plot_horizon_graph(
     weight_key: str,
     exclude_agents: list[str],
     success_percent: int,
-    script_params: ScriptParams | None = None,
     trendlines: list[TrendlineParams] | None = None,
     upper_y_lim: float | None = None,
+    legend: bool = True,
     include_task_distribution: str = "none",
     fig: Figure | None = None,
     y_scale: Literal["log", "linear"] = "log",
@@ -166,11 +90,7 @@ def plot_horizon_graph(
     if trendlines is None:
         trendlines = []
 
-    if fig is None:
-        fig, ax, ax_hist = setup_fig(include_task_distribution != "none")
-    else:
-        ax = fig.axes[0]
-        ax_hist = None
+    fig, ax, ax_hist = setup_fig(False)
 
     ax.set_ylim(lower_y_lim, upper_y_lim)
 
@@ -229,29 +149,21 @@ def plot_horizon_graph(
     annotations = []
 
     for trendline in trendlines:
+        assert (
+            "data_file" not in trendline
+        ), "data_file is not supported for alternative fits"
+        data = agent_summaries
+        print(f"fitting on {len(data)} models")
+        y, x = data[f"p{success_percent}"], pd.to_datetime(data["release_date"])
         if trendline["fit_type"] == "linear":
-            log_scale = False
+            reg, score = fit_trendline(y, x, log_scale=False)
         elif trendline["fit_type"] == "exponential":
-            log_scale = True
+            reg, score = fit_trendline(y, x, log_scale=True)
+        elif trendline["fit_type"] == "hyperbolic":
+            reg, score = fit_trendline_hyperbolic(y, x)
         else:
             raise ValueError(f"Invalid fit type: {trendline['fit_type']}")
 
-        if trendline["data_file"] is not None:
-            data_file = trendline["data_file"]
-            data = pd.read_csv(data_file)
-        else:
-            data = agent_summaries
-        data = _process_agent_summaries(
-            exclude_agents, data, release_dates, after_date=trendline["after_date"]
-        )
-
-        print(f"fitting on {len(data)} models")
-        trendline_success_percent = trendline.get("success_percent", success_percent)
-        reg, score = fit_trendline(
-            data[f"p{trendline_success_percent}"],
-            pd.to_datetime(data["release_date"]),
-            log_scale=log_scale,
-        )
         dashed_outside = (data["release_date"].min(), data["release_date"].max())
         annotations.append(
             plot_trendline(
@@ -261,33 +173,14 @@ def plot_horizon_graph(
                 dashed_outside=dashed_outside,
                 reg=reg,
                 score=score,
-                log_scale=log_scale,
+                log_scale=trendline["fit_type"] != "linear",
             )
         )
 
-    if include_task_distribution != "none":
-        assert ax_hist is not None
-        plot_task_distribution(ax_hist, runs_df, plot_params, weight_key)
-
-    if include_task_distribution == "full":
-        assert ax_hist is not None
-        assert ax is not None
-        # y limits are determined by the histogram
-        hist_low, hist_high = ax_hist.get_ylim()
-        scat_low, scat_high = ax.get_ylim()
-        ax.set_ylim(min(hist_low, scat_low), max(hist_high, scat_high))
-
-    elif include_task_distribution == "clipped":
-        assert ax_hist is not None
-        assert ax is not None
-        # y limits are determined by the main plot
-        ax_hist.set_ylim(ax.get_ylim())
-
-    src.utils.plots.make_y_axis(ax, scale=y_scale, script_params=script_params)
+    src.utils.plots.make_y_axis(ax, scale=y_scale)
     start_year = pd.Timestamp(x_lim_start).year
     end_year = pd.Timestamp(x_lim_end).year + 1
-    xticks_skip = script_params.get("xticks_skip", 1) if script_params else 1
-    src.utils.plots.make_quarterly_xticks(ax, start_year, end_year, skip=xticks_skip)
+    src.utils.plots.make_quarterly_xticks(ax, start_year, end_year)
 
     ax.set_xlim(
         float(mdates.date2num(pd.Timestamp(x_lim_start))),
@@ -295,47 +188,21 @@ def plot_horizon_graph(
     )
 
     ax.set_xlabel(
-        cast(
-            str,
-            script_params.get("xlabel", "Model release date")
-            if script_params
-            else "Model release date",
-        ),
-        fontsize=script_params.get(
-            "ax_label_fontsize", plot_params["ax_label_fontsize"]
-        )
-        if script_params
-        else plot_params["ax_label_fontsize"],
+        "Date model was released",
+        fontsize=plot_params["ax_label_fontsize"],
         labelpad=plot_params["xlabelpad"],
     )
     ax.set_ylabel(
-        cast(
-            str,
-            script_params.get(
-                "ylabel",
-                f"Task time (for humans) that model completes with \n{success_percent}% success rate",
-            )
-            if script_params
-            else f"Task time (for humans) that model completes with \n{success_percent}% success rate",
-        ),
-        fontsize=script_params.get(
-            "ax_label_fontsize", plot_params["ax_label_fontsize"]
-        )
-        if script_params
-        else plot_params["ax_label_fontsize"],
+        f"Task time (for humans) that model completes with \n{success_percent}% success rate",
+        fontsize=plot_params["ax_label_fontsize"],
         labelpad=plot_params["ylabelpad"],
     )
     ax.set_title(
         title,
-        fontsize=script_params.get("title_fontsize", plot_params["title_fontsize"])
-        if script_params
-        else plot_params["title_fontsize"],
+        fontsize=plot_params["title_fontsize"],
         pad=3 * plot_params["xlabelpad"],
     )
-    if subtitle:
-        plt.suptitle(
-            subtitle, y=0.93, x=0.51, fontsize=plot_params["suptitle_fontsize"]
-        )
+    plt.suptitle(subtitle, y=0.93, x=0.51, fontsize=plot_params["suptitle_fontsize"])
 
     # The graph is too busy if we have both trendlines and legend
     # if not trendlines:
@@ -343,6 +210,7 @@ def plot_horizon_graph(
     available_agents = [
         agent for agent in plot_params["legend_order"] if agent in legend_labels
     ]
+
     # Sort handles and labels based on the filtered order
     sorted_pairs = sorted(
         zip(legend_handles, legend_labels),
@@ -350,12 +218,14 @@ def plot_horizon_graph(
     )
     legend_handles, legend_labels = zip(*sorted_pairs)
 
-    ax.legend(
-        legend_handles,
-        legend_labels,
-        loc="best",
-        fontsize=script_params.get("legend_fontsize", 12) if script_params else 12,
-    )
+    if legend:
+        print(f"legend_handles: {legend_handles}")
+        ax.legend(
+            legend_handles,
+            legend_labels,
+            loc="best",
+            fontsize=10,
+        )
 
     # Lay the annotations we collected earlier, ensuring they don't overlap
     padding = 10
@@ -409,112 +279,52 @@ def fit_trendline(
     return reg, score
 
 
-class FitFunctionWrapper:
-    def __init__(self, func: Callable[..., NDArray[Any]], params: list[Any]):
-        self.func = func
-        self.params = params
-
-    def predict(self, x: NDArray[Any]) -> NDArray[Any]:
-        return self.func(x, *self.params)
+def r2_score(y_pred: NDArray[Any], y_true: NDArray[Any]) -> float:
+    residuals = y_true - y_pred
+    ss_res = np.sum(residuals**2)
+    ss_tot = np.sum((y_true - np.mean(y_true)) ** 2)
+    return 1 - (ss_res / ss_tot)
 
 
-def plot_trendline(
-    ax: Axes,
-    plot_params: src.utils.plots.PlotParams,
-    trendline_params: TrendlineParams,
-    dashed_outside: tuple[pd.Timestamp, pd.Timestamp] | None,
-    reg: LinearRegression | FitFunctionWrapper,
-    score: float,
-    log_scale: bool = False,
-    method: str = "OLS",
-    plot_kwargs: dict[str, Any] = {},
-) -> dict[str, Any] | float | None:
-    """Plot a trendline showing the relationship between release date and time horizon."""
-    trendline_styling = plot_params["performance_over_time_trendline_styling"]
+def fit_trendline_hyperbolic(
+    agent_horizons: pd.Series[float],
+    release_dates: pd.Series[pd.Timestamp],
+) -> tuple[FitFunctionWrapper, float]:
+    """Fit a hyperbolic trendline showing the relationship between release date and time horizon.
 
-    # Extract values from trendline_params
-    after = trendline_params["after_date"]
-    fit_color = trendline_params.get("color", None)
-    line_start_date = trendline_params.get("line_start_date", None)
-    line_end_date = trendline_params["line_end_date"]
-    display_r_squared = trendline_params.get("display_r_squared", False)
-    caption = trendline_params.get("caption", None)
-    styling = trendline_params.get("styling", None)
-    skip_annotation = trendline_params.get("skip_annotation", False)
-    fit_type = trendline_params["fit_type"]
+    Args:
+        agent_horizons: Series containing the time horizons for each agent
+        release_dates: Series containing the release dates for each agent
 
-    # trendline goes to the end of the x-axis
-    start_date = (
-        pd.Timestamp(after)
-        if line_start_date is None
-        else pd.Timestamp(line_start_date)
+    Returns:
+        A tuple containing the fitted FitFunctionWrapper model and the R^2 score
+    """
+
+    def hyperbolic_func(
+        x: NDArray[Any], a: NDArray[Any], t_agi: NDArray[Any]
+    ) -> NDArray[Any]:
+        """Hyperbolic function for fitting in log space"""
+        return np.log(a / (t_agi - x))
+
+    # Convert dates to numeric format for regression
+    X = np.array([date2num(d) for d in release_dates]).reshape(-1, 1)
+    y = np.log(agent_horizons.clip(lower=np.finfo(float).eps))
+
+    # Fit the hyperbolic function
+    bounds = ([0, X.max()], [np.inf, np.inf])
+    params, _ = curve_fit(
+        hyperbolic_func, X.flatten(), y, bounds=bounds, p0=[5, max(X.flatten()) + 10]
     )
-    end_date = pd.Timestamp(line_end_date)
 
-    if fit_type == "auto":
-        fit_type = "exponential" if log_scale else "linear"
+    # Create wrapper for predictions
+    model = FitFunctionWrapper(hyperbolic_func, list(params))
 
-    if fit_color is None:
-        fit_color = trendline_styling[fit_type]["line"]["color"]
-
-    fit_styling = trendline_styling[fit_type]
-    fit_styling["line"]["color"] = fit_color
-    # Plot trendline
-    pk = {
-        **fit_styling["line"],
-    } | plot_kwargs
-    if styling is not None:
-        pk.update(styling)
-
-    x_range = np.linspace(date2num(start_date), date2num(end_date), 120)
-    y_pred = reg.predict(x_range.reshape(-1, 1))
-
-    x_dates = np.array(num2date(x_range))
-    y_values = np.exp(y_pred) if log_scale else y_pred  # Convert back from log scale
-
-    if dashed_outside is None:
-        ax.plot(x_dates, y_values, **pk)
-    else:
-        dashed_masks = [
-            date2num(x_dates) < date2num(dashed_outside[0]),
-            date2num(x_dates) > date2num(dashed_outside[1]),
-        ]
-
-        undashed_mask = np.logical_not(np.logical_or.reduce(dashed_masks))
-
-        for mask in dashed_masks:
-            ax.plot(
-                x_dates[mask],
-                y_values[mask],
-                **(pk | {"linestyle": "dashed", "alpha": 0.4}),
-            )
-        ax.plot(x_dates[undashed_mask], y_values[undashed_mask], **pk)
-
-    if caption is None:
-        caption = ""
-
-    if skip_annotation:
-        return None
-    annotation = caption
-    if fit_type == "exponential":
-        assert isinstance(reg, LinearRegression)
-        doubling_time = 1 / reg.coef_[0] * np.log(2)
-        annotation += f"\nDoubling time: {doubling_time:.0f} days"
-        annotation += "\n" + ("All data" if after == "0000-00-00" else f"{after}+ data")
-    if display_r_squared:
-        annotation += f"\nR²: {score:.2f}"
-
-    annotation_styling = {
-        "color": fit_color,
-        "fontsize": plot_params["annotation_fontsize"],
-    }
-    annotation_styling["color"] = fit_color
-    return dict(
-        text=annotation,
-        transform=ax.get_xaxis_transform(),
-        alpha=1,
-        **annotation_styling,  # type: ignore
-    )
+    # Calculate R^2 score
+    y_pred = model.predict(X.flatten())
+    print(f"y_pred: {y_pred}")
+    print(f"y: {y}")
+    r_squared = r2_score(y_pred, y)
+    return model, float(r_squared)
 
 
 def _process_agent_summaries(
@@ -552,8 +362,10 @@ def main() -> None:
         level=args.log_level.upper(),
         format="%(asctime)s - %(levelname)s - %(message)s",
     )
-    params = dvc.api.params_show(stages="plot_logistic_regression", deps=True)
-    fig_params = params["figs"]["plot_logistic_regression"][args.script_parameter_group]
+    params = dvc.api.params_show(stages="plot_horizon_alternative_fits", deps=True)
+    fig_params = params["figs"]["plot_horizon_alternative_fits"][
+        args.script_parameter_group
+    ]
 
     agent_summaries = pd.read_csv(args.input_file)
     release_dates = yaml.safe_load(args.release_dates.read_text())
@@ -564,7 +376,6 @@ def main() -> None:
     logging.info("Loaded input data")
 
     runs_df = pd.read_json(args.runs_file, lines=True)
-    runs_df = _remove_excluded_task_groups(runs_df, fig_params)
 
     title = _get_title(fig_params, fig_params.get("success_percent", 50))
     subtitle = fig_params.get("subtitle", "")
@@ -585,7 +396,7 @@ def main() -> None:
         trendlines=fig_params["trendlines"],
         exclude_agents=fig_params["exclude_agents"],
         success_percent=fig_params.get("success_percent", 50),
-        script_params=fig_params,
+        legend=False,
     )
 
     src.utils.plots.save_or_open_plot(args.output_file, params["plot_format"])

@@ -47,7 +47,7 @@ def plot_logistic_regression(
     )  # type: ignore[reportArgumentType]
     # Add p50 reference lines if requested
     if show_example_p50:
-        p50 = agent_summaries["50%"].iloc[0]
+        p50 = agent_summaries["p50"].iloc[0]
         ax.vlines(p50, 0, 0.5, color="gray", linestyle="--", alpha=0.5)  # type: ignore[reportArgumentType]
         ax.scatter(p50, 0.5, color="gray", marker="o", alpha=0.8)  # type: ignore[reportArgumentType]
         ax.text(

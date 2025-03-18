@@ -1,7 +1,7 @@
 import argparse
 import logging
 import pathlib
-from typing import Any, Dict, List
+from typing import Any, Dict, List, NotRequired, TypedDict
 
 import dvc.api
 import numpy as np
@@ -11,6 +11,15 @@ from joblib import Parallel, delayed
 from src.utils.logistic import get_x_for_quantile, logistic_regression
 
 logger = logging.getLogger(__name__)
+
+
+class WrangleParams(TypedDict):
+    runs_file: pathlib.Path
+    n_bootstrap: int
+    regularization: float
+    weighting: str
+    success_percents: List[int]
+    score_col: NotRequired[str]
 
 
 def bootstrap_runs_by_task_agent(
@@ -156,6 +165,8 @@ def _process_bootstrap(
     weights_col: str,
     regularization: float,
     rng: np.random.Generator,
+    success_percents: List[int],
+    score_col: str,
 ) -> Dict[str, float]:
     """Helper function to process a single bootstrap iteration."""
     bootstrap_results = {}
@@ -167,7 +178,7 @@ def _process_bootstrap(
 
         # Prepare data for regression
         x = np.log2(agent_data["human_minutes"].values).reshape(-1, 1)
-        y = agent_data["score_binarized"].values
+        y = agent_data[score_col].values
 
         # Get weights if specified
         weights = agent_data[weights_col].values
@@ -179,14 +190,16 @@ def _process_bootstrap(
         model = logistic_regression(
             x, y, sample_weight=weights, regularization=regularization
         )
-        p50 = np.exp2(get_x_for_quantile(model, 0.5)).item()
-        logger.debug(f"{agent_name} p50: {p50}")
-        if np.isnan(p50):
-            logger.warning(
-                f"{agent_name} has nan p50 on bootstrap {bootstrap_idx}; params: {model.coef_}, {model.intercept_}"
-            )
 
-        bootstrap_results[agent_name] = p50
+        for success_percent in success_percents:
+            horizon = np.exp2(get_x_for_quantile(model, success_percent / 100)).item()
+            logger.debug(f"{agent_name} p{success_percent}: {horizon}")
+            if np.isnan(horizon):
+                logger.warning(
+                    f"{agent_name} has nan p{success_percent} on bootstrap {bootstrap_idx}; params: {model.coef_}, {model.intercept_}"
+                )
+
+            bootstrap_results[f"{agent_name}_p{success_percent}"] = horizon
 
     return bootstrap_results
 
@@ -197,6 +210,8 @@ def compute_bootstrap_regressions(
     n_bootstrap: int,
     regularization: float,
     weights_col: str,
+    success_percents: List[int],
+    score_col: str,
 ) -> pd.DataFrame:
     """
     Compute bootstrapped logistic regressions and extract the 50% points.
@@ -223,7 +238,14 @@ def compute_bootstrap_regressions(
             # Create a new random state for each bootstrap iteration
             rng = np.random.default_rng(42 + i)
             result = _process_bootstrap(
-                i, data, categories, weights_col, regularization, rng
+                i,
+                data,
+                categories,
+                weights_col,
+                regularization,
+                rng,
+                success_percents,
+                score_col,
             )
             batch_results.append(result)
         return batch_results
@@ -251,8 +273,10 @@ def main() -> None:
     parser.add_argument("--log-level", type=str, default="INFO")
     args = parser.parse_args()
 
-    params = dvc.api.params_show("public/params.yaml", deps=True)
-    fig_params = params["figs"]["plot_logistic_regression"][args.fig_name]
+    wrangle_params = dvc.api.params_show(
+        stages="wrangle_bootstrap_logistic", deps=True
+    )["figs"]["wrangle_logistic"][args.fig_name]
+    wrangle_params = WrangleParams(**wrangle_params)
 
     logging.basicConfig(
         level=args.log_level.upper(),
@@ -264,15 +288,11 @@ def main() -> None:
     logging.info(f"Loaded {len(data)} runs from {args.runs_file}")
     data.rename(columns={"alias": "agent"}, inplace=True)
 
-    if "exclude" in fig_params and fig_params["exclude"]:
-        if "SWAA" in fig_params["exclude"]:
-            data = data[~data["run_id"].astype(str).str.contains("small_tasks_")]
-        if "RE-Bench" in fig_params["exclude"]:
-            data = data[~data["task_id"].astype(str).str.contains("ai_rd_")]
-        if "General Autonomy" in fig_params["exclude"]:
-            raise ValueError(
-                "Exclusion of general autonomy has not been implemented in bootstrap.py, panic"
-            )
+    if "exclude" in wrangle_params and wrangle_params["exclude"]:
+        assert set(wrangle_params["exclude"]) <= set(
+            data["task_source"].unique()
+        ), "All excluded sources must be present in the data"
+        data = data[~data["task_source"].isin(wrangle_params["exclude"])]
 
     # Default to "ftr" if not specified
     categories = ["f", "t", "r"]
@@ -289,8 +309,10 @@ def main() -> None:
         data=data,
         categories=[category_dict[c] for c in categories],
         n_bootstrap=args.n_bootstrap,
-        weights_col=fig_params["weighting"],
-        regularization=fig_params["regularization"],
+        weights_col=wrangle_params["weighting"],
+        regularization=wrangle_params["regularization"],
+        success_percents=wrangle_params["success_percents"],
+        score_col=wrangle_params.get("score_col", "score_binarized"),
     )
 
     # Save results

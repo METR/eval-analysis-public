@@ -1,17 +1,20 @@
-GA:
-  num_runs_all_agents: 9696
+HCAST:
+  num_human_runs: 0
+  num_runs_all_agents: 10460
   num_tasks_with_baselines: 77
   num_tasks_with_estimates: 20
   num_unique_tasks: 97
 RE-Bench:
-  num_runs_all_agents: 687
+  num_human_runs: 0
+  num_runs_all_agents: 745
   num_tasks_with_baselines: 4
   num_tasks_with_estimates: 3
   num_unique_tasks: 7
 SWAA:
-  num_runs_all_agents: 6996
+  num_human_runs: 0
+  num_runs_all_agents: 7759
   num_tasks_with_baselines: 66
   num_tasks_with_estimates: 0
   num_unique_tasks: 66
-total_runs: 17379
+total_runs: 18964
 unique_tasks: 170

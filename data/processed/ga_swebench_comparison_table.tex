@@ -1,0 +1,19 @@
+\begin{table}[ht]
+\centering
+\begin{tabular}{lccc}
+\hline
+\textbf{Model} & \textbf{\begin{tabular}[c]{@{}c@{}}GA Task Suite\\Model Time\\Horizon\end{tabular}} & \textbf{\begin{tabular}[c]{@{}c@{}}SWE-Bench Verified\\Model Time\\Horizon\end{tabular}} & \textbf{\begin{tabular}[c]{@{}c@{}}GA / SWE-Bench\\Verified Model\\Time Horizon Factor\end{tabular}} \\
+\hline
+Claude 3 Opus & 6.42 min & 0.83 min & 7.8x \\
+GPT-4 1106 & 8.56 min & 1.18 min & 7.2x \\
+GPT-4o & 9.17 min & 5.96 min & 1.5x \\
+Claude 3.5 Sonnet (Old) & 18.22 min & 5.91 min & 3.1x \\
+Claude 3.5 Sonnet (New) & 28.98 min & 16.88 min & 1.7x \\
+o1 & 39.21 min & 51.21 min & 0.8x \\
+\hline
+\textbf{Geometric Mean} & 14.78 min & 5.57 min & 2.7x \\
+\hline
+\end{tabular}
+\caption{The time horizon of less capable models is substantially longer on our tasks than on SWE-bench Verified.}
+\label{tab:swe-bench-vs-other-tasks}
+\end{table}

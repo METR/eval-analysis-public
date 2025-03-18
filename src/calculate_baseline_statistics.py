@@ -18,6 +18,7 @@ class SourceStats:
     num_unique_tasks: int
     num_tasks_with_baselines: int
     num_tasks_with_estimates: int
+    num_human_runs: int
 
 
 @dataclass
@@ -88,6 +89,9 @@ def _calculate_statistics(runs: list[dict[str, str | int]]) -> BaselineStats:
         source_runs = [run for run in runs if str(run.get("task_source")) == source]
         source_stats[source] = SourceStats(
             num_runs_all_agents=len(source_runs),
+            num_human_runs=len(
+                [run for run in source_runs if run.get("agent") == "human"]
+            ),
             num_unique_tasks=len({run["task_id"] for run in source_runs}),
             num_tasks_with_baselines=len(
                 {

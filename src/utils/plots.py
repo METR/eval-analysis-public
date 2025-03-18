@@ -6,8 +6,53 @@ import matplotlib.axes
 import matplotlib.pyplot as plt
 import matplotlib.ticker
 import numpy as np
+import pandas as pd
 from matplotlib.markers import MarkerStyle
-from typing_extensions import Literal
+from typing_extensions import Literal, NotRequired
+
+
+class TrendlineStyling(TypedDict):
+    linewidth: float
+    alpha: float
+    linestyle: str
+
+
+class TrendlineParams(TypedDict):
+    fit_type: Literal["auto", "default", "exponential", "linear"]
+    after_date: str
+    color: str
+    line_start_date: str | None
+    line_end_date: str
+    display_r_squared: bool
+    data_file: str | None
+    styling: TrendlineStyling | None
+    caption: str | None
+    skip_annotation: bool
+
+
+class ScriptParams(TypedDict):
+    parameter_group_name: str
+    lower_y_lim: float
+    upper_y_lim: float
+    exclude: list[str]
+    title: NotRequired[str]
+    subtitle: str
+    weighting: str
+    include_task_distribution: str
+    weight_key: str | None
+    trendlines: list[TrendlineParams]
+    exclude_agents: list[str]
+    xlabel: NotRequired[str]
+    ylabel: NotRequired[str]
+    legend_fontsize: NotRequired[int]
+    ax_label_fontsize: NotRequired[int]
+    title_fontsize: NotRequired[int]
+    y_ticks_skip: NotRequired[int]
+    hide_regression_info: NotRequired[bool]
+    annotation_fontsize: NotRequired[int]
+    legend_frameon: NotRequired[bool]
+    xticks_skip: NotRequired[int]
+    rename_legend_labels: NotRequired[dict[str, str]]
 
 
 class PlotColorsParams(TypedDict):
@@ -93,6 +138,7 @@ class PlotParams(TypedDict):
     colors: PlotColorsParams
     legend_order: list[str]
     suptitle_fontsize: int
+    annotation_fontsize: int
     task_distribution_styling: TaskDistributionStylingParams
     title_fontsize: int
     xlabelpad: int
@@ -105,13 +151,16 @@ def format_time_label(seconds: float) -> str:
     if hours >= 24:
         return f"{int(hours / 24)}d"
     if hours >= 1:
-        return f"{int(hours)} hr" + ("s" if int(hours) > 1 else "")
+        remainder = seconds % 3600
+        minutes_str = (", " + format_time_label(remainder)) if remainder > 60 else ""
+        return f"{int(hours)} hr" + ("s" if int(hours) > 1 else "") + minutes_str
     if hours >= 1 / 60:
         return f"{int(hours * 60)} min"
     return f"{int(seconds)} sec"
 
 
-possible_ticks = np.array(
+linear_ticks = np.linspace(0, 120, 9)
+logarithmic_ticks = np.array(
     [
         1 / 60,
         2 / 60,
@@ -149,7 +198,9 @@ def log_x_axis(
         x_min = max(x_min, low_limit / multiplier)
         ax.set_xlim(left=x_min)
 
-    xticks = possible_ticks[(possible_ticks >= x_min) & (possible_ticks <= x_max)]
+    xticks = logarithmic_ticks[
+        (logarithmic_ticks >= x_min) & (logarithmic_ticks <= x_max)
+    ]
     labels = [format_time_label(tick * multiplier) for tick in xticks]
 
     ax.set_xticks(xticks)
@@ -160,11 +211,51 @@ def log_x_axis(
     ax.xaxis.set_minor_locator(matplotlib.ticker.NullLocator())
 
 
-def log_y_axis(ax: matplotlib.axes.Axes, unit: str = "minutes") -> None:
-    ax.set_yscale("log")
+def make_quarterly_xticks(
+    ax: matplotlib.axes.Axes, start_year: int, end_year: int, skip: int = 1
+) -> None:
+    major_ticks = np.array(
+        [pd.Timestamp(f"{y}-01-01") for y in range(start_year, end_year)]
+    )
+    minor_ticks = np.array(
+        [
+            pd.Timestamp(f"{y}-{m:02d}-01")
+            for y in range(start_year, end_year)
+            for m in [4, 7, 10]
+        ]
+    )
+    minor_ticks = np.array(
+        [
+            t
+            for t in minor_ticks
+            if t >= pd.Timestamp(start_year) and t <= pd.Timestamp(end_year)
+        ]
+    )
+
+    ax.set_xticks(major_ticks[::skip])
+    ax.set_xticklabels([x.strftime("%Y") for x in major_ticks[::skip]])
+    ax.set_xticks(minor_ticks, minor=True)
+
+
+def make_y_axis(
+    ax: matplotlib.axes.Axes,
+    unit: str = "minutes",
+    scale: Literal["log", "linear"] = "log",
+    script_params: ScriptParams | None = None,
+) -> None:
+    ticks_to_use = []
+    if scale == "log":
+        ticks_to_use = logarithmic_ticks
+        ax.set_yscale("log")
+    else:
+        ticks_to_use = linear_ticks
+        ax.set_yscale("linear")
+    if script_params:
+        ticks_to_use = ticks_to_use[:: script_params.get("y_ticks_skip", 1)]
     y_min, y_max = ax.get_ylim()
     multiplier = 60 if unit == "minutes" else 3600
-    yticks = possible_ticks[(possible_ticks >= y_min) & (possible_ticks <= y_max)]
+
+    yticks = ticks_to_use[(ticks_to_use >= y_min) & (ticks_to_use <= y_max)]
     labels = [format_time_label(tick * multiplier) for tick in yticks]
 
     ax.set_yticks(yticks)

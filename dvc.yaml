@@ -1,3 +1,9 @@
+params:
+  - fig_params/figs.yaml
+
+vars:
+  - fig_params/figs.yaml
+
 stages:
   fetch_swe_bench_runs:
     cmd: >-
@@ -8,18 +14,7 @@ stages:
       - src/fetch_swe_bench_runs.py
     outs:
       - data/external/swe_bench_runs.jsonl
-    frozen: true
-
-  filter_out_partial_agents:
-    cmd: >-
-      python -m src.filter_out_partial_agents
-      --input-all-runs data/external/all_runs.jsonl
-      --output-runs-with-allowed-agents data/processed/runs/ga_agents.jsonl
-    deps:
-      - data/external/all_runs.jsonl
-      - src/filter_out_partial_agents.py
-    outs:
-      - data/processed/runs/ga_agents.jsonl
+    frozen: false
 
   calculate_baseline_statistics:
     cmd: >-
@@ -32,87 +27,29 @@ stages:
       - metrics/baseline_statistics.yaml:
           cache: false
 
-  filter_aird_runs:
-    cmd: >-
-      python -m src.filter_aird_runs
-      --input-file data/external/all_runs.jsonl
-      --output-file data/processed/runs/aird.jsonl
-    deps:
-      - data/external/all_runs.jsonl
-      - src/filter_aird_runs.py
-    params:
-      - stages.filter_aird_runs
-    outs:
-      - data/processed/runs/aird.jsonl
-
   # Wrangle
-  wrangle_bar_by_time_allocation:
-    cmd: >-
-      python -m src.wrangle.bar_by_time_allocation
-      --runs-file data/processed/runs/aird.jsonl
-      --wrangled-file data/processed/wrangled/bar_by_time_allocation.jsonl
-    deps:
-      - data/processed/runs/aird.jsonl
-      - src/utils/plots.py
-      - src/stats/statistics.py
-      - src/wrangle/bar_by_time_allocation.py
-    params:
-      - n_bootstrap
-      - rebench_best_of_k_parameters
-    outs:
-      - data/processed/wrangled/bar_by_time_allocation.jsonl
-    desc: Compute mean scores and hierarchical confidence intervals for final time limit.
 
-  wrangle_human_mean_of_percentiles:
-    cmd: >-
-      python -m src.wrangle.human_mean_of_percentiles
-      --interpolated-scores data/processed/runs/aird.jsonl
-      --output-percentiles data/processed/wrangled/human_mean_of_percentiles.jsonl
-      --log-level ${log_level}
-    deps:
-      - src/wrangle/human_mean_of_percentiles.py
-      - data/processed/runs/aird.jsonl
-    params:
-      - log_level
-    outs:
-      - data/processed/wrangled/human_mean_of_percentiles.jsonl
-    desc: Calculate per-task percentiles of human scores over time and their mean.
-
-  wrangle_score_at_k:
-    cmd: >-
-      python -m src.wrangle.score_at_k
-      --input-score-at-k data/processed/runs/aird.jsonl
-      --output-score-at-k data/processed/wrangled/score_at_k.jsonl
-      --n-bootstrap ${n_bootstrap}
-    deps:
-      - src/wrangle/score_at_k.py
-      - data/processed/runs/aird.jsonl
-    params:
-      - log_level
-      - n_bootstrap
-      - rebench_best_of_k_parameters
-    outs:
-      - data/processed/wrangled/score_at_k.jsonl
-
+  # n-bootstrap should be 10000 in the final version
   wrangle_bootstrap_logistic:
     foreach: &foreach_logistic
-      headline: ${figs.plot_logistic_regression.headline}
-      single_line_2023_ga_rebench: ${figs.plot_logistic_regression.single_line_2023_ga_rebench}
-      swe_bench: ${figs.plot_logistic_regression.swe_bench}
+      headline: ${figs.wrangle_logistic.headline}
+      ga_rebench: ${figs.wrangle_logistic.ga_rebench}
+      swe_bench: ${figs.wrangle_logistic.swe_bench}
+      partial_scoring: ${figs.wrangle_logistic.partial_scoring}
     do:
       cmd: >-
         python -m src.wrangle.bootstrap
         --fig-name ${key}
         --runs-file data/external/${item.runs_file}.jsonl
         --output-bootstrap-horizons-file data/wrangled/bootstrap/${key}.csv
-        --n-bootstrap 500
+        --n-bootstrap 10000
       deps:
         - src/wrangle/bootstrap.py
-        - src/wrangle/logistic.py
         - src/utils/logistic.py
         - data/external/${item.runs_file}.jsonl
       params:
-        - figs.plot_logistic_regression.${key}
+        - fig_params/figs.yaml:
+            - figs.wrangle_logistic.${key}
       outs:
         - data/wrangled/bootstrap/${key}.csv
       desc: Compute bootstrapped logistic regression results
@@ -132,10 +69,43 @@ stages:
         - data/external/release_dates.yaml
         - data/wrangled/bootstrap/${key}.csv
         - src/wrangle/logistic.py
+        - src/utils/logistic.py
       params:
-        - figs.plot_logistic_regression.${key}
+        - fig_params/figs.yaml:
+            - figs.wrangle_logistic.${key}
       outs:
         - data/wrangled/logistic_fits/${key}.csv
+      desc: Fit logistic curves for each agent, load bootstrap results from bootstrap stage, and add binned weighted success rate data.
+
+  wrangle_cost:
+    cmd: >-
+      python -m src.wrangle.cost
+      --runs-file data/external/all_runs.jsonl
+    deps:
+      - data/external/all_runs.jsonl
+      - data/external/release_dates.yaml
+      - src/wrangle/cost.py
+    outs:
+      - data/processed/wrangled/costs/cost_info.csv
+    metrics:
+      - metrics/costs/savings_info.csv:
+          cache: false
+      - metrics/costs/savings_non_bucketed_info.csv:
+          cache: false
+
+  ga_swebench_comparison_table:
+    cmd: >-
+      python -m src.ga_swebench_comparison_table
+      --headline-fits-file data/wrangled/logistic_fits/headline.csv
+      --swebench-fits-file data/wrangled/logistic_fits/swe_bench.csv
+      --output-table-file data/processed/ga_swebench_comparison_table.tex
+    deps:
+      - data/wrangled/logistic_fits/headline.csv
+      - data/wrangled/logistic_fits/swe_bench.csv
+      - src/ga_swebench_comparison_table.py
+    outs:
+      - data/processed/ga_swebench_comparison_table.tex:
+          cache: false
 
   # Plot
 
@@ -144,7 +114,7 @@ stages:
       fig_name: [headline]
     cmd: >-
       python -m src.plot.bar_chart_weighted_scores
-      --fig-name horizon_plots:${item.fig_name}
+      --fig-name ${item.fig_name}
       --metrics-file data/wrangled/logistic_fits/${item.fig_name}.csv
       --release-dates data/external/release_dates.yaml
       --output-file plots/bar_chart_weighted_scores/${item.fig_name}.${plot_format}
@@ -158,7 +128,9 @@ stages:
       - log_level
       - plot_format
       - plots
-      - stages.plot_bar_chart_weighted_scores
+      - weighting
+      - fig_params/figs.yaml:
+          - figs.plot_bar_chart_weighted_scores.${item.fig_name}
     plots:
       - plots/bar_chart_weighted_scores/${item.fig_name}.${plot_format}
     desc: Generate bar chart of weighted scores.
@@ -190,55 +162,15 @@ stages:
   #     - plots/bar_chart/${item.weighting}.${plot_format}
   #   desc: Generate bar chart of agent horizon.
 
-  plot_bar_by_time_allocation:
-    cmd: >-
-      python -m src.plot.bar_by_time_allocation
-      --input data/processed/wrangled/bar_by_time_allocation.jsonl
-      --output plots/bar_by_time_allocation.${plot_format}
-      --log-level ${log_level}
-    deps:
-      - data/processed/wrangled/bar_by_time_allocation.jsonl
-      - src/plot/bar_by_time_allocation.py
-      - src/utils/plots.py
-      - matplotlibrc
-    params:
-      - log_level
-      - plot_format
-      - plots
-    plots:
-      - plots/bar_by_time_allocation.${plot_format}
-    desc: Generate plot of mean scores for different time limits with confidence intervals.
-
-  plot_score_at_k:
-    matrix:
-      time_limit: ${rebench_best_of_k_parameters.time_limits}
-    cmd: >-
-      python -m src.plot.score_at_k
-      --input-score-at-k data/processed/wrangled/score_at_k.jsonl
-      --input-human-mean-of-percentiles data/processed/wrangled/human_mean_of_percentiles.jsonl
-      --output-prefix plots/aird/score_at_k
-      --time-limit ${item.time_limit}
-      --log-level ${log_level}
-    deps:
-      - src/plot/score_at_k.py
-      - data/processed/wrangled/score_at_k.jsonl
-      - data/processed/wrangled/human_mean_of_percentiles.jsonl
-      - src/utils/plots.py
-      - src/stats/statistics.py
-    params:
-      - log_level
-      - plot_format
-      - plots
-      - rebench_best_of_k_parameters
-    plots:
-      - plots/aird/score_at_k_${item.time_limit}.${plot_format}
-    desc: Generate plot of score at k for different time limits.
-
   plot_logistic_regression:
     foreach:
       double_line_all_data_retrodict_excluding_swaa: ${figs.plot_logistic_regression.double_line_all_data_retrodict_excluding_swaa}
-      double_line_all_data: ${figs.plot_logistic_regression.double_line_all_data}
+      p80: ${figs.plot_logistic_regression.p80}
       single_line_2023_ga_rebench: ${figs.plot_logistic_regression.single_line_2023_ga_rebench}
+      swe_bench: ${figs.plot_logistic_regression.swe_bench}
+      partial_scoring: ${figs.plot_logistic_regression.partial_scoring}
+      all_models: ${figs.plot_logistic_regression.all_models}
+      double_line_2024_trendline: ${figs.plot_logistic_regression.double_line_2024_trendline}
     do:
       cmd: >-
         python -m src.plot.logistic
@@ -248,7 +180,6 @@ stages:
         --output-file plots/logistic/${key}.${plot_format}
         --log-level ${log_level}
         --script-parameter-group ${key}
-        --params-file "params.yaml"
       deps:
         - data/external/${item.runs_file}.jsonl
         - data/wrangled/logistic_fits/${item.logistic_file}.csv
@@ -259,73 +190,93 @@ stages:
         - log_level
         - plot_format
         - plots
-        - figs.plot_logistic_regression.${key}
+        - fig_params/figs.yaml:
+            - figs.plot_logistic_regression.${key}
       # plots:
       #   - plots/logistic/${key}.${plot_format}
       outs:
         - plots/logistic/${key}.${plot_format}:
             persist: true
-      desc: Generate plot of logistic regression results.
+      desc: Plot showing horizon growth over time.
 
-  # plot_logistic_regression_swe_bench:
-  #   matrix:
-  #     weighting: ["invsqrt_task_weight"]
-  #     categories: ["ftr"]
-  #     regularization: [0.1]
-  #     trendlines: [true, false]
-  #     after_date: ["2024-01-01", "2023-03-13"]
-  #   cmd: >-
-  #     python -m src.plot.logistic
-  #     --input-file data/wrangled/swe_bench_logistic.csv
-  #     --runs-file data/external/swe_bench_runs.jsonl
-  #     --release-dates data/external/release_dates.yaml
-  #     --output-file plots/logistic/swe_bench/swe_bench_${item.weighting}-${item.regularization}-${item.trendlines}_${item.after_date}.${plot_format}
-  #     --log-level ${log_level}
-  #     --trendlines ${item.trendlines}
-  #     --after-date ${item.after_date}
-  #     --weighting "${item.weighting}"
-  #     --include-task-distribution=false
-  #   deps:
-  #     - src/plot/logistic.py
-  #     - data/wrangled/swe_bench_logistic.csv
-  #     - src/utils/plots.py
-  #     - data/external/release_dates.yaml
-  #     - matplotlibrc
-  #     - data/external/swe_bench_runs.jsonl
-  #   params:
-  #     - log_level
-  #     - plot_format
-  #     - plots
-  #     - weighting
-  #   plots:
-  #     - plots/logistic/swe_bench/swe_bench_${item.weighting}-${item.regularization}-${item.trendlines}_${item.after_date}.${plot_format}
-  #   desc: Generate plot of logistic regression results.
+  plot_horizon_alternative_fits:
+    foreach: ${figs.plot_horizon_alternative_fits}
+    do:
+      cmd: >-
+        python -m src.plot.logistic_alternative_fits
+        --input-file data/wrangled/logistic_fits/${item.logistic_file}.csv
+        --output-file plots/horizon_${key}.${plot_format}
+        --runs-file data/external/${item.runs_file}.jsonl
+        --release-dates data/external/release_dates.yaml
+        --log-level ${log_level}
+        --script-parameter-group ${key}
+      deps:
+        - data/external/${item.runs_file}.jsonl
+        - data/wrangled/logistic_fits/${item.logistic_file}.csv
+        - matplotlibrc
+        - src/plot/logistic.py
+        - src/plot/logistic_alternative_fits.py
+        - src/utils/plots.py
+      params:
+        - log_level
+        - plot_format
+        - plots
+        - fig_params/figs.yaml:
+            - figs.plot_horizon_alternative_fits.${key}
+      outs:
+        - plots/horizon_${key}.${plot_format}
+      desc: Plot showing alternative fits (linear, exponential, hyperbolic) to the horizon growth curve.
 
-  plot_logistic_multiverse:
+  plot_multiverse_boxplot:
     cmd: >-
-      python -m src.plot.logistic_multiverse
-      --runs-file data/external/all_runs.jsonl
-      --release-dates data/external/release_dates.yaml
-      --temp-dir data/temp/logistic_multiverse
-      --output-file plots/logistic/logistic_multiverse.${plot_format}
+      python -m src.plot.multiverse_boxplot
+      --records-file data/wrangled/multiverse/records.json
+      --output-file plots/multiverse/boxplot.${plot_format}
+      --output-metrics-file metrics/multiverse_boxplot.yaml
       --log-level ${log_level}
-      --output-metrics-file metrics/horizon_trend/multiverse.yaml
     deps:
-      - src/plot/logistic_multiverse.py
-      - src/plot/logistic.py
-      - data/wrangled/
-      - data/external/release_dates.yaml
+      - src/plot/multiverse_boxplot.py
+      - src/utils/plots.py
+      - data/wrangled/multiverse/records.json
       - matplotlibrc
     params:
       - log_level
       - plot_format
-      - plots
-      - figs.plot_logistic_multiverse
+      - fig_params/figs.yaml:
+          - figs.plot_multiverse_boxplot
     plots:
-      - plots/logistic/logistic_multiverse.${plot_format}
+      - plots/multiverse/boxplot.${plot_format}
+      - plots/multiverse/boxplot_total_box.${plot_format}
+      - plots/multiverse/boxplot_total_violin.${plot_format}
     metrics:
-      - metrics/horizon_trend/multiverse.yaml
-    desc: Generate plot of logistic regression results.
+      - metrics/multiverse_boxplot.yaml:
+          cache: false
+    desc: Horizontal boxplots tracking various sources of uncertainty.
+
+  wrangle_multiverse_boxplot:
+    cmd: >-
+      python -m src.wrangle.multiverse_boxplot
+      --runs-file data/external/all_runs.jsonl
+      --logistic-fits-file data/wrangled/logistic_fits/headline.csv
+      --release-dates-file data/external/release_dates.yaml
+      --output-records-file data/wrangled/multiverse/records.json
+      --log-level ${log_level}
+      --seed 42
+    deps:
+      - src/wrangle/multiverse_boxplot.py
+      - src/plot/logistic.py
+      - src/wrangle/bootstrap.py
+      - src/wrangle/logistic.py
+      - data/external/all_runs.jsonl
+      - data/external/release_dates.yaml
+      - data/wrangled/logistic_fits/headline.csv
+    params:
+      - log_level
+      - fig_params/figs.yaml:
+          - figs.plot_multiverse_boxplot
+    outs:
+      - data/wrangled/multiverse/records.json
+    desc: Generate multiverse boxplot data for uncertainty analysis.
 
   plot_individual_histograms:
     foreach: ${figs.plot_individual_histograms}
@@ -348,13 +299,14 @@ stages:
         - log_level
         - plot_format
         - plots
-        - figs.plot_individual_histograms.${key}
+        - fig_params/figs.yaml:
+            - figs.plot_individual_histograms.${key}
       # plots:
       #   - plots/individual_histograms/${key}/histograms.${plot_format}
       outs:
         - plots/individual_histograms/${key}/histograms.${plot_format}:
             persist: true
-      desc: Generate plot of logistic regression results.
+      desc: Logistic success curve + bars for each agent.
 
   plot_individual_binned_residuals:
     foreach:
@@ -378,10 +330,11 @@ stages:
         - log_level
         - plot_format
         - plots
-        - figs.plot_individual_histograms.${key}
+        - fig_params/figs.yaml:
+            - figs.plot_individual_histograms.${key}
       plots:
         - plots/individual_histograms/${key}/binned_residuals.${plot_format}
-      desc: Generate plot of logistic regression results.
+      desc: Plot showing residuals of the logistic success curves.
 
   plot_logistic_individual:
     matrix:
@@ -404,54 +357,212 @@ stages:
       - plots
     plots:
       - plots/logistic_individual/p50_${item.show_p50}.${plot_format}
-    desc: Generate plot of logistic regression results.
-
-  # plot_logistic_individual_swe_bench:
-  #   matrix:
-  #     show_p50: [true]
-  #   cmd: >-
-  #     python -m src.plot.logistic_individual
-  #     --input-file data/wrangled/swe_bench_logistic_fits/main.csv
-  #     --output-file plots/logistic_individual/swe_bench/swe_bench_main.${plot_format}
-  #     --log-level ${log_level}
-  #   deps:
-  #     - src/plot/logistic_individual.py
-  #     - data/wrangled/swe_bench_logistic_fits/main.csv
-  #     - src/utils/logistic.py
-  #     - src/utils/plots.py
-  #     - matplotlibrc
-  #   params:
-  #     - log_level
-  #     - plot_format
-  #     - plots
-  #   plots:
-  #     - plots/logistic_individual/swe_bench/swe_bench_main.${plot_format}
-  #   desc: Generate plot of logistic regression results.
+    desc: Plot showing the logistic success curve for a single agent.
 
   plot_bootstrap_ci:
     matrix:
-      fig_name: [headline]
+      fig_name: [headline, twitter_headline]
+      y_scale: [log, linear]
     cmd: >-
       python -m src.plot.bootstrap_ci
       --fig-name ${item.fig_name}
-      --input-file data/wrangled/bootstrap/${item.fig_name}.csv
-      --agent-summaries-file data/wrangled/logistic_fits/${item.fig_name}.csv
+      --input-file data/wrangled/bootstrap/headline.csv
+      --agent-summaries-file data/wrangled/logistic_fits/headline.csv
       --release-dates data/external/release_dates.yaml
-      --output-file plots/bootstrap/${item.fig_name}.${plot_format}
+      --output-file plots/bootstrap/${item.fig_name}-${item.y_scale}.${plot_format}
       --log-level ${log_level}
+      --y-scale ${item.y_scale}
     deps:
       - src/plot/bootstrap_ci.py
       - src/plot/logistic.py # dependency on plot_trendline
-      - data/wrangled/bootstrap/${item.fig_name}.csv
-      - data/wrangled/logistic_fits/${item.fig_name}.csv
+      - data/wrangled/bootstrap/headline.csv
+      - data/wrangled/logistic_fits/headline.csv
       - data/external/release_dates.yaml
       - matplotlibrc
     params:
       - log_level
       - plot_format
       - plots
-      - figs.plot_logistic_regression.headline
+      - fig_params/figs.yaml:
+          - figs.plot_logistic_regression.${item.fig_name}
     plots:
-      - plots/bootstrap/${item.fig_name}.${plot_format}
+      - plots/bootstrap/${item.fig_name}-${item.y_scale}.${plot_format}
     desc: Generate plot of bootstrap confidence intervals
 
+  plot_cost:
+    cmd: >-
+      python -m src.plot.cost
+      --savings-info-file metrics/costs/savings_info.csv
+      --savings-non-bucketed-info-file metrics/costs/savings_non_bucketed_info.csv
+      --release-dates data/external/release_dates.yaml
+    deps:
+      - metrics/costs/savings_info.csv
+      - metrics/costs/savings_non_bucketed_info.csv
+      - data/external/release_dates.yaml
+      - src/plot/cost.py
+      - src/utils/plots.py
+    params:
+      - log_level
+      - plot_format
+      - plots
+    plots:
+      - plots/cost/bucketed.png
+      - plots/cost/non_bucketed.png
+      - plots/cost/agent_grid.png
+      - plots/cost/ratio_histograms.png
+      - plots/cost/ratio_histogram_overall.png
+      - plots/cost/ratio_vs_length.png
+      - plots/cost/ratio_vs_length_swarm.png
+      - plots/cost/time_histograms.png
+
+  plot_task_distribution:
+    cmd: >-
+      python -m src.plot.task_distribution
+      --runs-file data/external/all_runs.jsonl
+      --output-file plots/task_distribution.${plot_format}
+    deps:
+      - data/external/all_runs.jsonl
+      - src/plot/task_distribution.py
+    params:
+      - log_level
+      - plot_format
+      - plots
+    plots:
+      - plots/task_distribution.${plot_format}
+    desc: Plot showing the distribution of tasks by difficulty.
+
+  plot_success_rates:
+    cmd: >-
+      python src/plot/success_rates.py
+      --runs-file data/external/all_runs.jsonl
+      --output-plots-dir plots/success_rates
+      --output-data-dir data/wrangled/success_rates
+      --params-file params.yaml
+      --exclude-agent "Claude 3 Opus"
+      --exclude-agent "GPT-4 0125"
+      --exclude-agent "GPT-4 Turbo"
+    deps:
+      - data/external/all_runs.jsonl
+      - src/plot/success_rates.py
+    outs:
+      - plots/success_rates/family_success_ordered_pivot.png
+      - plots/success_rates/task_success_ordered_pivot.png
+      - plots/success_rates/model_success_rate_vs_human_completion_time.png
+      - data/wrangled/success_rates/family_success_ordered_pivot.csv
+      - data/wrangled/success_rates/task_success_ordered_pivot.csv
+    desc: Plot showing the success rate of models vs. human completion time. + pivot tables
+
+  plot_success_correlations:
+    cmd: >-
+      python src/plot/success_correlations.py
+      --runs-file data/external/all_runs.jsonl
+      --release-dates data/external/release_dates.yaml
+      --logistic-file data/wrangled/logistic_fits/headline.csv
+      --output-plots-dir plots/success_correlations
+      --output-data-dir data/wrangled/success_correlations
+      --exclude-agent "Claude 3 Opus"
+      --exclude-agent "GPT-4 0125"
+      --exclude-agent "GPT-4 Turbo"
+    desc: Plot showing the correlations between success rates of models.
+    deps:
+      - data/external/all_runs.jsonl
+      - data/external/release_dates.yaml
+      - data/wrangled/logistic_fits/headline.csv
+      - src/plot/success_correlations.py
+    outs:
+      - data/wrangled/success_correlations/excess_success_rates.csv
+      - plots/success_correlations/excess_success_rates_correlations.png
+      - data/wrangled/success_correlations/fractional_excess_success_rates.csv
+      - plots/success_correlations/fractional_excess_success_rates_correlations.png
+      - data/wrangled/success_correlations/observed_success_rates.csv
+      - plots/success_correlations/observed_success_rates_correlations.png
+
+  plot_messiness:
+    cmd: >-
+      python src/plot/messiness.py
+      --runs-file data/external/all_runs.jsonl
+      --messiness-file data/external/messiness.csv
+      --messiness-tasks-file data/external/messiness_tasks.csv
+      --output-plots-dir plots/messiness
+      --output-data-dir data/metrics/messiness
+      --exclude-agent "Claude 3 Opus"
+      --exclude-agent "GPT-4 0125"
+      --exclude-agent "GPT-4 Turbo"
+    desc: success rate vs messiness controlling for time (and 2x3 plot)
+    deps:
+      - data/external/all_runs.jsonl
+      - data/external/messiness.csv
+      - data/external/messiness_tasks.csv
+      - src/plot/messiness.py
+    outs:
+      - data/metrics/messiness/analysis_results.txt
+      - plots/messiness/logistic_heatmap_expanded_combined_alpha_0.010.png
+      - plots/messiness/messiness_effect_expanded_combined_alpha_0.010.png
+
+  plot_success_trend_by_messiness_and_length:
+    matrix:
+      messiness_quantile_boundary: [0.50, 0.75]
+    cmd: >-
+      python src/plot/success_trend_by_messiness_and_length.py
+      --runs-file data/external/all_runs.jsonl
+      --release-dates data/external/release_dates.yaml
+      --messiness-file data/external/messiness.csv
+      --messiness-tasks-file data/external/messiness_tasks.csv
+      --output-file plots/messiness/success_trend_by_messiness_and_length_with_boundary_${item.messiness_quantile_boundary}.png
+      --messiness-quantile-boundary ${item.messiness_quantile_boundary}
+      --params-file params.yaml
+      --exclude-agent "Claude 3 Opus"
+      --exclude-agent "GPT-4 0125"
+      --exclude-agent "GPT-4 Turbo"
+      --exclude-agent "davinci-002 (GPT-3)"
+      --exclude-agent "GPT-2"
+    desc: Plot showing success rate over time by messiness and length
+    deps:
+      - data/external/all_runs.jsonl
+      - data/external/release_dates.yaml
+      - data/external/messiness.csv
+      - params.yaml
+      - src/plot/success_trend_by_messiness_and_length.py
+    outs:
+      - plots/messiness/success_trend_by_messiness_and_length_with_boundary_${item.messiness_quantile_boundary}.png
+
+  plot_success_trend_by_messiness:
+    matrix:
+      messiness_quantile_boundary: [0.50]
+    cmd: >-
+      python src/plot/success_trend_by_messiness.py
+      --runs-file data/external/all_runs.jsonl
+      --release-dates data/external/release_dates.yaml
+      --messiness-file data/external/messiness.csv
+      --messiness-tasks-file data/external/messiness_tasks.csv
+      --output-file plots/messiness/success_trend_by_messiness_with_boundary_${item.messiness_quantile_boundary}.png
+      --messiness-quantile-boundary ${item.messiness_quantile_boundary}
+      --params-file params.yaml
+      --exclude-agent "Claude 3 Opus"
+      --exclude-agent "GPT-4 0125"
+      --exclude-agent "GPT-4 Turbo"
+      --exclude-agent "davinci-002 (GPT-3)"
+      --exclude-agent "GPT-2"
+    desc: Plot showing success rate over time by messiness
+    deps:
+      - data/external/all_runs.jsonl
+      - data/external/release_dates.yaml
+      - data/external/messiness.csv
+      - src/plot/success_trend_by_messiness.py
+    outs:
+      - plots/messiness/success_trend_by_messiness_with_boundary_${item.messiness_quantile_boundary}.png
+
+  generate_model_task_table:
+    cmd: >-
+      python src/plot/generate_model_task_table.py
+      --input-file data/external/all_runs.jsonl
+      --output-file plots/model_task_table.tex
+    deps:
+      - src/plot/generate_model_task_table.py
+      - data/external/all_runs.jsonl
+    params:
+      - fig_params/figs.yaml:
+          - figs.generate_model_task_table
+    outs:
+      - plots/model_task_table.tex
+    desc: Generate a LaTeX table showing average score_binarized by model and task source.
