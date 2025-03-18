@@ -42,7 +42,7 @@ stages:
         --fig-name ${key}
         --runs-file data/external/${item.runs_file}.jsonl
         --output-bootstrap-horizons-file data/wrangled/bootstrap/${key}.csv
-        --n-bootstrap 10000
+        --n-bootstrap 1000
       deps:
         - src/wrangle/bootstrap.py
         - src/utils/logistic.py
@@ -395,10 +395,12 @@ stages:
       --savings-info-file metrics/costs/savings_info.csv
       --savings-non-bucketed-info-file metrics/costs/savings_non_bucketed_info.csv
       --release-dates data/external/release_dates.yaml
+      --cost-info-file data/processed/wrangled/costs/cost_info.csv
     deps:
       - metrics/costs/savings_info.csv
       - metrics/costs/savings_non_bucketed_info.csv
       - data/external/release_dates.yaml
+      - data/processed/wrangled/costs/cost_info.csv
       - src/plot/cost.py
       - src/utils/plots.py
     params:
