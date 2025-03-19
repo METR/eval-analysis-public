@@ -1,37 +1,36 @@
-# Horizon Length Report
+# Measuring AI Ability to Complete Long Tasks
 
-## Links
+This is the code for the paper Measuring AI Ability to Complete Long Tasks. 
 
-- [Overleaf][2]
-- [Methodology FAQ][1]
-- [Standup Notes][3]
+Despite rapid progress on AI benchmarks, the real-world meaning of benchmark
+performance remains unclear. To quantify the capabilities of AI systems in terms
+of human capabilities, we propose a new metric: 50%-task-completion time hori-
+zon. This is the time humans typically take to complete tasks that AI models can
+complete with 50% success rate. We first timed humans with relevant domain ex-
+pertise on a combination of RE-Bench, HCAST, and 66 novel shorter tasks. On
+these tasks, current frontier AI models such as Claude 3.7 Sonnet have a 50% time
+horizon of around 50 minutes. Furthermore, frontier AI time horizon has been
+doubling approximately every seven months since 2019, though the trend may
+have accelerated in 2024. The increase in AI models’ time horizons seems to be
+primarily driven by greater reliability and ability to adapt to mistakes, combined
+with better logical reasoning and tool use capabilities. We discuss the limitations
+of our results—including their degree of external validity—and the implications
+of increased autonomy for dangerous capabilities. If these results generalize to
+real-world software tasks, extrapolation of this trend predicts that within 5 years,
+AI systems will be capable of automating many software tasks that currently take
+humans a month.
 
-## Methodology
+## Installation
 
-Our estimate for the horizon length growth curve has three steps:
+This project contains a dev container, which we recommend using.  Alternatively, you can view the
+[.devcontainer/Dockerfile](Dockerfile) to see which dependencies need to be installed.
 
-1. Get a human time estimate for each task in the dataset.
-2. Use logistic regression on the success rate of each model on each task to estimate the "horizon length" of each model-- the time at which the model succeeds at 50% of tasks that take humans that long.
-3. Use linear regression on the horizon lengths to estimate the doubling time of the horizon length over model releases.
+ After installing those dependencies, the figures can be recreated by running:
 
-### Human time estimates
+```
+poetry install
+poetry run dvc repro
+```
 
-Currently we average together the times that successful human baseliners took to complete each task. If there is no baseline, we use a time estimate created by a METR employee.
-
-### Horizon length
-
-We use logistic regression to predict the success rate of each model on a task as a function of log(human time).
-
-### Doubling time
-
-We use linear regression to predict the doubling time of the horizon length over model releases.
-
-### Uncertainty analysis
-
-Error bars are calculated by bootstrapping our dataset of runs and carrying the analysis forward. Tasks may be correlated, so we use hierarchical bootstrapping, where we first sample task families, then tasks within those families, then individual runs. Plots are in `plots/bootstrap/`.
-
-There is a long list of factors that could affect our error bars, see the [FAQ][1].
-
-[1]: https://docs.google.com/document/d/15MzV2YT2BFu2PxM08bhEY3jRVwj2WDGMmjCHxs0BgfE/edit?tab=t.0
-[2]: https://www.overleaf.com/project/67b50496c4be7856b48acc00
-[3]: https://docs.google.com/document/d/1Sx70CZbfSu1HMX-x-YfuqpIq9Lk0hmUnpgYupQ-K97k/edit
+An example of additional analysis which can be performed after completing these steps can be found at
+[example_analysis.ipynb](example_analysis.ipynb)
