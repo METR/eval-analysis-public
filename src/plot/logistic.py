@@ -241,8 +241,13 @@ def plot_horizon_graph(
             data = pd.read_csv(data_file)
         else:
             data = agent_summaries
+
+        trendline_exclude_agents = trendline.get("exclude_agents", exclude_agents)
         data = _process_agent_summaries(
-            exclude_agents, data, release_dates, after_date=trendline["after_date"]
+            trendline_exclude_agents,
+            data,
+            release_dates,
+            after_date=trendline["after_date"],
         )
 
         print(f"fitting on {len(data)} models")
@@ -442,6 +447,7 @@ def plot_trendline(
     styling = trendline_params.get("styling", None)
     skip_annotation = trendline_params.get("skip_annotation", False)
     fit_type = trendline_params["fit_type"]
+    display_after_date = trendline_params.get("display_after_date", True)
 
     # trendline goes to the end of the x-axis
     start_date = (
@@ -500,6 +506,7 @@ def plot_trendline(
         assert isinstance(reg, LinearRegression)
         doubling_time = 1 / reg.coef_[0] * np.log(2)
         annotation += f"\nDoubling time: {doubling_time:.0f} days"
+    if display_after_date:
         annotation += "\n" + ("All data" if after == "0000-00-00" else f"{after}+ data")
     if display_r_squared:
         annotation += f"\nR²: {score:.2f}"
