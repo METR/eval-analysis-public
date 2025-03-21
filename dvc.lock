@@ -3590,8 +3590,8 @@ stages:
       size: 627
     - path: data/wrangled/logistic_fits/headline.csv
       hash: md5
-      md5: 092c493bac53a379a9d1b924f9abe699
-      size: 2501
+      md5: 4ba3afd0536876f81eadbc7656c95f93
+      size: 2502
     - path: src/plot/bar_chart_weighted_scores.py
       hash: md5
       md5: d574d04a6e5e2309dbbadbf51c6619c6
@@ -3807,16 +3807,16 @@ stages:
       size: 9757033
     - path: data/wrangled/logistic_fits/ga_rebench.csv
       hash: md5
-      md5: ac9e210075df5b5f0d194c264d1282ed
-      size: 1998
+      md5: f7de54a12fbc378d0b1bf531f8c9fa7f
+      size: 1994
     - path: matplotlibrc
       hash: md5
       md5: a6268afa6b0de2d0f934ff95c60851e4
       size: 553
     - path: src/plot/logistic.py
       hash: md5
-      md5: 3ea972398375923df957a2c29178f301
-      size: 20373
+      md5: dd0d85d16853476717238f9a0b8b7ec4
+      size: 20605
     - path: src/utils/plots.py
       hash: md5
       md5: 4a6968e37bf06af72e17a5d93910ec08
@@ -4018,8 +4018,8 @@ stages:
     outs:
     - path: plots/logistic/single_line_2023_ga_rebench.png
       hash: md5
-      md5: 1fc22307175377c2df52c9a635d12911
-      size: 121553
+      md5: b662b73dc5c9c8130ba9d2b7292880f0
+      size: 121628
   plot_logistic_regression@single_line_2023_ga_rebench_no_gpt_4_1106:
     cmd: python -m src.plot.logistic --input-file data/wrangled/logistic_fits_single_line_2023_ga_rebench.csv
       --runs-file data/external/all_runs.jsonl --release-dates data/external/release_dates.yaml
@@ -5393,16 +5393,16 @@ stages:
       size: 9757033
     - path: data/wrangled/logistic_fits/headline.csv
       hash: md5
-      md5: 092c493bac53a379a9d1b924f9abe699
-      size: 2501
+      md5: 4ba3afd0536876f81eadbc7656c95f93
+      size: 2502
     - path: matplotlibrc
       hash: md5
       md5: a6268afa6b0de2d0f934ff95c60851e4
       size: 553
     - path: src/plot/logistic.py
       hash: md5
-      md5: 3ea972398375923df957a2c29178f301
-      size: 20373
+      md5: dd0d85d16853476717238f9a0b8b7ec4
+      size: 20605
     - path: src/utils/plots.py
       hash: md5
       md5: 4a6968e37bf06af72e17a5d93910ec08
@@ -5577,24 +5577,28 @@ stages:
           logistic_file: headline
           weighting: invsqrt_task_weight
           include_task_distribution: none
-          title: 50% Time Horizon Retrodicted from 2023-2024 Data
+          title: 50% Time Horizon Retrodicted from 2023-2025 Data
           trendlines:
           - fit_type: exponential
             skip_annotation: false
-            caption: Actual Fit
+            caption: Fit on all data
             after_date: '2019-01-01'
             color: black
             line_start_date: '2018-09-03'
             line_end_date: '2025-07-01'
-            display_r_squared: true
+            display_r_squared: false
             data_file:
             styling:
               linewidth: 2
               alpha: 0.6
               linestyle: solid
+            exclude_agents:
+            - GPT-4 0125
+            - Claude 3 Opus
+            - GPT-4 Turbo
           - fit_type: exponential
             skip_annotation: false
-            caption: "Retrodiction Fit\n(Fit on 2023 onwards non-SWAA data)"
+            caption: Fit on non-SWAA tasks, 2023-2025 models
             after_date: '2023-01-01'
             color: blue
             line_start_date: '2018-09-03'
@@ -5605,8 +5609,7 @@ stages:
               linewidth: 2
               alpha: 0.6
               linestyle: solid
-          exclude:
-          - SWAA
+          exclude: []
           exclude_agents:
           - GPT-4 0125
           - Claude 3 Opus
@@ -5618,8 +5621,8 @@ stages:
     outs:
     - path: plots/logistic/double_line_all_data_retrodict_excluding_swaa.png
       hash: md5
-      md5: 34f060c330bd82bfe476e2e40113a67a
-      size: 193478
+      md5: 5edcc46a30453ba15bb8339e383cc4d4
+      size: 187821
   plot_logistic_regression@double_line_all_data_retrodict_excluding_swaa_no_gpt_4_1106:
     cmd: python -m src.plot.logistic --input-file data/wrangled/logistic_fits_double_line_all_data.csv
       --runs-file data/external/all_runs.jsonl --release-dates data/external/release_dates.yaml
@@ -6207,8 +6210,8 @@ stages:
       size: 9757033
     - path: data/wrangled/logistic_fits/headline.csv
       hash: md5
-      md5: 092c493bac53a379a9d1b924f9abe699
-      size: 2501
+      md5: 4ba3afd0536876f81eadbc7656c95f93
+      size: 2502
     - path: matplotlibrc
       hash: md5
       md5: a6268afa6b0de2d0f934ff95c60851e4
@@ -6434,8 +6437,8 @@ stages:
       size: 9757033
     - path: data/wrangled/logistic_fits/ga_rebench.csv
       hash: md5
-      md5: ac9e210075df5b5f0d194c264d1282ed
-      size: 1998
+      md5: f7de54a12fbc378d0b1bf531f8c9fa7f
+      size: 1994
     - path: matplotlibrc
       hash: md5
       md5: a6268afa6b0de2d0f934ff95c60851e4
@@ -8580,8 +8583,8 @@ stages:
     deps:
     - path: data/wrangled/logistic_fits/headline.csv
       hash: md5
-      md5: 092c493bac53a379a9d1b924f9abe699
-      size: 2501
+      md5: 4ba3afd0536876f81eadbc7656c95f93
+      size: 2502
     - path: matplotlibrc
       hash: md5
       md5: a6268afa6b0de2d0f934ff95c60851e4
@@ -8774,8 +8777,8 @@ stages:
     deps:
     - path: data/wrangled/logistic_fits/headline.csv
       hash: md5
-      md5: 092c493bac53a379a9d1b924f9abe699
-      size: 2501
+      md5: 4ba3afd0536876f81eadbc7656c95f93
+      size: 2502
     - path: matplotlibrc
       hash: md5
       md5: a6268afa6b0de2d0f934ff95c60851e4
@@ -9174,7 +9177,7 @@ stages:
   wrangle_bootstrap_logistic@headline:
     cmd: python -m src.wrangle.bootstrap --fig-name headline --runs-file data/external/all_runs.jsonl
       --output-bootstrap-horizons-file data/wrangled/bootstrap/headline.csv --n-bootstrap
-      10
+      10000
     deps:
     - path: data/external/all_runs.jsonl
       hash: md5
@@ -9203,8 +9206,8 @@ stages:
     outs:
     - path: data/wrangled/bootstrap/headline.csv
       hash: md5
-      md5: 4a818e29d26b30420552aefec8eeacfd
-      size: 6138
+      md5: d5c855a4bd70a80a8c29af215b0cc756
+      size: 5619248
   wrangle_bootstrap_logistic@single_line_2023_ga_rebench:
     cmd: python -m src.wrangle.bootstrap --fig-name single_line_2023_ga_rebench --runs-file
       data/external/all_runs.jsonl --output-bootstrap-horizons-file data/wrangled/bootstrap/single_line_2023_ga_rebench.csv
@@ -9328,7 +9331,7 @@ stages:
   wrangle_bootstrap_logistic@swe_bench:
     cmd: python -m src.wrangle.bootstrap --fig-name swe_bench --runs-file data/external/swe_bench_runs.jsonl
       --output-bootstrap-horizons-file data/wrangled/bootstrap/swe_bench.csv --n-bootstrap
-      10
+      10000
     deps:
     - path: data/external/swe_bench_runs.jsonl
       hash: md5
@@ -9356,8 +9359,8 @@ stages:
     outs:
     - path: data/wrangled/bootstrap/swe_bench.csv
       hash: md5
-      md5: 640e9d17307ffaef7535567588b10ff4
-      size: 1222
+      md5: 9b5f19b214a9cee5e675ef160e3af82d
+      size: 1110571
   wrangle_logistic_regression@headline:
     cmd: python -m src.wrangle.logistic --fig-name headline --runs-file data/external/all_runs.jsonl
       --output-logistic-fits-file data/wrangled/logistic_fits/headline.csv --release-dates
@@ -9373,8 +9376,8 @@ stages:
       size: 627
     - path: data/wrangled/bootstrap/headline.csv
       hash: md5
-      md5: 4a818e29d26b30420552aefec8eeacfd
-      size: 6138
+      md5: d5c855a4bd70a80a8c29af215b0cc756
+      size: 5619248
     - path: src/utils/logistic.py
       hash: md5
       md5: b0a1cf1eb693106478e80e473a30ab94
@@ -9398,8 +9401,8 @@ stages:
     outs:
     - path: data/wrangled/logistic_fits/headline.csv
       hash: md5
-      md5: 092c493bac53a379a9d1b924f9abe699
-      size: 2501
+      md5: 4ba3afd0536876f81eadbc7656c95f93
+      size: 2502
   wrangle_logistic_regression@single_line_2023_ga_rebench:
     cmd: python -m src.wrangle.logistic --fig-name single_line_2023_ga_rebench --runs-file
       data/external/all_runs.jsonl --output-logistic-fits-file data/wrangled/logistic_fits/single_line_2023_ga_rebench.csv
@@ -9535,8 +9538,8 @@ stages:
       size: 820060
     - path: data/wrangled/bootstrap/swe_bench.csv
       hash: md5
-      md5: 640e9d17307ffaef7535567588b10ff4
-      size: 1222
+      md5: 9b5f19b214a9cee5e675ef160e3af82d
+      size: 1110571
     - path: src/utils/logistic.py
       hash: md5
       md5: b0a1cf1eb693106478e80e473a30ab94
@@ -9559,7 +9562,7 @@ stages:
     outs:
     - path: data/wrangled/logistic_fits/swe_bench.csv
       hash: md5
-      md5: 929cb3bc3bce648aa8dab92ec4a101fe
+      md5: 0229503d74c29bf44e97a6b89edeb57d
       size: 875
   plot_individual_binned_residuals@default:
     cmd: python -m src.plot.individual_binned_residuals --all-runs-file data/external/all_runs.jsonl
@@ -9572,8 +9575,8 @@ stages:
       size: 9757033
     - path: data/wrangled/logistic_fits/headline.csv
       hash: md5
-      md5: 092c493bac53a379a9d1b924f9abe699
-      size: 2501
+      md5: 4ba3afd0536876f81eadbc7656c95f93
+      size: 2502
     - path: matplotlibrc
       hash: md5
       md5: a6268afa6b0de2d0f934ff95c60851e4
@@ -9791,7 +9794,7 @@ stages:
   wrangle_bootstrap_logistic@ga_rebench:
     cmd: python -m src.wrangle.bootstrap --fig-name ga_rebench --runs-file data/external/all_runs.jsonl
       --output-bootstrap-horizons-file data/wrangled/bootstrap/ga_rebench.csv --n-bootstrap
-      10
+      10000
     deps:
     - path: data/external/all_runs.jsonl
       hash: md5
@@ -9820,8 +9823,8 @@ stages:
     outs:
     - path: data/wrangled/bootstrap/ga_rebench.csv
       hash: md5
-      md5: 86b1f63e369e6a32c9169307136b7569
-      size: 2626
+      md5: a4a86e279ba25313aa940d7060097431
+      size: 2404714
   wrangle_logistic_regression@ga_rebench:
     cmd: python -m src.wrangle.logistic --fig-name ga_rebench --runs-file data/external/all_runs.jsonl
       --output-logistic-fits-file data/wrangled/logistic_fits/ga_rebench.csv --release-dates
@@ -9837,8 +9840,8 @@ stages:
       size: 627
     - path: data/wrangled/bootstrap/ga_rebench.csv
       hash: md5
-      md5: 86b1f63e369e6a32c9169307136b7569
-      size: 2626
+      md5: a4a86e279ba25313aa940d7060097431
+      size: 2404714
     - path: src/utils/logistic.py
       hash: md5
       md5: b0a1cf1eb693106478e80e473a30ab94
@@ -9862,8 +9865,8 @@ stages:
     outs:
     - path: data/wrangled/logistic_fits/ga_rebench.csv
       hash: md5
-      md5: ac9e210075df5b5f0d194c264d1282ed
-      size: 1998
+      md5: f7de54a12fbc378d0b1bf531f8c9fa7f
+      size: 1994
   ga_swebench_comparison_table:
     cmd: python -m src.ga_swebench_comparison_table --headline-fits-file data/wrangled/logistic_fits/headline.csv
       --swebench-fits-file data/wrangled/logistic_fits/swe_bench.csv --output-table-file
@@ -9871,11 +9874,11 @@ stages:
     deps:
     - path: data/wrangled/logistic_fits/headline.csv
       hash: md5
-      md5: 092c493bac53a379a9d1b924f9abe699
-      size: 2501
+      md5: 4ba3afd0536876f81eadbc7656c95f93
+      size: 2502
     - path: data/wrangled/logistic_fits/swe_bench.csv
       hash: md5
-      md5: 929cb3bc3bce648aa8dab92ec4a101fe
+      md5: 0229503d74c29bf44e97a6b89edeb57d
       size: 875
     - path: src/ga_swebench_comparison_table.py
       hash: md5
@@ -9898,16 +9901,16 @@ stages:
       size: 9757033
     - path: data/wrangled/logistic_fits/headline.csv
       hash: md5
-      md5: 092c493bac53a379a9d1b924f9abe699
-      size: 2501
+      md5: 4ba3afd0536876f81eadbc7656c95f93
+      size: 2502
     - path: matplotlibrc
       hash: md5
       md5: a6268afa6b0de2d0f934ff95c60851e4
       size: 553
     - path: src/plot/logistic.py
       hash: md5
-      md5: 3ea972398375923df957a2c29178f301
-      size: 20373
+      md5: dd0d85d16853476717238f9a0b8b7ec4
+      size: 20605
     - path: src/utils/plots.py
       hash: md5
       md5: 4a6968e37bf06af72e17a5d93910ec08
@@ -10126,8 +10129,8 @@ stages:
     outs:
     - path: plots/logistic/p80.png
       hash: md5
-      md5: c2f3f0eadc41c9f65aba10cfe6d164a9
-      size: 176359
+      md5: 389a2b2bf0e9e6711dda9f22df4be082
+      size: 176568
   plot_logistic_regression@swe_bench:
     cmd: python -m src.plot.logistic --input-file data/wrangled/logistic_fits/swe_bench.csv
       --runs-file data/external/swe_bench_runs.jsonl --release-dates data/external/release_dates.yaml
@@ -10140,7 +10143,7 @@ stages:
       size: 820060
     - path: data/wrangled/logistic_fits/swe_bench.csv
       hash: md5
-      md5: 929cb3bc3bce648aa8dab92ec4a101fe
+      md5: 0229503d74c29bf44e97a6b89edeb57d
       size: 875
     - path: matplotlibrc
       hash: md5
@@ -10148,8 +10151,8 @@ stages:
       size: 553
     - path: src/plot/logistic.py
       hash: md5
-      md5: 3ea972398375923df957a2c29178f301
-      size: 20373
+      md5: dd0d85d16853476717238f9a0b8b7ec4
+      size: 20605
     - path: src/utils/plots.py
       hash: md5
       md5: 4a6968e37bf06af72e17a5d93910ec08
@@ -10328,14 +10331,32 @@ stages:
           trendlines:
           - fit_type: exponential
             skip_annotation: false
-            caption:
+            caption: Fit on SWE-Bench tasks
             after_date: '2023-01-01'
             color: blue
             line_start_date: '2023-01-01'
             line_end_date: '2025-03-14'
             display_r_squared: true
+            display_after_date: false
             data_file:
             styling:
+          - fit_type: exponential
+            skip_annotation: false
+            caption: "Fit on our tasks\nModels ≥ GPT-4 1106"
+            after_date: '2023-11-05'
+            color: black
+            line_start_date: '2018-09-03'
+            line_end_date: '2025-03-14'
+            display_r_squared: false
+            display_after_date: false
+            data_file: data/wrangled/logistic_fits/headline.csv
+            styling:
+              linewidth: 1.5
+              linestyle: dashed
+            exclude_agents:
+            - GPT-4 0125
+            - Claude 3 Opus
+            - GPT-4 Turbo
           x_lim_start: '2023-01-01'
           x_lim_end: '2025-03-14'
           lower_y_lim: 0.05
@@ -10345,8 +10366,8 @@ stages:
     outs:
     - path: plots/logistic/swe_bench.png
       hash: md5
-      md5: 037f816c6a9f2201201a99d910be35ef
-      size: 125478
+      md5: 8c05aad7e4b08249e4a3ee118b087f40
+      size: 153455
   plot_multiverse_boxplot:
     cmd: python -m src.plot.multiverse_boxplot --records-file data/wrangled/multiverse/records.json
       --output-file plots/multiverse/boxplot.png --output-metrics-file metrics/multiverse_boxplot.yaml
@@ -10454,16 +10475,12 @@ stages:
   plot_cost:
     cmd: python -m src.plot.cost --savings-info-file metrics/costs/savings_info.csv
       --savings-non-bucketed-info-file metrics/costs/savings_non_bucketed_info.csv
-      --release-dates data/external/release_dates.yaml --cost-info-file data/processed/wrangled/costs/cost_info.csv
+      --release-dates data/external/release_dates.yaml
     deps:
     - path: data/external/release_dates.yaml
       hash: md5
       md5: eaec5ddbcb956857b8fe079199f2fb15
       size: 627
-    - path: data/processed/wrangled/costs/cost_info.csv
-      hash: md5
-      md5: a8886e521033da5535c321c460454fe4
-      size: 309510
     - path: metrics/costs/savings_info.csv
       hash: md5
       md5: 1b75e5362367b7cedc130bd5d17371c6
@@ -10647,36 +10664,36 @@ stages:
     outs:
     - path: plots/cost/agent_grid.png
       hash: md5
-      md5: af74c33f204e628b3ef7c9119214a79f
-      size: 568595
+      md5: 959fd1655bcac1b9f9b9bde8f25908d3
+      size: 568594
     - path: plots/cost/bucketed.png
       hash: md5
-      md5: 26afc65f8167eb9b3b08021d1a269cb6
-      size: 616589
+      md5: ff0660dcc31f371797c72e5015461a6d
+      size: 616588
     - path: plots/cost/non_bucketed.png
       hash: md5
-      md5: 43ae392ba1b84f6e718620e863cdc094
-      size: 317748
+      md5: 6afadd5ded424820f284074b6df0cb46
+      size: 317747
     - path: plots/cost/ratio_histogram_overall.png
       hash: md5
-      md5: 28456366ba32a75bddea821ab26d6f46
-      size: 126194
+      md5: e223443e94c9bd45a6ac5b2fe4181168
+      size: 126193
     - path: plots/cost/ratio_histograms.png
       hash: md5
-      md5: e97bbd91d8cab961074ced4eb467cc2f
-      size: 323311
+      md5: 2f9c8930824f072bd52397cb23669de9
+      size: 323310
     - path: plots/cost/ratio_vs_length.png
       hash: md5
-      md5: 88294a2dcafc64ce87e82df1dc3d648c
-      size: 1070756
+      md5: 9b718b049657ad0c3dd5f554c47bd4d3
+      size: 1083241
     - path: plots/cost/ratio_vs_length_swarm.png
       hash: md5
-      md5: 455a7f8dc4a5fea854fa14e515a92cf2
-      size: 498466
+      md5: ceae29d120989a3700e787d05ca78ecf
+      size: 494900
     - path: plots/cost/time_histograms.png
       hash: md5
-      md5: 8695beee6e91876d3569c3b6511e8a4a
-      size: 339003
+      md5: 00f617036fb4e1b02ba61a9c6b1d4f85
+      size: 339002
   plot_bootstrap_ci@headline-log:
     cmd: python -m src.plot.bootstrap_ci --fig-name headline --input-file data/wrangled/bootstrap/headline.csv
       --agent-summaries-file data/wrangled/logistic_fits/headline.csv --release-dates
@@ -10689,12 +10706,12 @@ stages:
       size: 627
     - path: data/wrangled/bootstrap/headline.csv
       hash: md5
-      md5: 4a818e29d26b30420552aefec8eeacfd
-      size: 6138
+      md5: d5c855a4bd70a80a8c29af215b0cc756
+      size: 5619248
     - path: data/wrangled/logistic_fits/headline.csv
       hash: md5
-      md5: 092c493bac53a379a9d1b924f9abe699
-      size: 2501
+      md5: 4ba3afd0536876f81eadbc7656c95f93
+      size: 2502
     - path: matplotlibrc
       hash: md5
       md5: a6268afa6b0de2d0f934ff95c60851e4
@@ -10705,8 +10722,8 @@ stages:
       size: 9856
     - path: src/plot/logistic.py
       hash: md5
-      md5: 3ea972398375923df957a2c29178f301
-      size: 20373
+      md5: dd0d85d16853476717238f9a0b8b7ec4
+      size: 20605
     params:
       params.yaml:
         log_level: INFO
@@ -10908,8 +10925,8 @@ stages:
     outs:
     - path: plots/bootstrap/headline-log.png
       hash: md5
-      md5: 15ba3415179ba310c460e5a705720c31
-      size: 214491
+      md5: b783fd56331e9a41108866baab687d43
+      size: 212920
   plot_bootstrap_ci@headline-linear:
     cmd: python -m src.plot.bootstrap_ci --fig-name headline --input-file data/wrangled/bootstrap/headline.csv
       --agent-summaries-file data/wrangled/logistic_fits/headline.csv --release-dates
@@ -10922,12 +10939,12 @@ stages:
       size: 627
     - path: data/wrangled/bootstrap/headline.csv
       hash: md5
-      md5: 4a818e29d26b30420552aefec8eeacfd
-      size: 6138
+      md5: d5c855a4bd70a80a8c29af215b0cc756
+      size: 5619248
     - path: data/wrangled/logistic_fits/headline.csv
       hash: md5
-      md5: 092c493bac53a379a9d1b924f9abe699
-      size: 2501
+      md5: 4ba3afd0536876f81eadbc7656c95f93
+      size: 2502
     - path: matplotlibrc
       hash: md5
       md5: a6268afa6b0de2d0f934ff95c60851e4
@@ -10938,8 +10955,8 @@ stages:
       size: 9856
     - path: src/plot/logistic.py
       hash: md5
-      md5: 3ea972398375923df957a2c29178f301
-      size: 20373
+      md5: dd0d85d16853476717238f9a0b8b7ec4
+      size: 20605
     params:
       params.yaml:
         log_level: INFO
@@ -11141,8 +11158,8 @@ stages:
     outs:
     - path: plots/bootstrap/headline-linear.png
       hash: md5
-      md5: 5d13d87e2ced5f270840f78f169439e8
-      size: 154675
+      md5: 80c081afc5a15e8e71b66c226a9f094a
+      size: 154237
   plot_task_distribution:
     cmd: python -m src.plot.task_distribution --runs-file data/external/all_runs.jsonl
       --output-file plots/task_distribution.png
@@ -11322,8 +11339,8 @@ stages:
     outs:
     - path: plots/task_distribution.png
       hash: md5
-      md5: 48e635bfb291dd9f3b8627d81a70fe56
-      size: 52651
+      md5: 34f61632db7fd78878dd30eb8404ca5b
+      size: 52650
   plot_messiness:
     cmd: python src/plot/messiness.py --runs-file data/external/all_runs.jsonl --messiness-file
       data/external/messiness.csv --messiness-tasks-file data/external/messiness_tasks.csv
@@ -11350,12 +11367,12 @@ stages:
     outs:
     - path: data/metrics/messiness/analysis_results.txt
       hash: md5
-      md5: da5ea0d047b08fe57c975a6175a24336
-      size: 10608
+      md5: 241a71139f860d5f8d663a27dcffb9ba
+      size: 10607
     - path: plots/messiness/logistic_heatmap_expanded_combined_alpha_0.010.png
       hash: md5
-      md5: 110e548abefd8ca9ab46dc23bf120117
-      size: 5082193
+      md5: 00b879a9100180906273fcf564ff9e97
+      size: 5082150
     - path: plots/messiness/messiness_effect_expanded_combined_alpha_0.010.png
       hash: md5
       md5: 017483f9e4f0c44ef503db3eedf1ada5
@@ -11414,8 +11431,8 @@ stages:
       size: 627
     - path: data/wrangled/logistic_fits/headline.csv
       hash: md5
-      md5: 092c493bac53a379a9d1b924f9abe699
-      size: 2501
+      md5: 4ba3afd0536876f81eadbc7656c95f93
+      size: 2502
     - path: src/plot/success_correlations.py
       hash: md5
       md5: 21751b3bcc3cf329e4cf55740508b9a6
@@ -11474,7 +11491,7 @@ stages:
   wrangle_bootstrap_logistic@partial_scoring:
     cmd: python -m src.wrangle.bootstrap --fig-name partial_scoring --runs-file data/external/all_runs.jsonl
       --output-bootstrap-horizons-file data/wrangled/bootstrap/partial_scoring.csv
-      --n-bootstrap 10
+      --n-bootstrap 10000
     deps:
     - path: data/external/all_runs.jsonl
       hash: md5
@@ -11504,8 +11521,8 @@ stages:
     outs:
     - path: data/wrangled/bootstrap/partial_scoring.csv
       hash: md5
-      md5: 08561679e721b5977a2cbac9f1ca01b1
-      size: 6151
+      md5: adecf7fb3b2072580c776c9d2718f352
+      size: 5626889
   wrangle_logistic_regression@partial_scoring:
     cmd: python -m src.wrangle.logistic --fig-name partial_scoring --runs-file data/external/all_runs.jsonl
       --output-logistic-fits-file data/wrangled/logistic_fits/partial_scoring.csv
@@ -11521,8 +11538,8 @@ stages:
       size: 627
     - path: data/wrangled/bootstrap/partial_scoring.csv
       hash: md5
-      md5: 08561679e721b5977a2cbac9f1ca01b1
-      size: 6151
+      md5: adecf7fb3b2072580c776c9d2718f352
+      size: 5626889
     - path: src/utils/logistic.py
       hash: md5
       md5: b0a1cf1eb693106478e80e473a30ab94
@@ -11547,8 +11564,8 @@ stages:
     outs:
     - path: data/wrangled/logistic_fits/partial_scoring.csv
       hash: md5
-      md5: 900ad14f872c6af0fcb6ca4a3138eabf
-      size: 2546
+      md5: 9982ce2665bc55396635bca56809a85d
+      size: 2545
   plot_logistic_regression@partial_scoring:
     cmd: python -m src.plot.logistic --input-file data/wrangled/logistic_fits/partial_scoring.csv
       --runs-file data/external/all_runs.jsonl --release-dates data/external/release_dates.yaml
@@ -11561,16 +11578,16 @@ stages:
       size: 9757033
     - path: data/wrangled/logistic_fits/partial_scoring.csv
       hash: md5
-      md5: 900ad14f872c6af0fcb6ca4a3138eabf
-      size: 2546
+      md5: 9982ce2665bc55396635bca56809a85d
+      size: 2545
     - path: matplotlibrc
       hash: md5
       md5: a6268afa6b0de2d0f934ff95c60851e4
       size: 553
     - path: src/plot/logistic.py
       hash: md5
-      md5: 3ea972398375923df957a2c29178f301
-      size: 20373
+      md5: dd0d85d16853476717238f9a0b8b7ec4
+      size: 20605
     - path: src/utils/plots.py
       hash: md5
       md5: 4a6968e37bf06af72e17a5d93910ec08
@@ -11776,8 +11793,8 @@ stages:
     outs:
     - path: plots/logistic/partial_scoring.png
       hash: md5
-      md5: 6bc50e1bb30df4415066e38ded32df28
-      size: 166070
+      md5: e3518dcb316d4e2645211259ff578694
+      size: 165943
   plot_individual_histograms@human_baselines:
     cmd: python -m src.plot.individual_histograms --all-runs-file data/external/all_runs.jsonl
       --output-file plots/individual_histograms/human_baselines/histograms.png --plot-format
@@ -11790,8 +11807,8 @@ stages:
       size: 9757033
     - path: data/wrangled/logistic_fits/headline.csv
       hash: md5
-      md5: 092c493bac53a379a9d1b924f9abe699
-      size: 2501
+      md5: 4ba3afd0536876f81eadbc7656c95f93
+      size: 2502
     - path: matplotlibrc
       hash: md5
       md5: a6268afa6b0de2d0f934ff95c60851e4
@@ -12075,8 +12092,8 @@ stages:
     outs:
     - path: plots/messiness/success_trend_by_messiness_with_boundary_0.5.png
       hash: md5
-      md5: c2fa2b2bb326f8d6b30dd4e8e9d27675
-      size: 478873
+      md5: b6e6c3eae1277d38e6f18d21c462c82d
+      size: 478920
   plot_success_trend_by_messiness_and_length@0.5:
     cmd: python src/plot/success_trend_by_messiness_and_length.py --runs-file data/external/all_runs.jsonl
       --release-dates data/external/release_dates.yaml --messiness-file data/external/messiness.csv
@@ -12108,8 +12125,8 @@ stages:
     outs:
     - path: plots/messiness/success_trend_by_messiness_and_length_with_boundary_0.5.png
       hash: md5
-      md5: 4cfbc88d67450b5287b85758e0b632e3
-      size: 617959
+      md5: 977c76e21e0a82b6b3a615205b0cf803
+      size: 617652
   plot_success_trend_by_messiness_and_length@0.75:
     cmd: python src/plot/success_trend_by_messiness_and_length.py --runs-file data/external/all_runs.jsonl
       --release-dates data/external/release_dates.yaml --messiness-file data/external/messiness.csv
@@ -12141,8 +12158,8 @@ stages:
     outs:
     - path: plots/messiness/success_trend_by_messiness_and_length_with_boundary_0.75.png
       hash: md5
-      md5: f08fcbdd266d513d3c35e4fe930d4662
-      size: 613270
+      md5: 314ec957b7399d3b33de88d9712d1ad8
+      size: 613197
   plot_success_rates:
     cmd: python src/plot/success_rates.py --runs-file data/external/all_runs.jsonl
       --output-plots-dir plots/success_rates --output-data-dir data/wrangled/success_rates
@@ -12190,16 +12207,16 @@ stages:
       size: 9757033
     - path: data/wrangled/logistic_fits/headline.csv
       hash: md5
-      md5: 092c493bac53a379a9d1b924f9abe699
-      size: 2501
+      md5: 4ba3afd0536876f81eadbc7656c95f93
+      size: 2502
     - path: matplotlibrc
       hash: md5
       md5: a6268afa6b0de2d0f934ff95c60851e4
       size: 553
     - path: src/plot/logistic.py
       hash: md5
-      md5: 3ea972398375923df957a2c29178f301
-      size: 20373
+      md5: dd0d85d16853476717238f9a0b8b7ec4
+      size: 20605
     - path: src/utils/plots.py
       hash: md5
       md5: 4a6968e37bf06af72e17a5d93910ec08
@@ -12403,8 +12420,8 @@ stages:
     outs:
     - path: plots/logistic/all_models.png
       hash: md5
-      md5: cb6c45aa1ea50644e5998e3c1d6cf1f9
-      size: 188513
+      md5: 88d3af86fc9b48f07934ffdab9f5a267
+      size: 188692
   plot_bootstrap_ci@twitter_headline-log:
     cmd: python -m src.plot.bootstrap_ci --fig-name twitter_headline --input-file
       data/wrangled/bootstrap/headline.csv --agent-summaries-file data/wrangled/logistic_fits/headline.csv
@@ -12417,12 +12434,12 @@ stages:
       size: 627
     - path: data/wrangled/bootstrap/headline.csv
       hash: md5
-      md5: 4a818e29d26b30420552aefec8eeacfd
-      size: 6138
+      md5: d5c855a4bd70a80a8c29af215b0cc756
+      size: 5619248
     - path: data/wrangled/logistic_fits/headline.csv
       hash: md5
-      md5: 092c493bac53a379a9d1b924f9abe699
-      size: 2501
+      md5: 4ba3afd0536876f81eadbc7656c95f93
+      size: 2502
     - path: matplotlibrc
       hash: md5
       md5: a6268afa6b0de2d0f934ff95c60851e4
@@ -12433,8 +12450,8 @@ stages:
       size: 9856
     - path: src/plot/logistic.py
       hash: md5
-      md5: 3ea972398375923df957a2c29178f301
-      size: 20373
+      md5: dd0d85d16853476717238f9a0b8b7ec4
+      size: 20605
     params:
       params.yaml:
         log_level: INFO
@@ -12660,8 +12677,8 @@ stages:
     outs:
     - path: plots/bootstrap/twitter_headline-log.png
       hash: md5
-      md5: 213e039d38c512438869d822b1b9e414
-      size: 145668
+      md5: 61987177164ed42c3b1feef512a7f379
+      size: 145620
   plot_bootstrap_ci@twitter_headline-linear:
     cmd: python -m src.plot.bootstrap_ci --fig-name twitter_headline --input-file
       data/wrangled/bootstrap/headline.csv --agent-summaries-file data/wrangled/logistic_fits/headline.csv
@@ -12674,12 +12691,12 @@ stages:
       size: 627
     - path: data/wrangled/bootstrap/headline.csv
       hash: md5
-      md5: 4a818e29d26b30420552aefec8eeacfd
-      size: 6138
+      md5: d5c855a4bd70a80a8c29af215b0cc756
+      size: 5619248
     - path: data/wrangled/logistic_fits/headline.csv
       hash: md5
-      md5: 092c493bac53a379a9d1b924f9abe699
-      size: 2501
+      md5: 4ba3afd0536876f81eadbc7656c95f93
+      size: 2502
     - path: matplotlibrc
       hash: md5
       md5: a6268afa6b0de2d0f934ff95c60851e4
@@ -12690,8 +12707,8 @@ stages:
       size: 9856
     - path: src/plot/logistic.py
       hash: md5
-      md5: 3ea972398375923df957a2c29178f301
-      size: 20373
+      md5: dd0d85d16853476717238f9a0b8b7ec4
+      size: 20605
     params:
       params.yaml:
         log_level: INFO
@@ -12917,8 +12934,8 @@ stages:
     outs:
     - path: plots/bootstrap/twitter_headline-linear.png
       hash: md5
-      md5: 743c64cafc565748e94ad4090c6c30ee
-      size: 108055
+      md5: e6e9ce06256a89cbb8e3ed605ab34478
+      size: 107870
   plot_logistic_regression@double_line_2024_trendline:
     cmd: python -m src.plot.logistic --input-file data/wrangled/logistic_fits/headline.csv
       --runs-file data/external/all_runs.jsonl --release-dates data/external/release_dates.yaml
@@ -12931,16 +12948,16 @@ stages:
       size: 9757033
     - path: data/wrangled/logistic_fits/headline.csv
       hash: md5
-      md5: 092c493bac53a379a9d1b924f9abe699
-      size: 2501
+      md5: 4ba3afd0536876f81eadbc7656c95f93
+      size: 2502
     - path: matplotlibrc
       hash: md5
       md5: a6268afa6b0de2d0f934ff95c60851e4
       size: 553
     - path: src/plot/logistic.py
       hash: md5
-      md5: 3ea972398375923df957a2c29178f301
-      size: 20373
+      md5: dd0d85d16853476717238f9a0b8b7ec4
+      size: 20605
     - path: src/utils/plots.py
       hash: md5
       md5: 4a6968e37bf06af72e17a5d93910ec08
@@ -13149,8 +13166,8 @@ stages:
     outs:
     - path: plots/logistic/double_line_2024_trendline.png
       hash: md5
-      md5: c108bf2741f8939ac67ad8090045e267
-      size: 182065
+      md5: 0ce48e10f033d88299940d4a595e5d6a
+      size: 182269
   plot_horizon_alternative_fits@alternative_fits:
     cmd: python -m src.plot.logistic_alternative_fits --input-file data/wrangled/logistic_fits/headline.csv
       --output-file plots/horizon_alternative_fits.png --runs-file data/external/all_runs.jsonl
@@ -13163,16 +13180,16 @@ stages:
       size: 9757033
     - path: data/wrangled/logistic_fits/headline.csv
       hash: md5
-      md5: 092c493bac53a379a9d1b924f9abe699
-      size: 2501
+      md5: 4ba3afd0536876f81eadbc7656c95f93
+      size: 2502
     - path: matplotlibrc
       hash: md5
       md5: a6268afa6b0de2d0f934ff95c60851e4
       size: 553
     - path: src/plot/logistic.py
       hash: md5
-      md5: 3ea972398375923df957a2c29178f301
-      size: 20373
+      md5: dd0d85d16853476717238f9a0b8b7ec4
+      size: 20605
     - path: src/plot/logistic_alternative_fits.py
       hash: md5
       md5: e83a569e52273672971756176006db40
@@ -13392,8 +13409,8 @@ stages:
     outs:
     - path: plots/horizon_alternative_fits.png
       hash: md5
-      md5: 1cf296617111c2b4eefe0b57c63481b1
-      size: 161091
+      md5: 8e82e58bbfbc8b4b86c64db9ac2ab28e
+      size: 169499
   generate_model_task_table:
     cmd: python src/plot/generate_model_task_table.py --input-file data/external/all_runs.jsonl
       --output-file plots/model_task_table.tex
@@ -13444,12 +13461,12 @@ stages:
       size: 627
     - path: data/wrangled/logistic_fits/headline.csv
       hash: md5
-      md5: 092c493bac53a379a9d1b924f9abe699
-      size: 2501
+      md5: 4ba3afd0536876f81eadbc7656c95f93
+      size: 2502
     - path: src/plot/logistic.py
       hash: md5
-      md5: 3ea972398375923df957a2c29178f301
-      size: 20373
+      md5: dd0d85d16853476717238f9a0b8b7ec4
+      size: 20605
     - path: src/wrangle/bootstrap.py
       hash: md5
       md5: 335be3a12fb448e411ec648bcdb0f8bb
