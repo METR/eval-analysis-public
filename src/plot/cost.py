@@ -458,7 +458,7 @@ def _plot_duration_stats(
             pad=plot_params["xlabelpad"],
         )
         axes[i].set_xlabel(
-            "Cost Ratio (Model Cost / Human Cost)",
+            "Time Ratio (Model Time / Human Time)",
             fontsize=plot_params["ax_label_fontsize"],
             labelpad=plot_params["xlabelpad"],
         )
@@ -474,7 +474,7 @@ def _plot_duration_stats(
         fig.delaxes(axes[i])
 
     plt.suptitle(
-        "Distribution of Cost Ratios by Time Bucket",
+        "Distribution of Time Ratios by Time Bucket",
         fontsize=plot_params["title_fontsize"] + 2,
         y=1.02,
     )
@@ -656,7 +656,7 @@ def main() -> None:
     parser.add_argument(
         "--cost-info-file",
         type=pathlib.Path,
-        default="/home/metr/app/public/data/processed/wrangled/costs/cost_info.csv",
+        default="data/processed/wrangled/costs/cost_info.csv",
     )
     parser.add_argument("--log-level", type=str, default="INFO")
     args = parser.parse_args()

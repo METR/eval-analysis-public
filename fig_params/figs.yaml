@@ -162,27 +162,27 @@ figs:
       logistic_file: headline
       weighting: invsqrt_task_weight
       include_task_distribution: none
-      title: "50% Time Horizon Retrodicted from 2023-2024 Data"
+      title: "50% Time Horizon Retrodicted from 2023-2025 Data"
 
       trendlines:
         - fit_type: exponential
           skip_annotation: false
-          caption: Actual Fit
+          caption: Fit on all data
           after_date: "2019-01-01"
           color: black
           line_start_date: "2018-09-03"
           line_end_date: "2025-07-01"
-          display_r_squared: true
+          display_r_squared: false
           data_file: null
           styling:
             linewidth: 2
             alpha: 0.6
             linestyle: solid
+          exclude_agents: *non_frontier_agents
         - fit_type: exponential
           skip_annotation: false
           caption: |-
-            Retrodiction Fit
-            (Fit on 2023 onwards non-SWAA data)
+            Fit on non-SWAA tasks, 2023-2025 models
           after_date: "2023-01-01"
           color: blue
           line_start_date: "2018-09-03"
@@ -193,9 +193,11 @@ figs:
             linewidth: 2
             alpha: 0.6
             linestyle: solid
-      exclude:
-        - "SWAA"
-      exclude_agents: *non_frontier_agents
+      exclude: []
+      exclude_agents:
+        - GPT-4 0125
+        - Claude 3 Opus
+        - GPT-4 Turbo
       lower_y_lim: 0.0083333 # 0.5 seconds
       upper_y_lim: 240
       x_lim_start: "2018-09-03"
@@ -228,14 +230,29 @@ figs:
       trendlines:
         - fit_type: exponential
           skip_annotation: false
-          caption: null
+          caption: Fit on SWE-Bench tasks
           after_date: "2023-01-01"
           color: blue
           line_start_date: "2023-01-01"
           line_end_date: "2025-03-14"
           display_r_squared: true
+          display_after_date: false
           data_file: null
           styling: null
+        - fit_type: exponential
+          skip_annotation: false
+          caption: "Fit on our tasks\nModels ≥ GPT-4 1106"
+          after_date: "2023-11-05"
+          color: black
+          line_start_date: "2018-09-03"
+          line_end_date: "2025-03-14"
+          display_r_squared: false
+          display_after_date: false
+          data_file: data/wrangled/logistic_fits/headline.csv
+          styling:
+            linewidth: 1.5
+            linestyle: dashed
+          exclude_agents: *non_frontier_agents
       x_lim_start: "2023-01-01"
       x_lim_end: "2025-03-14"
       lower_y_lim: 0.05
@@ -350,6 +367,33 @@ figs:
       title: "Human baseliner performance on tasks"
       include_agents:
         - human
+    c_37:
+      <<: *default_histogram
+      n_subplot_cols: 1
+      title: ""
+      width: 7
+      include_agents:
+        - Claude 3.7 Sonnet
+    claudes:
+      <<: *default_histogram
+      n_subplot_cols: 1
+      title: ""
+      width: 7
+      include_agents:
+        - Claude 3.7 Sonnet
+        - Claude 3.5 Sonnet (New)
+        - Claude 3.5 Sonnet (Old)
+        - Claude 3 Opus
+    stacked:
+      <<: *default_histogram
+      n_subplot_cols: 1
+      title: ""
+      width: 7
+      include_agents:
+        - Claude 3.7 Sonnet
+        - GPT-4 0314
+        - GPT-2
+
   plot_multiverse_boxplot:
     weightings: ["equal_task_weight", "invsqrt_task_weight"]
     regularizations: [0.2, 0.1, 0.05, 0.02, 0.01]

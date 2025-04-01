@@ -6,7 +6,7 @@ HCAST:
   num_unique_tasks: 97
 RE-Bench:
   num_human_runs: 0
-  num_runs_all_agents: 745
+  num_runs_all_agents: 768
   num_tasks_with_baselines: 4
   num_tasks_with_estimates: 3
   num_unique_tasks: 7
@@ -16,5 +16,5 @@ SWAA:
   num_tasks_with_baselines: 66
   num_tasks_with_estimates: 0
   num_unique_tasks: 66
-total_runs: 18964
+total_runs: 18987
 unique_tasks: 170
