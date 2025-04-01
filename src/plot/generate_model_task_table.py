@@ -31,14 +31,20 @@ def generate_latex_table(
 
     # Sort index alphabetically
     pivot = pivot.sort_index()
+    pivot.loc["GPT-2"] = ["-", "-", pivot.loc["GPT-2", "SWAA"]]
+    # Drop column name from index so it doesn't print
+    pivot.index.name = None
 
     # Convert to LaTeX with specific formatting
     latex_table = pivot.to_latex(
-        float_format=lambda x: f"{x:.3f}",
+        float_format=lambda x: f"{x:.2f}",
         bold_rows=True,
         caption="Average Success Rate by Model and Task Source",
         label="tab:model_task_success",
         position="htbp",
+        header=["HCAST", "RE-Bench", "SWAA"],
+        columns=["HCAST", "RE-Bench", "SWAA"],
+        index_names=False,
     )
 
     # Write to file

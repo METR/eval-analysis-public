@@ -39,6 +39,7 @@ class ScriptParams(TypedDict):
     annotate_p50: bool
     exclude: list[Literal["General Autonomy", "SWAA", "RE-Bench"]]
     include_agents: list[str]
+    width: float
 
 
 def _darken_color(color: str, factor: float = 0.7) -> tuple[float, float, float]:
@@ -142,11 +143,12 @@ def plot_logistic_regression_on_histogram(
     n_agents = len(agent_summaries["agent"].unique())
     n_cols = script_params["n_subplot_cols"]
     n_rows = (n_agents + n_cols - 1) // n_cols  # Ceiling divisiona
+    width = script_params.get("width", 15)
 
     fig, axes = plt.subplots(
         n_rows,
         n_cols,
-        figsize=(15, 5 * n_rows),
+        figsize=(width, 5 * n_rows),
         sharey=True,
         height_ratios=[0.8] * n_rows,
     )
@@ -335,8 +337,10 @@ def plot_logistic_regression_on_histogram(
             )
 
         axes[idx].grid(True, alpha=0.15)
-        # if last row, plot legend
-        if idx % n_cols == n_cols - 1 and idx <= n_rows:
+        # if last column, plot legend, unless there is only one column in which case just show in top row
+        if (idx % n_cols == n_cols - 1 and idx <= n_rows * n_cols) and (
+            n_cols > 1 or idx == 0
+        ):
             axes[idx].legend(loc="upper right")
 
         axes[idx].set_ylim(-0.05, 1.05)

@@ -42,7 +42,7 @@ stages:
         --fig-name ${key}
         --runs-file data/external/${item.runs_file}.jsonl
         --output-bootstrap-horizons-file data/wrangled/bootstrap/${key}.csv
-        --n-bootstrap 1000
+        --n-bootstrap 10000
       deps:
         - src/wrangle/bootstrap.py
         - src/utils/logistic.py
