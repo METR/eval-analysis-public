@@ -23,7 +23,7 @@ humans a month.
 ## Installation
 
 This project contains a dev container, which we recommend using.  Alternatively, you can view the
-[.devcontainer/Dockerfile](Dockerfile) to see which dependencies need to be installed.
+[Dockerfile](.devcontainer/Dockerfile) to see which dependencies need to be installed.
 
  After installing those dependencies, the figures can be recreated by running:
 
