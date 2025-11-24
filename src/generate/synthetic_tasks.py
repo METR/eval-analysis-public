@@ -207,11 +207,11 @@ class SyntheticTaskGenerator:
             task_family=domain,
             domain=domain,
             description=description,
-            first_attempt_success_rate=round(difficulty, 4),
-            learning_rate_lambda=round(lambda_value, 4),
-            max_attempts=self.max_attempts,
+            first_attempt_success_rate=float(round(difficulty, 4)),
+            learning_rate_lambda=float(round(lambda_value, 4)),
+            max_attempts=int(self.max_attempts),
             verification_type=verification_type,
-            is_verifiable=is_verifiable
+            is_verifiable=bool(is_verifiable)
         )
 
     def generate_task_suite(self) -> List[TaskDefinition]:
