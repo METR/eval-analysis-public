@@ -13533,3 +13533,91 @@ stages:
       hash: md5
       md5: 78fa25ca458b9132372ef0776205d451
       size: 6697
+  generate_name_tasks:
+    cmd: poetry run python -m src.generate.synthetic_tasks
+    deps:
+    - path: src/generate/synthetic_tasks.py
+      hash: md5
+      md5: a3f2e3359614babaeb3168ee1ae7a40d
+      size: 12582
+    outs:
+    - path: data/external/name_tasks.yaml
+      hash: md5
+      md5: 5cd479a61f45b4f392ea1113ff77a944
+      size: 28739
+  generate_name_runs:
+    cmd: poetry run python -m src.generate.generate_runs
+    deps:
+    - path: data/external/name_tasks.yaml
+      hash: md5
+      md5: 5cd479a61f45b4f392ea1113ff77a944
+      size: 28739
+    - path: src/generate/generate_runs.py
+      hash: md5
+      md5: ad06d5d81ab78454696bc3d32335a857
+      size: 14871
+    - path: src/simulate/novice_learning.py
+      hash: md5
+      md5: 400ce59537b18563c6b6401d70692a77
+      size: 11284
+    outs:
+    - path: data/external/name_runs.jsonl
+      hash: md5
+      md5: aea5a5bbdd4c971105da2246e50479cb
+      size: 42574680
+  wrangle_name_metrics:
+    cmd: poetry run python -m src.wrangle.name_metrics
+    deps:
+    - path: data/external/name_runs.jsonl
+      hash: md5
+      md5: aea5a5bbdd4c971105da2246e50479cb
+      size: 42574680
+    - path: src/wrangle/name_metrics.py
+      hash: md5
+      md5: 0688aa9127913ec1cefe84c480f2af34
+      size: 15615
+    outs:
+    - path: data/wrangled/name_horizons.csv
+      hash: md5
+      md5: 3cb4899f08ea3894bfacfa0d19d895e3
+      size: 379
+    - path: data/wrangled/name_learning_curves.csv
+      hash: md5
+      md5: 6c505c3259a1d5ac708aee268fcfe27b
+      size: 12507
+  plot_name_results:
+    cmd: poetry run python -m src.plot.name_plots
+    deps:
+    - path: data/external/name_runs.jsonl
+      hash: md5
+      md5: aea5a5bbdd4c971105da2246e50479cb
+      size: 42574680
+    - path: data/wrangled/name_horizons.csv
+      hash: md5
+      md5: 3cb4899f08ea3894bfacfa0d19d895e3
+      size: 379
+    - path: data/wrangled/name_learning_curves.csv
+      hash: md5
+      md5: 6c505c3259a1d5ac708aee268fcfe27b
+      size: 12507
+    - path: src/plot/name_plots.py
+      hash: md5
+      md5: b575bbb887b1d1f5d72b360aee7e2550
+      size: 11484
+    outs:
+    - path: plots/name_ai_vs_human_first_attempt.png
+      hash: md5
+      md5: a8fce99879d897c0aedd7e4d33b02151
+      size: 171254
+    - path: plots/name_difficulty_distribution.png
+      hash: md5
+      md5: 7745399040169f168621e79c49fc5d03
+      size: 53812
+    - path: plots/name_learning_curves_sample.png
+      hash: md5
+      md5: f0af0913f5d1a829ead88752b1af5d52
+      size: 197160
+    - path: plots/name_n_attempt_horizons.png
+      hash: md5
+      md5: 1feee0f904c5c8c1f0f4436b366a0a02
+      size: 73675

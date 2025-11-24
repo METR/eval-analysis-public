@@ -568,3 +568,44 @@ stages:
     outs:
       - plots/model_task_table.tex
     desc: Generate a LaTeX table showing average score_binarized by model and task source.
+
+  # NAME (Novelty Achievement MeasurE) Pipeline
+  # Separate from time-horizon evaluation
+  
+  generate_name_tasks:
+    cmd: poetry run python -m src.generate.synthetic_tasks
+    deps:
+      - src/generate/synthetic_tasks.py
+    outs:
+      - data/external/name_tasks.yaml
+
+  generate_name_runs:
+    cmd: poetry run python -m src.generate.generate_runs
+    deps:
+      - src/generate/generate_runs.py
+      - src/simulate/novice_learning.py
+      - data/external/name_tasks.yaml
+    outs:
+      - data/external/name_runs.jsonl
+
+  wrangle_name_metrics:
+    cmd: poetry run python -m src.wrangle.name_metrics
+    deps:
+      - src/wrangle/name_metrics.py
+      - data/external/name_runs.jsonl
+    outs:
+      - data/wrangled/name_learning_curves.csv
+      - data/wrangled/name_horizons.csv
+
+  plot_name_results:
+    cmd: poetry run python -m src.plot.name_plots
+    deps:
+      - src/plot/name_plots.py
+      - data/wrangled/name_learning_curves.csv
+      - data/wrangled/name_horizons.csv
+      - data/external/name_runs.jsonl
+    outs:
+      - plots/name_learning_curves_sample.png
+      - plots/name_ai_vs_human_first_attempt.png
+      - plots/name_n_attempt_horizons.png
+      - plots/name_difficulty_distribution.png
