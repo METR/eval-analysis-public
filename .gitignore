@@ -1,0 +1,30 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+.eggs/
+dist/
+build/
+
+# DVC
+.dvc/cache/
+.dvc/tmp/
+
+# Generated outputs (created by dvc repro)
+reports/*/data/wrangled/
+reports/*/plots/
+reports/*/metrics/
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db

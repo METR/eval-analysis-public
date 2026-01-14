@@ -1,0 +1,39 @@
+[project]
+name = "horizon"
+version = "0.1.0"
+description = "METR Time Horizon Analysis - Measuring AI Agent Capabilities"
+authors = [{ name = "METR", email = "contact@metr.org" }]
+requires-python = ">=3.10"
+readme = "README.md"
+dependencies = [
+    "dvc>=3.0",
+    "matplotlib>=3.7",
+    "numpy>=1.24",
+    "pandas>=2.0",
+    "pyyaml>=6.0",
+    "scikit-learn>=1.3",
+    "scipy>=1.10",
+    "seaborn>=0.12",
+    "tqdm>=4.60",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+    "ruff>=0.1",
+]
+
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["horizon*"]
+
+[tool.ruff.lint]
+extend-select = ["ANN"]
+ignore = ["ANN401"]
+
+[tool.ruff.lint.flake8-annotations]
+mypy-init-return = true
