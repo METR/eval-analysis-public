@@ -24,12 +24,12 @@ The time horizon methodology measures AI agent capabilities by:
 │   └── external/
 │       └── release_dates.yaml  # Model release dates
 └── reports/
-    ├── time-horizon-1-0/  # Time Horizon v1.0 (original metr-task-standard runs)
+    ├── time-horizon-1-0/  # Time Horizon v1.0
     │   ├── dvc.yaml       # DVC pipeline definition
     │   ├── params.yaml    # Report parameters
     │   └── data/raw/
     │       └── runs.jsonl # Run data
-    └── time-horizon-1-1/  # Time Horizon v1.1 (Inspect-based runs)
+    └── time-horizon-1-1/  # Time Horizon v1.1
         ├── dvc.yaml
         ├── params.yaml
         └── data/raw/
@@ -120,7 +120,7 @@ The main model report with comprehensive analysis of 48+ models using the origin
 - Comparison overlays with time-horizon-1-1 results
 
 ### time-horizon-1-1
-Results using the Inspect evaluation framework. Includes stages for comparing doubling times with time-horizon-1-0 (`compare_doubling_times_vs_th_1_0`).
+Results similar to above, but run on an updated task suite. Includes stages for comparing doubling times with time-horizon-1-0 (`compare_doubling_times_vs_th_1_0`).
 
 ## Citation
 
