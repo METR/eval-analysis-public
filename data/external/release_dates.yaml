@@ -1,17 +1,24 @@
 date:
+  GPT-5.1-Codex-Max: 2025-11-19
+  o3: 2025-04-16
+  o4-mini: 2025-04-16
   GPT-4o mini: 2024-07-18
   GPT-4 Turbo: 2024-04-09
   Claude 3 Sonnet: 2024-03-04
   GPT-4o: 2024-05-13
   o1-preview (elicited): 2024-09-12
   Claude 3 Opus: 2024-03-04
-  Claude 3.5 Sonnet (old): 2024-06-20
-  Claude 3.5 Sonnet: 2024-10-22
-  Claude 3.5 Sonnet (retry 8x): 2024-10-22
   Claude 3.5 Sonnet (New): 2024-10-22
-  Claude 3.7 Sonnet: 2025-02-24
   Claude 3.5 Sonnet (Old): 2024-06-20
+  Claude 3.7 Sonnet: 2025-02-24
+  Claude 4 Sonnet: 2025-05-22
+  Claude 4 Opus: 2025-05-22
+  Claude 4.1 Opus: 2025-08-05
+  Claude 4.5 Opus: 2025-11-24
+  Claude Sonnet 4.5: 2025-09-29
+  Claude Opus 4.5: 2025-11-24
   GPT-4 0314: 2023-03-14
+  GPT-4 0613: 2023-06-13
   GPT-4 1106: 2023-11-06
   GPT-4 0125: 2024-01-25
   davinci-002 (GPT-3): 2020-05-28
@@ -19,4 +26,47 @@ date:
   o1: 2024-12-05
   o1-preview: 2024-09-12
   GPT-2: 2019-02-14
-  GPT-4 0613: 2023-06-13
+  Qwen2-72B: 2024-06-07
+  Qwen2.5-72B: 2024-09-19
+  DeepSeek-V3: 2024-12-26
+  DeepSeek-R1: 2025-01-20
+  DeepSeek-V3-0324: 2025-03-24
+  DeepSeek-R1-0528: 2025-05-28
+  Gemini 2.5 Pro Preview: 2025-06-05
+  GPT-5: 2025-08-07
+  Grok 4: 2025-07-09
+  o3 (Inspect): 2025-04-16
+  o4-mini (Inspect): 2025-04-16
+  GPT-5 (Inspect): 2025-08-07
+  GPT-4o mini (Inspect): 2024-07-18
+  GPT-4 Turbo (Inspect): 2024-04-09
+  Claude 3 Sonnet (Inspect): 2024-03-04
+  GPT-4o (Inspect): 2024-05-13
+  o1-preview (elicited) (Inspect): 2024-09-12
+  Claude 3 Opus (Inspect): 2024-03-04
+  Claude 3.5 Sonnet (New) (Inspect): 2024-10-22
+  Claude 3.5 Sonnet (Old) (Inspect): 2024-06-20
+  Claude 3.7 Sonnet (Inspect): 2025-02-24
+  Claude 4 Sonnet (Inspect): 2025-05-22
+  Claude 4 Opus (Inspect): 2025-05-22
+  Claude 4.1 Opus (Inspect): 2025-08-05
+  Claude 4.5 Opus (Inspect): 2025-11-24
+  GPT-4 0314 (Inspect): 2023-03-14
+  GPT-4 0613 (Inspect): 2023-06-13
+  GPT-4 1106 (Inspect): 2023-11-06
+  GPT-4 1106 Vision (Inspect): 2023-11-06
+  GPT-4 0125 (Inspect): 2024-01-25
+  davinci-002 (GPT-3) (Inspect): 2020-05-28
+  gpt-3.5-turbo-instruct (Inspect): 2022-03-15
+  o1 (Inspect): 2024-12-05
+  o1-preview (Inspect): 2024-09-12
+  GPT-2 (Inspect): 2019-02-14
+  Qwen2-72B (Inspect): 2024-06-07
+  Qwen2.5-72B (Inspect): 2024-09-19
+  DeepSeek-V3 (Inspect): 2024-12-26
+  DeepSeek-R1 (Inspect): 2025-01-20
+  DeepSeek-V3-0324 (Inspect): 2025-03-24
+  DeepSeek-R1-0528 (Inspect): 2025-05-28
+  Gemini 2.5 Pro Preview (Inspect): 2025-06-05
+  gpt-oss-120b: 2025-08-05
+  Kimi K2 Thinking: 2025-11-06

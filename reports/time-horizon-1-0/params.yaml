@@ -1,0 +1,320 @@
+log_level: INFO
+n_bootstrap: 1_000
+plot_format: png
+
+comparison_color_1: "#56B4E9"
+comparison_color_2: "#E69F00"
+
+benchmark:
+  name: METR-Horizon-v1.0
+  long_tasks_version: 2ce7f1e0c4f8b7f2653e7014941a1a9f3ca908e2
+  swaa_version: 3d2ab4f0662a752409858a73e006af35e3fb7d64
+
+weighting:
+  - weight_col: equal_task_weight
+    graph_snippet: Equally weighted tasks
+  - weight_col: invsqrt_task_weight
+    graph_snippet: Tasks diversity-weighted
+  - weight_col: null
+    graph_snippet: "None"
+
+agent_summary:
+  agents:
+    - Claude 3 Opus
+    - Claude 3.5 Sonnet (Old)
+    - Claude 3.5 Sonnet (New)
+    - Claude 3.7 Sonnet
+    - Claude 4 Sonnet
+    - Claude 4 Opus
+    - Claude 4.1 Opus
+    - Claude Sonnet 4.5
+    - Claude Opus 4.5
+    - o1-preview
+    - o1
+    - GPT-5.1-Codex-Max
+    - GPT-4o
+    - GPT-4 Turbo
+    - GPT-4 0314
+    - GPT-4 0125
+    - GPT-4 1106
+    - davinci-002 (GPT-3)
+    - gpt-3.5-turbo-instruct
+    - GPT-2
+    - gpt-oss-120b
+    - Gemini 2.5 Pro Preview
+    - DeepSeek-R1-0528
+    - DeepSeek-V3-0324
+    - DeepSeek-R1
+    - DeepSeek-V3
+    - Qwen2.5-72B
+    - Qwen2-72B
+    - o3
+    - o4-mini
+    - Kimi K2 Thinking
+    - GPT-5
+    - Grok 4
+
+plots:
+  suptitle_fontsize: 13
+  xlabelpad: 10
+  ylabelpad: 10
+  ax_label_fontsize: 14
+  title_fontsize: 16
+  annotation_fontsize: 14
+  xtick_labelsize: 14
+  ytick_labelsize: 14
+  legend_fontsize: 14
+
+  task_distribution_styling:
+    hist:
+      edgecolor: "#a6a6a6"
+      color: "#d4d4d4"
+      alpha: 1
+      linewidth: 1
+      zorder: 50
+    grid: &grid_styling
+      which: "major"
+      linestyle: "-"
+      alpha: 0.2
+      color: "grey"
+
+  scatter_styling:
+    error_bar:
+      color: "grey"
+      fmt: "none"
+      capsize: 2
+      alpha: 1
+      zorder: 9
+      linewidth: 1.5
+      capthick: 1.5
+    grid: *grid_styling
+    scatter:
+      s: 150
+      edgecolor: "black"
+      linewidth: 0.5
+      zorder: 10
+
+  agent_styling:
+    "Claude Opus 4.5":
+      lab_color: &anthropic_color "#d97757"
+      marker: "P"
+      unique_color: "#9C5EDA"
+    "Claude Sonnet 4.5":
+      lab_color: *anthropic_color
+      marker: "v"
+      unique_color: "#9C5EDA"
+    "Claude 4.1 Opus":
+      lab_color: *anthropic_color
+      marker: "o"
+      unique_color: "#9C5EDA"
+    "Claude 4 Opus":
+      lab_color: *anthropic_color
+      marker: "*"
+      unique_color: "#9C5EDA"
+    "Claude 4 Sonnet":
+      lab_color: *anthropic_color
+      marker: "P"
+      unique_color: "#9C5EDA"
+    "Claude 3.7 Sonnet":
+      lab_color: *anthropic_color
+      marker: "D"
+      unique_color: "#9C5EDA"
+    "Claude 3.5 Sonnet (New)":
+      lab_color: *anthropic_color
+      marker: "s"
+      unique_color: "#8B4DC9"
+    "Claude 3.5 Sonnet (Old)":
+      lab_color: *anthropic_color
+      marker: "^"
+      unique_color: "#9B6BE0"
+    "Claude 3 Opus":
+      lab_color: *anthropic_color
+      marker: "o"
+      unique_color: "#B594E8"
+    "GPT-5.1-Codex-Max":
+      lab_color: &openai_color "#18a683"
+      marker: "s"
+      unique_color: "#648942"
+    "o3":
+      lab_color: *openai_color
+      marker: "*"
+      unique_color: "#42AB42"
+    "o4-mini":
+      lab_color: *openai_color
+      marker: "h"
+      unique_color: "#329B32"
+    "o1":
+      lab_color: *openai_color
+      marker: "P"
+      unique_color: "#228B22"
+    "o1-preview":
+      lab_color: *openai_color
+      marker: "X"
+      unique_color: "#3CB371"
+    "GPT-4o":
+      lab_color: *openai_color
+      marker: "d"
+      unique_color: "#2B8FB0"
+    "GPT-4 Turbo":
+      lab_color: *openai_color
+      marker: "v"
+      unique_color: "#4A9CBD"
+    "GPT-4 0125":
+      lab_color: *openai_color
+      marker: "P"
+      unique_color: "#2B8FB0"
+    "GPT-4 1106":
+      lab_color: *openai_color
+      marker: "D"
+      unique_color: "#87CEEB"
+    "GPT-4 0314":
+      lab_color: *openai_color
+      marker: "s"
+      unique_color: "#87CEEB"
+    "gpt-3.5-turbo-instruct":
+      lab_color: *openai_color
+      marker: "^"
+      unique_color: "#CCE6FF"
+    "davinci-002 (GPT-3)":
+      lab_color: *openai_color
+      marker: "o"
+      unique_color: "#B3E0FF"
+    "GPT-2":
+      lab_color: *openai_color
+      marker: "*"
+      unique_color: "#CCE6FF"
+    "gpt-oss-120b":
+      lab_color: *openai_color
+      marker: "v"
+      unique_color: "#DDF7FF"
+    "Gemini 2.5 Pro Preview":
+      lab_color: "#ff6b6b"
+      marker: "o"
+      unique_color: "#ff6b6b"
+    "DeepSeek-R1-0528":
+      lab_color: "#4d6bff"
+      marker: "P"
+      unique_color: "#4d6bff"
+    "DeepSeek-V3-0324":
+      lab_color: "#4d6bff"
+      marker: "D"
+      unique_color: "#4d6bff"
+    "DeepSeek-R1":
+      lab_color: "#4d6bff"
+      marker: "X"
+      unique_color: "#4d6bff"
+    "DeepSeek-V3":
+      lab_color: "#4d6bff"
+      marker: "s"
+      unique_color: "#4d6bff"
+    "Qwen2.5-72B":
+      lab_color: "#633de8"
+      marker: "v"
+      unique_color: "#633de8"
+    "Qwen2-72B":
+      lab_color: "#633de8"
+      marker: "h"
+      unique_color: "#633de8"
+    "GPT-5":
+      lab_color: "#c86592"
+      marker: "p"
+      unique_color: "#c86592"
+    "Grok 4":
+      lab_color: "#c3e0d9"
+      marker: "D"
+      unique_color: "#c3e0d9"
+    "Kimi K2 Thinking":
+      lab_color: "#000000"
+      marker: "s"
+      unique_color: "#000000"
+    "human":
+      lab_color: "grey"
+      marker: "o"
+      unique_color: "#858585"
+    "best human for each task":
+      lab_color: "gold"
+      marker: "o"
+      unique_color: "#FFD700"
+    "Best Human for Each Task":
+      lab_color: "gold"
+      marker: "o"
+      unique_color: "#FFD700"
+    "Best Model for Each Task":
+      lab_color: "gold"
+      marker: "o"
+      unique_color: "#e68312"
+    "default":
+      lab_color: "black"
+      marker: "o"
+      unique_color: "black"
+
+  # TODO: this is actually something only the logistic plots depend on
+  performance_over_time_trendline_styling:
+    "exponential":
+      line:
+        color: "blue"
+        alpha: 0.5
+        linewidth: 2
+
+  legend_order:
+    - Claude Opus 4.5
+    - Claude Sonnet 4.5
+    - Claude 4.1 Opus
+    - Claude 4 Opus
+    - Claude 4 Sonnet
+    - Claude 3.7 Sonnet
+    - Claude 3.5 Sonnet (New)
+    - Claude 3.5 Sonnet (Old)
+    - Claude 3 Opus
+    - GPT-5.1-Codex-Max
+    - GPT-5
+    - o3
+    - o4-mini
+    - o1
+    - o1-preview
+    - GPT-4o
+    - GPT-4 Turbo
+    - GPT-4 0125
+    - GPT-4 1106
+    - GPT-4 0314
+    - gpt-3.5-turbo-instruct
+    - davinci-002 (GPT-3)
+    - GPT-2
+    - gpt-oss-120b
+    - Gemini 2.5 Pro Preview
+    - DeepSeek-R1-0528
+    - DeepSeek-V3-0324
+    - DeepSeek-R1
+    - DeepSeek-V3
+    - Qwen2.5-72B
+    - Qwen2-72B
+    - Grok 4
+    - Kimi K2 Thinking
+
+  score_over_resource_line:
+    y_params:
+      equal_task_weight:
+        y_col_lims: [0, 1]
+        y_label: "Weighted Success Rate"
+        subtitle: "Weighting Tasks Equally"
+      invsqrt_task_weight:
+        y_col_lims: [0, 1]
+        y_label: "Weighted Success Rate"
+        subtitle: "Weighted by Task Diversity"
+      p50:
+        y_col_lims: [0.5, 960]
+        y_label: "50% Time Horizon"
+        subtitle: "50% Time Horizon"
+    x_params:
+      generation_cost:
+        by_title: "by Cost"
+        x_label: "Max Cost per Run ($)"
+        x_col_lims: [0.001, 10000]
+      action_count:
+        by_title: "by Actions"
+        x_label: "Max Actions per Run"
+        x_col_lims: [0.001, 10000]
+      tokens_count:
+        by_title: "by Token Count"
+        x_label: "Allowed Tokens per Run"
+        x_col_lims: [1000, 100000000]

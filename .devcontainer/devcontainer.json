@@ -1,54 +1,20 @@
 {
-  "name": "eval-analysis-public dev",
-  "build": {
-    "dockerfile": "Dockerfile",
-    "context": ".."
-  },
-  "workspaceMount": "source=${localWorkspaceFolder},target=/home/metr/app,type=bind,consistency=cached",
-  "workspaceFolder": "/home/metr/app",
+  "name": "METR Time Horizon Analysis",
+  "image": "mcr.microsoft.com/devcontainers/python:3.11",
   "features": {
     "ghcr.io/devcontainers/features/github-cli:1": {}
   },
-  "mounts": [
-    {
-      "source": "eval-analysis-public-home",
-      "target": "/home/metr",
-      "type": "volume"
-    },
-    {
-      "source": "${localEnv:HOME}${localEnv:USERPROFILE}/.config/viv-cli",
-      "target": "/home/metr/.config/viv-cli",
-      "type": "bind"
-    }
-  ],
-  "runArgs": [
-    "--name=eval-analysis-public-dev",
-    "--hostname=eval-analysis-public",
-    "--dns-search=koi-moth.ts.net"
-  ],
+  "postCreateCommand": "pip install uv && uv sync",
   "customizations": {
     "vscode": {
-      "settings": {
-        "editor.codeActionsOnSave": {
-          "source.organizeImports": "explicit"
-        },
-        "editor.formatOnSave": true,
-        "python.analysis.typeCheckingMode": "basic",
-        "python.defaultInterpreterPath": "/usr/local/bin/python",
-        "[python]": {
-          "editor.defaultFormatter": "charliermarsh.ruff"
-        }
-      },
       "extensions": [
-        "charliermarsh.ruff",
-        "editorconfig.editorconfig",
-        "ms-python.debugpy",
-        "ms-python.python-debug",
         "ms-python.python",
-        "ms-toolsai.datawrangler",
-        "ms-toolsai.jupyter",
-        "redhat.vscode-yaml"
-      ]
+        "ms-python.vscode-pylance",
+        "iterative.dvc"
+      ],
+      "settings": {
+        "python.defaultInterpreterPath": ".venv/bin/python"
+      }
     }
   }
 }
