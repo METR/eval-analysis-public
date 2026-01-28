@@ -1,3 +1,7 @@
+# Comparison colors for overlay/comparison plots
+comparison_color_1: "#56B4E9"
+comparison_color_2: "#E69F00"
+
 exclude_agents: &exclude_agents
   - GPT-4 0125
   - DeepSeek-R1-0528
@@ -37,7 +41,7 @@ default_agents: &default_agents
   - GPT-5.1-Codex-Max
   - GPT-5
   - Grok 4
-  - Claude Sonnet 4.5
+  - Claude Opus 4.5
   - Claude 4.1 Opus
   - Claude 3.7 Sonnet
   - Claude 3.5 Sonnet (New)
@@ -205,7 +209,7 @@ figs:
         "Gemini 2.5 Pro Preview": "Gemini 2.5 Pro Preview"
         "Kimi K2 Thinking": "Kimi K2 Thinking\n(inference via Novita AI)"
       show_y_label: true
-    twitter_headline:
+    twitter_headline: &twitter_headline
       <<: *plot_headline
       title: "Claude Opus 4.5 has a 50%-time horizon of about 4 hrs 49 min (95% CI: 109 to 1225 min)"
       subtitle: "Task length (at 50% success rate)"
@@ -244,14 +248,14 @@ figs:
             s: 75
         agent_styling:
           "Claude Opus 4.5":
-            lab_color: &metr_pink "#c86592"
+            lab_color: &metr_green "#2c7c58"
             marker: "o"
             unique_color: "#c86592"
           "Claude Sonnet 4.5":
             lab_color: &metr_gray "#A0A0A0"
             marker: "o"
           "Claude 4.1 Opus":
-            lab_color: &metr_green "#2c7c58"
+            lab_color: *metr_green
             marker: "o"
           "Claude 4 Opus":
             lab_color: *metr_gray
@@ -353,66 +357,27 @@ figs:
       individual_labels: true
       show_y_label: false
     twitter_headline_inspect_overlay:
-      <<: *plot_headline
-      title: "Time Horizon 1.0 vs 1.1 Comparison"
-      subtitle: "Task length (at 50% success rate)"
-      title_location: "left"
-      suptitle_location: "left"
-      legend_fontsize: 14
-      ax_label_fontsize: 14
-      title_fontsize: 14
-      xlabel: "Model release date"
-      ylabel: ""
-      upper_y_lim: 1560
-      show_grid: true
-      y_ticks_skip: 2
-      hide_regression_info: false
-      annotation_fontsize: 14
-      legend_frameon: false
-      xticks_skip: 2
-      show_watermark: true
-      show_example_tasks: true
-      show_minor_xticks: true
+      <<: *twitter_headline
+      title: "Time Horizon 1.0 vs Time Horizon 1.1 (augmented trend)"
       overlay_results: "../time-horizon-1-1/metrics/benchmark_results.yaml"
-      individual_labels: true
-      show_y_label: false
     twitter_headline_from_2023_inspect_overlay:
-      <<: *plot_headline
-      title: "Time Horizon 1.0 vs 1.1 Comparison (2023+ models)"
-      subtitle: "Task length (at 50% success rate)"
-      title_location: "left"
-      suptitle_location: "left"
-      legend_fontsize: 14
-      ax_label_fontsize: 14
-      title_fontsize: 14
-      xlabel: "Model release date"
-      ylabel: ""
-      upper_y_lim: 1560
-      show_grid: true
-      y_ticks_skip: 2
-      hide_regression_info: false
-      annotation_fontsize: 14
-      legend_frameon: false
-      xticks_skip: 2
-      show_watermark: true
-      show_example_tasks: true
-      show_minor_xticks: true
-      x_lim_start: "2023-01-01"
+      <<: *twitter_headline
+      title: "Time Horizon 1.0 vs Time Horizon 1.1"
+      x_lim_start: "2022-12-01"
+      show_example_tasks: false
       overlay_results: "../time-horizon-1-1/metrics/benchmark_results.yaml"
       trendlines:
         - fit_type: exponential
           caption: null
-          after_date: "2023-01-01"
+          after_date: "2023-03-14"
           color: blue
-          line_start_date: "2023-01-01"
+          line_start_date: "2023-03-14"
           line_end_date: "2027-01-01"
           exclude_agents: *exclude_agents_from_all_fits
           display_r_squared: true
           styling: null
           data_file: null
           skip_annotation: false
-      individual_labels: true
-      show_y_label: false
     p80:
       <<: *plot_headline
       logistic_file: headline
@@ -518,10 +483,10 @@ figs:
       x_lim_end: "2025-11-06"
       show_y_label: true
 
-    double_line_2024_trendline:
+    double_line_2023_trendline:
       <<: *plot_headline
       logistic_file: headline
-      title: "2019-2025 and 2024-2025 Trendlines in 50% Time Horizon"
+      title: "2019-2025 and 2023-2025 Trendlines in 50% Time Horizon"
       trendlines:
         - fit_type: exponential
           caption: null
@@ -531,7 +496,7 @@ figs:
           data_file: null
         - fit_type: exponential
           caption: null
-          after_date: "2024-01-01"
+          after_date: "2023-01-01"
           color: red
           line_end_date: "2027-01-01"
           data_file: null

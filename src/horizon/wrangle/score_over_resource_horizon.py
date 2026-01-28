@@ -6,8 +6,13 @@ import joblib
 import numpy as np
 import pandas as pd
 
-from horizon.wrangle.logistic import WrangleParams, agent_regression
-from horizon.wrangle.score_over_resource import handle_human_agent
+from horizon.wrangle.logistic import (
+    WrangleParams,
+    agent_regression,
+)
+from horizon.wrangle.score_over_resource import (
+    handle_human_agent,
+)
 
 
 def add_best_model_at_each_task(

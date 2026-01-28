@@ -12,11 +12,10 @@ import yaml
 from matplotlib.figure import Figure
 from matplotlib.ticker import FuncFormatter
 
-import horizon.utils.plots
-from horizon.utils.plots import ScriptParams
+from horizon.utils import plots
 
 
-def _get_title(script_params: ScriptParams) -> str:
+def _get_title(script_params: plots.ScriptParams) -> str:
     # Get included task groups
     task_group_names = ["HCAST", "SWAA", "RE-Bench"]
     included_task_groups = []
@@ -71,8 +70,7 @@ def plot_weighted_scores(
 
     # Get colors for each agent
     agent_colors = [
-        horizon.utils.plots.get_agent_color(params["plots"], agent)
-        for agent in agent_ordering
+        plots.get_agent_color(params["plots"], agent) for agent in agent_ordering
     ]
 
     # Create figure with appropriate width
@@ -166,7 +164,7 @@ def main() -> None:
         focus_agents=stage_params.get("focus_agents"),
     )
 
-    horizon.utils.plots.save_or_open_plot(args.output_file, params["plot_format"])
+    plots.save_or_open_plot(args.output_file, params["plot_format"])
 
 
 if __name__ == "__main__":

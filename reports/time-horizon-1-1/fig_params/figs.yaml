@@ -1,3 +1,7 @@
+# Comparison colors for overlay/comparison plots
+comparison_color_1: "#56B4E9"
+comparison_color_2: "#E69F00"
+
 exclude_agents: &exclude_agents []
 
 exclude_agents_from_fit: &exclude_agents_from_fit []
@@ -6,6 +10,7 @@ default_agents: &default_agents
   - o3 (Inspect)
   - o1 (Inspect)
   - GPT-5 (Inspect)
+  - Claude Opus 4.5 (Inspect)
   - Claude 4 Opus (Inspect)
   - Claude 3.7 Sonnet (Inspect)
   - Claude 3.5 Sonnet (New) (Inspect)
@@ -16,6 +21,7 @@ default_agents: &default_agents
   - GPT-4 1106 (Inspect)
   - o1-preview
   - GPT-4 0314
+  # - Gemini 3 Pro
 
 figs:
   wrangle_logistic:
@@ -27,10 +33,6 @@ figs:
       exclude: []
       success_percents: [50, 80]
       confidence_level: 0.95
-
-    partial_scoring:
-      <<: *wrangle_headline
-      score_col: score_cont
 
     ga_rebench:
       <<: *wrangle_headline
@@ -44,6 +46,7 @@ figs:
 
   plot_bar_chart:
     bar_chart_agents_ordered:
+      - Claude Opus 4.5 (Inspect)
       - Claude 4 Opus (Inspect)
       - Claude 3.7 Sonnet (Inspect)
       - Claude 3.5 Sonnet (New) (Inspect)
@@ -175,8 +178,11 @@ figs:
           scatter:
             s: 75
         agent_styling:
-          "Claude 4 Opus (Inspect)":
+          "Claude Opus 4.5 (Inspect)":
             lab_color: &metr_pink "#c86592"
+            marker: "o"
+          "Claude 4 Opus (Inspect)":
+            lab_color: *metr_pink
             marker: "o"
           "o3 (Inspect)":
             lab_color: *metr_pink
@@ -233,6 +239,10 @@ figs:
             lab_color: "grey"
             marker: "o"
             unique_color: "#858585"
+          "Gemini 3 Pro":
+            lab_color: "#4285F4"
+            marker: "p"
+            unique_color: "#4285F4"
           "default":
             lab_color: "black"
             marker: "o"
@@ -269,36 +279,6 @@ figs:
             linestyle: dashed
       exclude_agents: *exclude_agents
       exclude_agents_from_fit: *exclude_agents_from_fit
-
-    single_line_2023_ga_rebench:
-      runs_file: *runs_file
-      logistic_file: ga_rebench
-      trendlines:
-        - fit_type: exponential
-          skip_annotation: false
-          caption: null
-          after_date: "2023-01-01"
-          color: blue
-          line_start_date: "2023-01-01"
-          line_end_date: "2025-04-01"
-          display_r_squared: true
-          data_file: null
-          styling:
-            linewidth: 2
-            alpha: 0.5
-            linestyle: dashed
-      include_task_distribution: none
-      weighting: invsqrt_task_weight
-      x_lim_start: "2022-12-01"
-      x_lim_end: "2025-04-01"
-      lower_y_lim: 1
-      upper_y_lim: 90
-      exclude:
-        - SWAA
-      exclude_agents: *exclude_agents
-      exclude_agents_from_fit: *exclude_agents_from_fit
-      show_y_label: true
-
     double_line_all_data_retrodict_excluding_swaa:
       runs_file: *runs_file
       logistic_file: headline
@@ -344,34 +324,6 @@ figs:
       x_lim_start: "2018-09-03"
       x_lim_end: "2025-12-31"
       show_y_label: true
-
-    double_line_2024_trendline:
-      <<: *plot_headline
-      logistic_file: headline
-      title: "2019-2025 and 2024-2025 Trendlines in 50% Time Horizon"
-      trendlines:
-        - fit_type: exponential
-          caption: null
-          after_date: "2019-01-01"
-          color: blue
-          line_end_date: "2027-01-01"
-          data_file: null
-        - fit_type: exponential
-          caption: null
-          after_date: "2024-01-01"
-          color: red
-          line_end_date: "2027-01-01"
-          data_file: null
-
-    partial_scoring:
-      <<: *plot_headline
-      logistic_file: partial_scoring
-      subtitle: "Continuous Scoring"
-
-    all_models:
-      <<: *plot_headline
-      logistic_file: headline
-      exclude_agents: []
 
   compare_trend:
     exclude_agents: *exclude_agents

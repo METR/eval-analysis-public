@@ -13,8 +13,8 @@ from matplotlib.ticker import FuncFormatter
 from scipy.special import expit
 from typing_extensions import TypedDict
 
-import horizon.utils.plots
-from horizon.utils.plots import format_time_label, logarithmic_ticks
+from horizon.utils import plots
+from horizon.utils.plots import get_logarithmic_bins
 
 
 class horizontalLineStyling(TypedDict):
@@ -116,19 +116,8 @@ def _remove_excluded_task_groups(
     return all_runs
 
 
-def _get_logarithmic_bins(
-    all_agents_min_time: float, all_agents_max_time: float
-) -> np.ndarray[Any, np.dtype[np.float64]]:
-    """Get bins, enforcing that they are a subset of the xticks bins"""
-    bins = logarithmic_ticks[
-        (logarithmic_ticks >= all_agents_min_time)
-        & (logarithmic_ticks <= all_agents_max_time)
-    ]
-    return np.array(bins)
-
-
 def plot_logistic_regression_on_histogram(
-    plot_params: horizon.utils.plots.PlotParams,
+    plot_params: plots.PlotParams,
     agent_summaries: pd.DataFrame,
     all_runs: pd.DataFrame,
     focus_agents: Sequence[str],
@@ -222,9 +211,7 @@ def plot_logistic_regression_on_histogram(
                 pd.Timestamp(agent_info.iloc[0]["release_date"]).timestamp()  # type: ignore
             )
         else:
-            agent_color = horizon.utils.plots.get_agent_color(
-                plot_params=plot_params, agent=agent
-            )
+            agent_color = plots.get_agent_color(plot_params=plot_params, agent=agent)
 
         agent_runs = all_runs[all_runs["alias"] == agent]
 
@@ -232,7 +219,7 @@ def plot_logistic_regression_on_histogram(
         successes = agent_runs["score_binarized"]
         task_weights = agent_runs[script_params["weighting"]]
 
-        bins = _get_logarithmic_bins(all_agents_min_time, all_agents_max_time)
+        bins = get_logarithmic_bins(all_agents_min_time, all_agents_max_time)
 
         # Calculate success rates for each bin using numpy's histogram, and weighted by weight column
         weighted_counts_success, _ = np.histogram(
@@ -341,7 +328,7 @@ def plot_logistic_regression_on_histogram(
             )
             if script_params["annotate_p50"]:
                 axes[ax_idx].annotate(
-                    f"Time Horizon:\n{format_time_label(p50_line_x * 60)}",
+                    f"Time Horizon:\n{plots.format_time_label(p50_line_x * 60)}",
                     (40 * 60, 0.5),
                     textcoords="offset points",
                     xytext=(0, 10),
@@ -354,7 +341,7 @@ def plot_logistic_regression_on_histogram(
             if p50_line_x < all_agents_min_time:
                 if script_params["annotate_p50"]:
                     axes[ax_idx].annotate(
-                        f"Time horizon:\n< {format_time_label(all_agents_min_time * 60)}",
+                        f"Time horizon:\n< {plots.format_time_label(all_agents_min_time * 60)}",
                         (40 * 60, 0.5),
                         textcoords="offset points",
                         xytext=(0, 10),
@@ -375,7 +362,7 @@ def plot_logistic_regression_on_histogram(
             xmax=1,
         )
 
-        horizon.utils.plots.log_x_axis(axes[ax_idx])
+        plots.log_x_axis(axes[ax_idx])
         # Show only every other x tick if there are more than 10 ticks
         xticks = axes[ax_idx].get_xticks()
         if len(xticks) > 12:

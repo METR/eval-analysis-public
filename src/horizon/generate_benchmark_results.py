@@ -42,7 +42,10 @@ import pandas as pd
 import yaml
 
 from horizon.compute_trendline_ci import get_sota_agents
-from horizon.plot.bootstrap_ci import DoublingTimeStats, compute_bootstrap_confidence_region
+from horizon.plot.bootstrap_ci import (
+    DoublingTimeStats,
+    compute_bootstrap_confidence_region,
+)
 
 
 def defaultdict_to_dict(d: defaultdict | dict) -> dict:  # type: ignore
@@ -229,9 +232,9 @@ def main(
     release_dates_file: pathlib.Path,
     output_metrics_file: pathlib.Path,
     include_transcript_links: bool,
-    benchmark_name: str | None = None,
-    benchmark_long_tasks_version: str | None = None,
-    benchmark_swaa_version: str | None = None,
+    benchmark_name: str,
+    benchmark_long_tasks_version: str,
+    benchmark_swaa_version: str,
 ) -> None:
     df_runs = pd.read_json(runs_file, lines=True, orient="records", convert_dates=False)
     assert "scaffold" in df_runs.columns, "scaffold column is required"
@@ -244,16 +247,6 @@ def main(
 
     output_metrics_file.parent.mkdir(parents=True, exist_ok=True)
 
-    # Use CLI arguments if provided, otherwise use defaults
-    BENCHMARK_NAME = benchmark_name or "METR-Horizon-v1"
-    # Commit hashes for the task manifest files
-    BENCHMARK_LONG_TASKS_VERSION = (
-        benchmark_long_tasks_version or "2ce7f1e0c4f8b7f2653e7014941a1a9f3ca908e2"
-    )
-    BENCHMARK_SWAA_VERSION = (
-        benchmark_swaa_version or "3d2ab4f0662a752409858a73e006af35e3fb7d64"
-    )
-
     logging.basicConfig(
         level="INFO",
         format="%(asctime)s - %(levelname)s - %(message)s",
@@ -265,9 +258,9 @@ def main(
         df_agent_summaries,
         df_bootstrap_results,
         release_dates,
-        BENCHMARK_NAME,
-        BENCHMARK_LONG_TASKS_VERSION,
-        BENCHMARK_SWAA_VERSION,
+        benchmark_name,
+        benchmark_long_tasks_version,
+        benchmark_swaa_version,
         logger,
         include_transcript_links=include_transcript_links,
     )
@@ -315,20 +308,20 @@ if __name__ == "__main__":
     parser.add_argument(
         "--benchmark-name",
         type=str,
-        default=None,
-        help="Benchmark name (e.g., METR-Horizon-v1.0)",
+        required=True,
+        help="Benchmark name (e.g., METR-Horizon-v1)",
     )
     parser.add_argument(
         "--benchmark-long-tasks-version",
         type=str,
-        default=None,
-        help="Commit hash for long tasks manifest",
+        required=True,
+        help="Commit hash for the long tasks manifest file",
     )
     parser.add_argument(
         "--benchmark-swaa-version",
         type=str,
-        default=None,
-        help="Commit hash for SWAA manifest",
+        required=True,
+        help="Commit hash for the SWAA manifest file",
     )
     args = parser.parse_args()
 

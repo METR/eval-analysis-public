@@ -3,27 +3,29 @@
 
 This script reads bootstrap results and agent summaries from two model reports,
 computes doubling times for each, and creates overlapping histograms for comparison.
-
-NOTE: if used to compare e.g. Time Horizon 1.0 and 1.1, this is a bit misleading: the
-full bootstrap is trying to incorporate more variance than is actually fair, since
-the two suites heavily overlap. This is included here mainly for exploration and
-further work.
 """
 
 import argparse
 import logging
 import pathlib
 
-import dvc.api
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import yaml
 
 from horizon.compute_trendline_ci import get_sota_agents
-from horizon.plot.bootstrap_ci import compute_bootstrap_confidence_region
+from horizon.plot.bootstrap_ci import (
+    compute_bootstrap_confidence_region,
+)
 
+logging.basicConfig(
+    level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
+)
 logger = logging.getLogger(__name__)
+
+OLD_COLOR = "#c44e52"
+NEW_COLOR = "#2c7c58"
 
 
 def compute_doubling_times_for_report(
@@ -32,6 +34,7 @@ def compute_doubling_times_for_report(
     release_dates: dict[str, str],
     after_date: str,
     before_date: str | None,
+    trendline_end_date: str,
 ) -> tuple[list[float], list[str], float]:
     """Compute doubling times for a single model report.
 
@@ -50,10 +53,9 @@ def compute_doubling_times_for_report(
     sota_agents_with_data = [
         agent for agent in sota_agents if f"{agent}_p50" in bootstrap_results.columns
     ]
-    assert len(sota_agents_with_data) == len(sota_agents), (
-        "Some SOTA agents are missing bootstrap data: "
-        f"{set(sota_agents) - set(sota_agents_with_data)}"
-    )
+    if len(sota_agents_with_data) < len(sota_agents):
+        missing = set(sota_agents) - set(sota_agents_with_data)
+        logger.warning(f"Missing bootstrap data for agents: {missing}")
 
     agent_summaries_for_fitting = agent_summaries[
         agent_summaries["agent"].isin(sota_agents_with_data)
@@ -67,18 +69,12 @@ def compute_doubling_times_for_report(
         "date": {k: pd.to_datetime(v).date() for k, v in release_dates.items()}
     }
 
-    # Use before_date if provided, otherwise a far future date
-    # Note: max_date only affects trendline visualization, not the doubling time calculation
-    max_date = (
-        pd.to_datetime(before_date) if before_date else pd.to_datetime("2030-01-01")
-    )
-
     stats, _, _, _ = compute_bootstrap_confidence_region(
         agent_summaries=agent_summaries_for_fitting,
         bootstrap_results=bootstrap_results_for_fitting,
         release_dates=release_dates_wrapped,
         after_date=after_date,
-        max_date=max_date,
+        max_date=pd.to_datetime(trendline_end_date),
         confidence_level=0.95,
     )
 
@@ -94,8 +90,6 @@ def plot_overlapping_histograms(
     point_estimate_2: float,
     output_file: pathlib.Path,
     plot_format: str,
-    color_1: str,
-    color_2: str,
 ) -> None:
     """Create overlapping histograms of doubling times from two reports."""
     fig, ax = plt.subplots(figsize=(10, 6))
@@ -112,7 +106,7 @@ def plot_overlapping_histograms(
         bins=bins,
         alpha=0.6,
         label=label_1,
-        color=color_1,
+        color=OLD_COLOR,
         edgecolor="white",
         linewidth=0.5,
     )
@@ -121,7 +115,7 @@ def plot_overlapping_histograms(
         bins=bins,
         alpha=0.6,
         label=label_2,
-        color=color_2,
+        color=NEW_COLOR,
         edgecolor="white",
         linewidth=0.5,
     )
@@ -132,14 +126,14 @@ def plot_overlapping_histograms(
 
     ax.axvline(
         float(median_1),
-        color=color_1,
+        color=OLD_COLOR,
         linestyle="--",
         linewidth=2,
         label=f"{label_1} median: {median_1:.0f} days",
     )
     ax.axvline(
         float(median_2),
-        color=color_2,
+        color=NEW_COLOR,
         linestyle="--",
         linewidth=2,
         label=f"{label_2} median: {median_2:.0f} days",
@@ -158,7 +152,7 @@ def plot_overlapping_histograms(
         [tick_y, tick_y],
         marker="|",
         markersize=12,
-        color=color_1,
+        color=OLD_COLOR,
         linestyle="none",
         clip_on=False,
         markeredgewidth=2,
@@ -168,7 +162,7 @@ def plot_overlapping_histograms(
         [tick_y],
         marker="^",
         markersize=8,
-        color=color_1,
+        color=OLD_COLOR,
         linestyle="none",
         clip_on=False,
     )
@@ -177,7 +171,7 @@ def plot_overlapping_histograms(
         [tick_y, tick_y],
         marker="|",
         markersize=12,
-        color=color_2,
+        color=NEW_COLOR,
         linestyle="none",
         clip_on=False,
         markeredgewidth=2,
@@ -187,7 +181,7 @@ def plot_overlapping_histograms(
         [tick_y],
         marker="^",
         markersize=8,
-        color=color_2,
+        color=NEW_COLOR,
         linestyle="none",
         clip_on=False,
     )
@@ -206,7 +200,7 @@ def plot_overlapping_histograms(
 
     fig.tight_layout()
     output_file.parent.mkdir(parents=True, exist_ok=True)
-    fig.savefig(output_file, format=plot_format, dpi=150, bbox_inches="tight")
+    fig.savefig(output_file, dpi=150, bbox_inches="tight")
     logger.info(f"Plot saved to {output_file}")
     plt.close(fig)
 
@@ -270,6 +264,12 @@ def main() -> None:
         help="Only include SOTA models released before this date",
     )
     parser.add_argument(
+        "--trendline-end-date",
+        type=str,
+        default="2027-01-01",
+        help="End date for trendline fitting",
+    )
+    parser.add_argument(
         "--output-plot-file",
         type=pathlib.Path,
         required=True,
@@ -290,11 +290,6 @@ def main() -> None:
         force=True,
     )
 
-    # Load colors from DVC params
-    params = dvc.api.params_show()
-    color_1 = params.get("comparison_color_1", "blue")
-    color_2 = params.get("comparison_color_2", "orange")
-
     release_dates_data = yaml.safe_load(args.release_dates.read_text())
     release_dates = release_dates_data["date"]
 
@@ -305,6 +300,7 @@ def main() -> None:
         release_dates=release_dates,
         after_date=args.after_date,
         before_date=args.before_date,
+        trendline_end_date=args.trendline_end_date,
     )
 
     logger.info(f"Computing doubling times for {args.label_2}...")
@@ -314,6 +310,7 @@ def main() -> None:
         release_dates=release_dates,
         after_date=args.after_date,
         before_date=args.before_date,
+        trendline_end_date=args.trendline_end_date,
     )
 
     # Create plot
@@ -326,8 +323,6 @@ def main() -> None:
         point_estimate_2=point_estimate_2,
         output_file=args.output_plot_file,
         plot_format=args.plot_format,
-        color_1=color_1,
-        color_2=color_2,
     )
 
 

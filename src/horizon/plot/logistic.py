@@ -8,7 +8,6 @@ from typing import Any, Callable
 import dvc.api
 import matplotlib.axes
 import matplotlib.dates as mdates
-import matplotlib.ticker
 import numpy as np
 import pandas as pd
 import yaml
@@ -21,11 +20,10 @@ from numpy.typing import NDArray
 from sklearn.linear_model import LinearRegression
 from typing_extensions import Literal
 
-import horizon.utils.plots
-from horizon.utils.plots import ScriptParams, TrendlineParams, add_watermark
+from horizon.utils import plots
 
 
-def _get_title(script_params: ScriptParams, success_percent: int) -> str:
+def _get_title(script_params: plots.ScriptParams, success_percent: int) -> str:
     # Get included task groups
     if "title" in script_params:
         return script_params["title"]
@@ -42,7 +40,7 @@ def _get_title(script_params: ScriptParams, success_percent: int) -> str:
 
 
 def _remove_excluded_task_groups(
-    all_runs: pd.DataFrame, script_params: ScriptParams
+    all_runs: pd.DataFrame, script_params: plots.ScriptParams
 ) -> pd.DataFrame:
     # Exclude tasks from runs_df
     if "General Autonomy" in script_params["exclude"]:
@@ -67,7 +65,7 @@ def _remove_excluded_task_groups(
 def plot_task_distribution(
     ax: matplotlib.axes.Axes,
     runs_df: pd.DataFrame,
-    plot_params: horizon.utils.plots.PlotParams,
+    plot_params: plots.PlotParams,
     weight_key: str,
 ) -> None:
     """Plot a vertical histogram of the human time estimates for each run."""
@@ -136,7 +134,7 @@ def setup_fig(include_horizon_graph: bool) -> tuple[plt.Figure, Axes, Axes | Non
 
 
 def plot_horizon_graph(
-    plot_params: horizon.utils.plots.PlotParams,
+    plot_params: plots.PlotParams,
     all_agent_summaries: pd.DataFrame,
     runs_df: pd.DataFrame,
     release_dates: dict[str, str],
@@ -148,8 +146,8 @@ def plot_horizon_graph(
     weight_key: str,
     exclude_agents: list[str],
     success_percent: int,
-    script_params: ScriptParams,
-    trendlines: list[TrendlineParams] | None = None,
+    script_params: plots.ScriptParams,
+    trendlines: list[plots.TrendlineParams] | None = None,
     upper_y_lim: float | None = None,
     include_task_distribution: str = "none",
     fig: Figure | None = None,
@@ -180,7 +178,7 @@ def plot_horizon_graph(
     # Otherwise, the bootstrap_ci stage will have two watermarks
     if fig_created_here and script_params.get("show_watermark", False):
         parent_dir = pathlib.Path(__file__).parent.parent.parent
-        add_watermark(
+        plots.add_watermark(
             fig,
             parent_dir / pathlib.Path("metr-logo.svg"),
             legend_on_right=script_params.get("legend_on_right", False),
@@ -307,11 +305,11 @@ def plot_horizon_graph(
         # y limits are determined by the main plot
         ax_hist.set_ylim(ax.get_ylim())
 
-    horizon.utils.plots.make_y_axis(ax, scale=y_scale, script_params=script_params)
+    plots.make_y_axis(ax, scale=y_scale, script_params=script_params)
     start_year = pd.Timestamp(x_lim_start).year
     end_year = pd.Timestamp(x_lim_end).year + 1
     xticks_skip = script_params.get("xticks_skip", 1) if script_params else 1
-    horizon.utils.plots.make_quarterly_xticks(ax, start_year, end_year, skip=xticks_skip)
+    plots.make_quarterly_xticks(ax, start_year, end_year, skip=xticks_skip)
 
     # Add subticks at regular month intervals if param is present
     months_between_ticks = (
@@ -319,7 +317,7 @@ def plot_horizon_graph(
     )
     if months_between_ticks > 0:
         assert xticks_skip == 1, "xticks_skip must be 1 when using months_between_ticks"
-        horizon.utils.plots.add_monthly_minor_ticks(
+        plots.add_monthly_minor_ticks(
             ax,
             start_year,
             end_year,
@@ -473,8 +471,8 @@ class FitFunctionWrapper:
 
 def plot_trendline(
     ax: Axes,
-    plot_params: horizon.utils.plots.PlotParams,
-    trendline_params: TrendlineParams,
+    plot_params: plots.PlotParams,
+    trendline_params: plots.TrendlineParams,
     dashed_outside: tuple[pd.Timestamp, pd.Timestamp] | None,
     reg: LinearRegression | FitFunctionWrapper,
     score: float,
@@ -664,7 +662,7 @@ def main() -> None:
         script_params=fig_params,
     )
 
-    horizon.utils.plots.save_or_open_plot(args.output_file, params["plot_format"])
+    plots.save_or_open_plot(args.output_file, params["plot_format"])
 
 
 if __name__ == "__main__":
