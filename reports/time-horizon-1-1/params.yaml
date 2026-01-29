@@ -2,12 +2,11 @@ log_level: INFO
 n_bootstrap: 1_000
 plot_format: png
 
-comparison_color_1: "#56B4E9"
-comparison_color_2: "#E69F00"
-
 benchmark:
   name: METR-Horizon-v1.1
+  # mp4-tasks commit
   long_tasks_version: 799cc9c4b4483a93fc3445623a49ea1bd74fdeb2
+  # inspect-tasks commit
   swaa_version: f6cc84052e2a79dd540766c8a1b15ff399696371
 
 weighting:
@@ -20,12 +19,13 @@ weighting:
 
 agent_summary:
   agents:
+    # - Gemini 3 Pro
     - Claude 3 Opus (Inspect)
     - Claude 3.5 Sonnet (Old) (Inspect)
     - Claude 3.5 Sonnet (New) (Inspect)
     - Claude 3.7 Sonnet (Inspect)
     - Claude 4 Opus (Inspect)
-    - Claude 4.5 Opus (Inspect)
+    - Claude Opus 4.5 (Inspect)
     - GPT-4 1106 (Inspect)
     - GPT-4o (Inspect)
     - GPT-4 Turbo (Inspect)
@@ -76,11 +76,15 @@ plots:
       zorder: 10
 
   agent_styling:
+    "Gemini 3 Pro":
+      lab_color: "#4285F4"
+      marker: "p"
+      unique_color: "#4285F4"
     "Claude 4 Opus (Inspect)":
       lab_color: &anthropic_color "#d97757"
       marker: "*"
       unique_color: "#9C5EDA"
-    "Claude 4.5 Opus (Inspect)":
+    "Claude Opus 4.5 (Inspect)":
       lab_color: *anthropic_color
       marker: ">"
       unique_color: "#9C5EDA"
@@ -174,8 +178,9 @@ plots:
         linewidth: 2
 
   legend_order:
-    - Claude 4.5 Opus (Inspect)
+    - Claude Opus 4.5 (Inspect)
     - Claude 4 Opus (Inspect)
+    - Gemini 3 Pro
     - Claude 3.7 Sonnet (Inspect)
     - Claude 3.5 Sonnet (New) (Inspect)
     - Claude 3.5 Sonnet (Old) (Inspect)

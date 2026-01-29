@@ -12,7 +12,10 @@ import yaml
 from sklearn.linear_model import LogisticRegression
 
 from horizon.compute_task_weights import add_task_weight_columns
-from horizon.utils.logistic import get_x_for_quantile, logistic_regression
+from horizon.utils.logistic import (
+    get_x_for_quantile,
+    logistic_regression,
+)
 
 if TYPE_CHECKING:
     from numpy.typing import NDArray

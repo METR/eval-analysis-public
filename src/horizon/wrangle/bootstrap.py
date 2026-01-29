@@ -8,7 +8,10 @@ import numpy as np
 import pandas as pd
 from joblib import Parallel, delayed
 
-from horizon.utils.logistic import get_x_for_quantile, logistic_regression
+from horizon.utils.logistic import (
+    get_x_for_quantile,
+    logistic_regression,
+)
 
 logger = logging.getLogger(__name__)
 

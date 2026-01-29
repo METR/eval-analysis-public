@@ -1,159 +1,130 @@
 params:
-  - fig_params/figs.yaml
-
+- fig_params/figs.yaml
 vars:
-  - fig_params/figs.yaml
-
+- fig_params/figs.yaml
+- code_dir: ../../src
 stages:
   generate_agent_summary:
-    cmd: >-
-      python -m horizon.agent_summary
-      --input-file data/raw/runs.jsonl
-      --output-file-prefix metrics/agent_summary.csv
-      --output-metrics-file metrics/scores_by_agent_and_task.yaml
+    cmd: python ${code_dir}/horizon/agent_summary.py --input-file data/raw/runs.jsonl
+      --output-file-prefix metrics/agent_summary.csv --output-metrics-file metrics/scores_by_agent_and_task.yaml
     deps:
-      - ../../src/horizon/agent_summary.py
-      - data/raw/runs.jsonl
+    - ${code_dir}/horizon/agent_summary.py
+    - data/raw/runs.jsonl
     params:
-      - agent_summary.agents
+    - agent_summary.agents
     outs:
-      - metrics/agent_summary.csv:
-          cache: false
-      - metrics/agent_summary_nonzero.csv
-      - metrics/agent_summary_averages.csv
+    - metrics/agent_summary.csv:
+        cache: false
+    - metrics/agent_summary_nonzero.csv
+    - metrics/agent_summary_averages.csv
     metrics:
-      - metrics/scores_by_agent_and_task.yaml:
-          cache: false
-    desc: Get number of runs (metrics/agent_summary.csv), number of runs with nonzero score (metrics/agent_summary_nonzero.csv), average score for each agent (metrics/agent_summary_averages.csv), and scores by agent and task (metrics/scores_by_agent_and_task.yaml).
-
-  # Wrangle
-
-  # n-bootstrap should be 10000 in the final version
+    - metrics/scores_by_agent_and_task.yaml:
+        cache: false
+    desc: Get number of runs (metrics/agent_summary.csv), number of runs with nonzero
+      score (metrics/agent_summary_nonzero.csv), average score for each agent (metrics/agent_summary_averages.csv),
+      and scores by agent and task (metrics/scores_by_agent_and_task.yaml).
   wrangle_bootstrap_logistic:
-    foreach: &foreach_logistic
+    foreach: &id001
       headline: ${figs.wrangle_logistic.headline}
       ga_rebench: ${figs.wrangle_logistic.ga_rebench}
       partial_scoring: ${figs.wrangle_logistic.partial_scoring}
     do:
-      cmd: >-
-        python -m horizon.wrangle.bootstrap
-        --fig-name ${key}
-        --runs-file ${item.runs_file}
-        --output-bootstrap-horizons-file data/wrangled/bootstrap/${key}.csv
-        --n-bootstrap ${n_bootstrap}
+      cmd: python -m horizon.wrangle.bootstrap --fig-name ${key} --runs-file ${item.runs_file}
+        --output-bootstrap-horizons-file data/wrangled/bootstrap/${key}.csv --n-bootstrap
+        ${n_bootstrap}
       deps:
-        - ../../src/horizon/wrangle/bootstrap.py
-        - ../../src/horizon/utils/logistic.py
-        - ../../src/horizon/compute_task_weights.py
-        - ${item.runs_file}
+      - ${code_dir}/horizon/wrangle/bootstrap.py
+      - ${code_dir}/horizon/utils/logistic.py
+      - ${code_dir}/horizon/compute_task_weights.py
+      - ${item.runs_file}
       params:
-        - fig_params/figs.yaml:
-            - figs.wrangle_logistic.${key}
-        - n_bootstrap
+      - fig_params/figs.yaml:
+        - figs.wrangle_logistic.${key}
+      - n_bootstrap
       outs:
-        - data/wrangled/bootstrap/${key}.csv
+      - data/wrangled/bootstrap/${key}.csv
       desc: Compute bootstrapped logistic regression results
-
   wrangle_logistic_regression:
-    foreach: *foreach_logistic
+    foreach: *id001
     do:
-      cmd: >-
-        python -m horizon.wrangle.logistic
-        --fig-name ${key}
-        --runs-file ${item.runs_file}
-        --output-logistic-fits-file data/wrangled/logistic_fits/${key}.csv
-        --release-dates ../../data/external/release_dates.yaml
-        --bootstrap-file data/wrangled/bootstrap/${key}.csv
+      cmd: python -m horizon.wrangle.logistic --fig-name ${key} --runs-file ${item.runs_file}
+        --output-logistic-fits-file data/wrangled/logistic_fits/${key}.csv --release-dates
+        ../../data/external/release_dates.yaml --bootstrap-file data/wrangled/bootstrap/${key}.csv
         --output-metrics-file metrics/logistic_fits/${key}.yaml
       deps:
-        - ${item.runs_file}
-        - ../../data/external/release_dates.yaml
-        - data/wrangled/bootstrap/${key}.csv
-        - ../../src/horizon/wrangle/logistic.py
-        - ../../src/horizon/utils/logistic.py
-        - ../../src/horizon/compute_task_weights.py
-      params:
-        - fig_params/figs.yaml:
-            - figs.wrangle_logistic.${key}
-      outs:
-        - data/wrangled/logistic_fits/${key}.csv
-      metrics:
-        - metrics/logistic_fits/${key}.yaml:
-            cache: false
-      desc: Fit logistic curves for each agent, load bootstrap results from bootstrap stage, and add binned weighted success rate data.
-
-  # Plot
-
-  plot_bar_chart_weighted_scores:
-    cmd: >-
-      python -m horizon.plot.bar_chart_weighted_scores
-      --fig-name headline
-      --metrics-file data/wrangled/logistic_fits/headline.csv
-      --release-dates ../../data/external/release_dates.yaml
-      --output-file plots/bar_chart_weighted_scores/headline.${plot_format}
-      --log-level ${log_level}
-    deps:
-      - ../../src/horizon/plot/bar_chart_weighted_scores.py
-      - ../../src/horizon/utils/plots.py
+      - ${item.runs_file}
       - ../../data/external/release_dates.yaml
-      - data/wrangled/logistic_fits/headline.csv
-    params:
-      - log_level
-      - plot_format
-      - plots
-      - weighting
+      - data/wrangled/bootstrap/${key}.csv
+      - ${code_dir}/horizon/wrangle/logistic.py
+      - ${code_dir}/horizon/utils/logistic.py
+      - ${code_dir}/horizon/compute_task_weights.py
+      params:
       - fig_params/figs.yaml:
-          - figs.plot_bar_chart_weighted_scores
-    plots:
-      - plots/bar_chart_weighted_scores/headline.${plot_format}
-    desc: Generate bar chart of weighted scores.
-
-  plot_bar_chart:
-    cmd: >-
-      python -m horizon.plot.bar_chart_p50
-      --input-file data/wrangled/logistic_fits/ga_rebench.csv
-      --output-file plots/bar_chart.${plot_format}
-      --log-level ${log_level}
+        - figs.wrangle_logistic.${key}
+      outs:
+      - data/wrangled/logistic_fits/${key}.csv
+      metrics:
+      - metrics/logistic_fits/${key}.yaml:
+          cache: false
+      desc: Fit logistic curves for each agent, load bootstrap results from bootstrap
+        stage, and add binned weighted success rate data.
+  plot_bar_chart_weighted_scores:
+    cmd: python -m horizon.plot.bar_chart_weighted_scores --fig-name headline --metrics-file
+      data/wrangled/logistic_fits/headline.csv --release-dates ../../data/external/release_dates.yaml
+      --output-file plots/bar_chart_weighted_scores/headline.${plot_format} --log-level
+      ${log_level}
     deps:
-      - data/wrangled/logistic_fits/ga_rebench.csv
-      - ../../src/horizon/plot/bar_chart_p50.py
+    - ${code_dir}/horizon/plot/bar_chart_weighted_scores.py
+    - ${code_dir}/horizon/utils/plots.py
+    - ../../data/external/release_dates.yaml
+    - data/wrangled/logistic_fits/headline.csv
     params:
-      - log_level
-      - plot_format
-      - fig_params/figs.yaml:
-          - figs.plot_bar_chart
+    - log_level
+    - plot_format
+    - plots
+    - weighting
+    - fig_params/figs.yaml:
+      - figs.plot_bar_chart_weighted_scores
     plots:
-      - plots/bar_chart.${plot_format}
+    - plots/bar_chart_weighted_scores/headline.${plot_format}
+    desc: Generate bar chart of weighted scores.
+  plot_bar_chart:
+    cmd: python -m horizon.plot.bar_chart_p50 --input-file data/wrangled/logistic_fits/ga_rebench.csv
+      --output-file plots/bar_chart.${plot_format} --log-level ${log_level}
+    deps:
+    - data/wrangled/logistic_fits/ga_rebench.csv
+    - ${code_dir}/horizon/plot/bar_chart_p50.py
+    params:
+    - log_level
+    - plot_format
+    - fig_params/figs.yaml:
+      - figs.plot_bar_chart
+    plots:
+    - plots/bar_chart.${plot_format}
     desc: Generate bar chart of agent horizon.
-
   plot_individual_histograms:
     foreach: ${figs.plot_individual_histograms}
     do:
-      cmd: >-
-        python -m horizon.plot.individual_histograms
-        --all-runs-file data/raw/runs.jsonl
+      cmd: python -m horizon.plot.individual_histograms --all-runs-file data/raw/runs.jsonl
         --output-file plots/individual_histograms/${key}/histograms.${plot_format}
-        --plot-format ${plot_format}
-        --log-level ${log_level}
-        --script-parameter-group ${key}
-        --params-file "params.yaml"
+        --plot-format ${plot_format} --log-level ${log_level} --script-parameter-group
+        ${key} --params-file "params.yaml"
       deps:
-        - ${item.logistic_file}
-        - data/raw/runs.jsonl
-        - matplotlibrc
-        - ../../src/horizon/plot/individual_histograms.py
-        - ../../src/horizon/utils/plots.py
+      - ${item.logistic_file}
+      - data/raw/runs.jsonl
+      - matplotlibrc
+      - ${code_dir}/horizon/plot/individual_histograms.py
+      - ${code_dir}/horizon/utils/plots.py
       params:
-        - log_level
-        - plot_format
-        - plots
-        - fig_params/figs.yaml:
-            - figs.plot_individual_histograms.${key}
+      - log_level
+      - plot_format
+      - plots
+      - fig_params/figs.yaml:
+        - figs.plot_individual_histograms.${key}
       plots:
-        - plots/individual_histograms/${key}/histograms.${plot_format}:
-            persist: true
+      - plots/individual_histograms/${key}/histograms.${plot_format}:
+          persist: true
       desc: Logistic success curve + bars for each agent.
-
   plot_logistic_regression:
     foreach:
       double_line_all_data_retrodict_excluding_swaa: ${figs.plot_logistic_regression.double_line_all_data_retrodict_excluding_swaa}
@@ -161,304 +132,244 @@ stages:
       single_line_2023_ga_rebench: ${figs.plot_logistic_regression.single_line_2023_ga_rebench}
       partial_scoring: ${figs.plot_logistic_regression.partial_scoring}
       all_models: ${figs.plot_logistic_regression.all_models}
-      double_line_2024_trendline: ${figs.plot_logistic_regression.double_line_2024_trendline}
+      double_line_2023_trendline: ${figs.plot_logistic_regression.double_line_2023_trendline}
     do:
-      cmd: >-
-        python -m horizon.plot.logistic
-        --input-file data/wrangled/logistic_fits/${item.logistic_file}.csv
-        --runs-file ${item.runs_file}
-        --release-dates ../../data/external/release_dates.yaml
-        --output-file plots/logistic/${key}.${plot_format}
-        --log-level ${log_level}
+      cmd: python -m horizon.plot.logistic --input-file data/wrangled/logistic_fits/${item.logistic_file}.csv
+        --runs-file ${item.runs_file} --release-dates ../../data/external/release_dates.yaml
+        --output-file plots/logistic/${key}.${plot_format} --log-level ${log_level}
         --script-parameter-group ${key}
       deps:
-        - ${item.runs_file}
-        - data/wrangled/logistic_fits/${item.logistic_file}.csv
-        - matplotlibrc
-        - ../../data/external/release_dates.yaml
-        - ../../src/horizon/plot/logistic.py
-        - ../../src/horizon/utils/plots.py
-      params:
-        - log_level
-        - plot_format
-        - plots
-        - fig_params/figs.yaml:
-            - figs.plot_logistic_regression.${key}
-      outs:
-        - plots/logistic/${key}.${plot_format}:
-            persist: true
-      desc: Plot showing horizon growth over time.
-
-  plot_bootstrap_ci:
-    matrix:
-      fig_name: [headline, twitter_headline, twitter_headline_inspect_overlay, twitter_headline_from_2023_inspect_overlay]
-      y_scale: [log, linear]
-    cmd: >-
-      python -m horizon.plot.bootstrap_ci
-      --fig-name ${item.fig_name}
-      --input-file data/wrangled/bootstrap/headline.csv
-      --agent-summaries-file data/wrangled/logistic_fits/headline.csv
-      --release-dates ../../data/external/release_dates.yaml
-      --output-file plots/bootstrap/${item.fig_name}-${item.y_scale}.${plot_format}
-      --log-level ${log_level}
-      --y-scale ${item.y_scale}
-    deps:
-      - ../../src/horizon/plot/bootstrap_ci.py
-      - ../../src/horizon/plot/logistic.py # dependency on plot_trendline
-      - data/wrangled/bootstrap/headline.csv
-      - data/wrangled/logistic_fits/headline.csv
-      - ../../data/external/release_dates.yaml
-      - ../time-horizon-1-1/metrics/benchmark_results.yaml  # for overlay stages
+      - ${item.runs_file}
+      - data/wrangled/logistic_fits/${item.logistic_file}.csv
       - matplotlibrc
-    params:
+      - ../../data/external/release_dates.yaml
+      - ${code_dir}/horizon/plot/logistic.py
+      - ${code_dir}/horizon/utils/plots.py
+      params:
       - log_level
       - plot_format
       - plots
+      - fig_params/figs.yaml:
+        - figs.plot_logistic_regression.${key}
+      plots:
+      - plots/logistic/${key}.${plot_format}:
+          persist: true
+      desc: Plot showing horizon growth over time.
+  plot_bootstrap_ci:
+    matrix:
+      fig_name:
+      - headline
+      - twitter_headline
+      - twitter_headline_inspect_overlay
+      - twitter_headline_from_2023_inspect_overlay
+      y_scale:
+      - log
+      - linear
+    cmd: python -m horizon.plot.bootstrap_ci --fig-name ${item.fig_name} --input-file
+      data/wrangled/bootstrap/headline.csv --agent-summaries-file data/wrangled/logistic_fits/headline.csv
+      --release-dates ../../data/external/release_dates.yaml --output-file plots/bootstrap/${item.fig_name}-${item.y_scale}.${plot_format}
+      --log-level ${log_level} --y-scale ${item.y_scale}
+    deps:
+    - ${code_dir}/horizon/plot/bootstrap_ci.py
+    - ${code_dir}/horizon/plot/logistic.py
+    - data/wrangled/bootstrap/headline.csv
+    - data/wrangled/logistic_fits/headline.csv
+    - ../../data/external/release_dates.yaml
+    - ../time-horizon-1-1/metrics/benchmark_results.yaml
+    - matplotlibrc
+    params:
+    - log_level
+    - plot_format
+    - plots
+    - fig_params/figs.yaml:
       - comparison_color_1
       - comparison_color_2
-      - fig_params/figs.yaml:
-          - figs.plot_logistic_regression.${item.fig_name}
+      - figs.plot_logistic_regression.${item.fig_name}
     plots:
-      - plots/bootstrap/${item.fig_name}-${item.y_scale}.${plot_format}
+    - plots/bootstrap/${item.fig_name}-${item.y_scale}.${plot_format}
     desc: Generate plot of bootstrap confidence intervals
-
   compute_trendline_ci:
     foreach:
       headline_from_2019:
-        after_date: "2019-01-01"
-        before_date: "2030-01-01"
+        after_date: '2019-01-01'
+        before_date: '2030-01-01'
         data_file: headline
       headline_from_2023:
-        after_date: "2023-03-13"
-        before_date: "2030-01-01"
+        after_date: '2023-03-13'
+        before_date: '2030-01-01'
         data_file: headline
-      headline_from_2024:
-        after_date: "2024-01-01"
-        before_date: "2030-01-01"
+      original_overtime:
+        after_date: '2019-01-01'
+        before_date: '2025-02-25'
         data_file: headline
-      ga_rebench_from_2023:
-        after_date: "2023-03-13"
-        before_date: "2030-01-01"
-        data_file: ga_rebench
-      ga_rebench_from_2024:
-        after_date: "2024-01-01"
-        before_date: "2030-01-01"
-        data_file: ga_rebench
-      original_overtime: # reported in the original paper
-        after_date: "2019-01-01"
-        before_date: "2025-02-25"
+      original_overtime_from_2023:
+        after_date: '2023-01-01'
+        before_date: '2025-02-25'
         data_file: headline
-      original_overtime_from_2023: # reported in the original paper
-        after_date: "2023-01-01"
-        before_date: "2025-02-25"
-        data_file: headline
-      # was reported in the original paper as 104, but only in the SWE-Bench Verified section,
-      # which makes me suspect this may be older data...
       original_overtime_from_2024:
-        after_date: "2024-01-01"
-        before_date: "2025-02-25"
+        after_date: '2024-01-01'
+        before_date: '2025-02-25'
         data_file: headline
     do:
-      cmd: >-
-        python -m horizon.compute_trendline_ci
-        --input-file data/wrangled/bootstrap/${item.data_file}.csv
-        --agent-summaries-file data/wrangled/logistic_fits/${item.data_file}.csv
-        --release-dates ../../data/external/release_dates.yaml
-        --output-metrics-file metrics/trendline_ci/${key}.yaml
-        --log-level ${log_level}
-        --after-date ${item.after_date}
-        --before-date ${item.before_date}
+      cmd: python -m horizon.compute_trendline_ci --input-file data/wrangled/bootstrap/${item.data_file}.csv
+        --agent-summaries-file data/wrangled/logistic_fits/${item.data_file}.csv --release-dates
+        ../../data/external/release_dates.yaml --output-metrics-file metrics/trendline_ci/${key}.yaml
+        --log-level ${log_level} --after-date ${item.after_date} --before-date ${item.before_date}
       deps:
-        - ../../src/horizon/compute_trendline_ci.py
-        - ../../src/horizon/plot/bootstrap_ci.py
-        - ../../src/horizon/plot/logistic.py
-        - data/wrangled/bootstrap/${item.data_file}.csv
-        - data/wrangled/logistic_fits/${item.data_file}.csv
-        - ../../data/external/release_dates.yaml
+      - ${code_dir}/horizon/compute_trendline_ci.py
+      - ${code_dir}/horizon/plot/bootstrap_ci.py
+      - ${code_dir}/horizon/plot/logistic.py
+      - data/wrangled/bootstrap/${item.data_file}.csv
+      - data/wrangled/logistic_fits/${item.data_file}.csv
+      - ../../data/external/release_dates.yaml
       params:
-        - log_level
-      metrics:
-        - metrics/trendline_ci/${key}.yaml:
-            cache: false
-      desc: Compute trendline confidence interval metrics from bootstrap samples using SOTA models
-
-  generate_benchmark_results:
-    cmd: >-
-      python -m horizon.generate_benchmark_results
-      --agent-summaries-file data/wrangled/logistic_fits/headline.csv
-      --runs-file data/raw/runs.jsonl
-      --release-dates-file ../../data/external/release_dates.yaml
-      --bootstrap-results-file data/wrangled/bootstrap/headline.csv
-      --output-metrics-file metrics/benchmark_results.yaml
-      --benchmark-name ${benchmark.name}
-      --benchmark-long-tasks-version ${benchmark.long_tasks_version}
-      --benchmark-swaa-version ${benchmark.swaa_version}
-    deps:
-      - ../../src/horizon/generate_benchmark_results.py
-      - ../../src/horizon/compute_trendline_ci.py
-      - ../../src/horizon/plot/bootstrap_ci.py
-      - data/wrangled/bootstrap/headline.csv
-      - data/wrangled/logistic_fits/headline.csv
-      - data/raw/runs.jsonl
-      - ../../data/external/release_dates.yaml
-    params:
-      - benchmark.name
-      - benchmark.long_tasks_version
-      - benchmark.swaa_version
-    metrics:
-      - metrics/benchmark_results.yaml:
-          cache: false
-
-  compare_trend:
-    cmd: >-
-      python -m horizon.compare_trend
-      --bootstrap-results-file data/wrangled/bootstrap/headline.csv
-      --release-dates-file ../../data/external/release_dates.yaml
-      --output-metrics-file metrics/compare_trend_headline_latest_agent_test.yaml
-      --output-max-metrics-file metrics/compare_max_headline_latest_agent_test.yaml
-    deps:
-      - ../../src/horizon/compare_trend.py
-      - data/wrangled/bootstrap/headline.csv
-      - ../../data/external/release_dates.yaml
-    params:
-      - fig_params/figs.yaml:
-          - figs.compare_trend
-    metrics:
-      - metrics/compare_trend_headline_latest_agent_test.yaml
-      - metrics/compare_max_headline_latest_agent_test.yaml
-
-  plot_token_usage_distribution:
-    cmd: >-
-      python -m horizon.token_usage_distribution
-      --input-file data/raw/runs.jsonl
-      --output-dir plots/token_usage_distribution
-      --log-level ${log_level}
-      --release-dates-file ../../data/external/release_dates.yaml
-    deps:
-      - data/raw/runs.jsonl
-      - ../../src/horizon/token_usage_distribution.py
-      - ../../data/external/release_dates.yaml
-    params:
       - log_level
-      - plot_format
-      - fig_params/figs.yaml:
-          - figs.plot_token_usage_distribution
-    plots:
-      - plots/token_usage_distribution/task_heatmap.${plot_format}
-      - plots/token_usage_distribution/time_bucket_heatmap.${plot_format}
-      - plots/token_usage_distribution/token_histograms.${plot_format}
-      - plots/token_usage_distribution/token_histograms_recent.${plot_format}
-    metrics:
-      - metrics/token_usage_metrics.yaml:
+      metrics:
+      - metrics/trendline_ci/${key}.yaml:
           cache: false
-    desc: Plot showing token histograms, heatmaps, and metrics by human task length bucket.
-
+      desc: Compute trendline confidence interval metrics from bootstrap samples using
+        SOTA models
+  generate_benchmark_results:
+    cmd: python -m horizon.generate_benchmark_results --agent-summaries-file data/wrangled/logistic_fits/headline.csv
+      --runs-file data/raw/runs.jsonl --release-dates-file ../../data/external/release_dates.yaml
+      --bootstrap-results-file data/wrangled/bootstrap/headline.csv --output-metrics-file
+      metrics/benchmark_results.yaml --benchmark-name ${benchmark.name} --benchmark-long-tasks-version
+      ${benchmark.long_tasks_version} --benchmark-swaa-version ${benchmark.swaa_version}
+    deps:
+    - ${code_dir}/horizon/generate_benchmark_results.py
+    - ${code_dir}/horizon/compute_trendline_ci.py
+    - ${code_dir}/horizon/plot/bootstrap_ci.py
+    - data/wrangled/bootstrap/headline.csv
+    - data/wrangled/logistic_fits/headline.csv
+    - data/raw/runs.jsonl
+    - ../../data/external/release_dates.yaml
+    params:
+    - benchmark
+    metrics:
+    - metrics/benchmark_results.yaml:
+        cache: false
+  compare_trend:
+    cmd: python -m horizon.compare_trend --bootstrap-results-file data/wrangled/bootstrap/headline.csv
+      --release-dates-file ../../data/external/release_dates.yaml --output-metrics-file
+      metrics/compare_trend_headline_latest_agent_test.yaml --output-max-metrics-file
+      metrics/compare_max_headline_latest_agent_test.yaml
+    deps:
+    - ${code_dir}/horizon/compare_trend.py
+    - data/wrangled/bootstrap/headline.csv
+    - ../../data/external/release_dates.yaml
+    params:
+    - fig_params/figs.yaml:
+      - figs.compare_trend
+    metrics:
+    - metrics/compare_trend_headline_latest_agent_test.yaml
+    - metrics/compare_max_headline_latest_agent_test.yaml
+  compare_doubling_times_vs_th_1_1:
+    cmd: python -m horizon.plot.compare_doubling_times --bootstrap-file-1 data/wrangled/bootstrap/headline.csv
+      --agent-summaries-file-1 data/wrangled/logistic_fits/headline.csv --label-1
+      "original-results" --bootstrap-file-2 ../time-horizon-1-1/data/wrangled/bootstrap/headline.csv
+      --agent-summaries-file-2 ../time-horizon-1-1/data/wrangled/logistic_fits/headline.csv
+      --label-2 "new-results" --release-dates ../../data/external/release_dates.yaml
+      --after-date "2023-01-01" --output-plot-file plots/compare_doubling_times_vs_th_1_1.${plot_format}
+      --plot-format ${plot_format} --log-level ${log_level}
+    deps:
+    - ${code_dir}/horizon/plot/compare_doubling_times.py
+    - ${code_dir}/horizon/plot/bootstrap_ci.py
+    - ${code_dir}/horizon/plot/logistic.py
+    - ${code_dir}/horizon/compute_trendline_ci.py
+    - data/wrangled/bootstrap/headline.csv
+    - data/wrangled/logistic_fits/headline.csv
+    - ../time-horizon-1-1/data/wrangled/bootstrap/headline.csv
+    - ../time-horizon-1-1/data/wrangled/logistic_fits/headline.csv
+    - ../../data/external/release_dates.yaml
+    params:
+    - log_level
+    - plot_format
+    - fig_params/figs.yaml:
+      - comparison_color_1
+      - comparison_color_2
+    plots:
+    - plots/compare_doubling_times_vs_th_1_1.${plot_format}:
+        persist: true
+    desc: Compare bootstrapped doubling times between time-horizon-1-0 and time-horizon-1-1
+      model reports for 2023+ SOTA models
+  plot_token_usage_distribution:
+    cmd: python ${code_dir}/horizon/token_usage_distribution.py --input-file data/raw/runs.jsonl
+      --output-dir plots/token_usage_distribution --log-level ${log_level} --release-dates-file
+      ../../data/external/release_dates.yaml
+    deps:
+    - data/raw/runs.jsonl
+    - ${code_dir}/horizon/token_usage_distribution.py
+    - ../../data/external/release_dates.yaml
+    params:
+    - log_level
+    - plot_format
+    - fig_params/figs.yaml:
+      - figs.plot_token_usage_distribution
+    plots:
+    - plots/token_usage_distribution/task_heatmap.${plot_format}
+    - plots/token_usage_distribution/time_bucket_heatmap.${plot_format}
+    - plots/token_usage_distribution/token_histograms.${plot_format}
+    - plots/token_usage_distribution/token_histograms_recent.${plot_format}
+    metrics:
+    - metrics/token_usage_metrics.yaml:
+        cache: false
+    desc: Plot showing token histograms, heatmaps, and metrics by human task length
+      bucket.
   wrangle_score_over_resource_horizon:
     foreach: ${figs.wrangle_score_over_resource_horizon}
     do:
-      cmd: >-
-        python -m horizon.wrangle.score_over_resource_horizon
-        --runs-file data/raw/runs.jsonl
+      cmd: python -m horizon.wrangle.score_over_resource_horizon --runs-file data/raw/runs.jsonl
         --output-file data/wrangled/score_over_resource_horizon/${item.output}.jsonl
-        --x ${item.x}
-        --score-column ${item.score_column}
-        ${item.include_human_flag}
-        --wrangle-params ${item.wrangle_params}
-        --include-best-model
-        --fig-name ${key}
+        --x ${item.x} --score-column ${item.score_column} ${item.include_human_flag}
+        --wrangle-params ${item.wrangle_params} --include-best-model --fig-name ${key}
       deps:
-        - data/raw/runs.jsonl
-        - ../../src/horizon/wrangle/score_over_resource_horizon.py
-        - ../../src/horizon/wrangle/score_over_resource.py
-        - ../../src/horizon/wrangle/logistic.py
+      - data/raw/runs.jsonl
+      - ${code_dir}/horizon/wrangle/score_over_resource_horizon.py
+      - ${code_dir}/horizon/wrangle/score_over_resource.py
+      - ${code_dir}/horizon/wrangle/logistic.py
       params:
-        - fig_params/figs.yaml:
-            - figs.wrangle_score_over_resource_horizon.${key}.exclude_agents
-            - figs.wrangle_logistic.ga_rebench
+      - fig_params/figs.yaml:
+        - figs.wrangle_score_over_resource_horizon.${key}.exclude_agents
+        - figs.wrangle_logistic.ga_rebench
       outs:
-        - data/wrangled/score_over_resource_horizon/${item.output}.jsonl
+      - data/wrangled/score_over_resource_horizon/${item.output}.jsonl
       desc: Wrangle the score over resource data for time horizon y-axis.
-
   plot_score_over_resource_horizon:
-    # some lines might be horizontal and look wrong. that means they have "generation_cost: 0.0" in the data
     foreach: ${figs.plot_score_over_resource_horizon}
     do:
-      cmd: >-
-        python -m horizon.plot.score_over_resource_line
-        --wrangled-resource-file data/wrangled/score_over_resource_horizon/${item.wrangled}.jsonl
-        --output-file plots/success_over_resource_horizon/${item.output_file}.${plot_format}
-        --params-file params.yaml
-        --x ${item.x}
-        --score-column ${item.score_column}
-        --weighting-column ${item.weighting_column}
-        --fig-name ${key}
-        --y-scale ${item.y_scale}
-        --y-lim-lower ${item.y_lim_lower}
-        --y-lim-upper ${item.y_lim_upper}
+      cmd: python -m horizon.plot.score_over_resource_line --wrangled-resource-file
+        data/wrangled/score_over_resource_horizon/${item.wrangled}.jsonl --output-file
+        plots/success_over_resource_horizon/${item.output_file}.${plot_format} --params-file
+        params.yaml --x ${item.x} --score-column ${item.score_column} --weighting-column
+        ${item.weighting_column} --fig-name ${key} --y-scale ${item.y_scale} --y-lim-lower
+        ${item.y_lim_lower} --y-lim-upper ${item.y_lim_upper}
       deps:
-        - data/wrangled/score_over_resource_horizon/${item.wrangled}.jsonl
-        - ../../src/horizon/plot/score_over_resource_line.py
-        - ../../src/horizon/utils/plots.py
+      - data/wrangled/score_over_resource_horizon/${item.wrangled}.jsonl
+      - ${code_dir}/horizon/plot/score_over_resource_line.py
+      - ${code_dir}/horizon/utils/plots.py
       params:
-        - plot_format
-        - plots
-        - fig_params/figs.yaml:
-            - figs.plot_score_over_resource_horizon.${key}.exclude_agents
+      - plot_format
+      - plots
+      - fig_params/figs.yaml:
+        - figs.plot_score_over_resource_horizon.${key}.exclude_agents
       outs:
-        - plots/success_over_resource_horizon/${item.output_file}.${plot_format}
+      - plots/success_over_resource_horizon/${item.output_file}.${plot_format}
       desc: Plot showing the score over resource line chart for the horizon.
-
-  compare_doubling_times_vs_th_1_1:
-    cmd: >-
-      python -m horizon.plot.compare_doubling_times
-      --bootstrap-file-1 data/wrangled/bootstrap/headline.csv
-      --agent-summaries-file-1 data/wrangled/logistic_fits/headline.csv
-      --label-1 "TH 1.0"
-      --bootstrap-file-2 ../time-horizon-1-1/data/wrangled/bootstrap/headline.csv
-      --agent-summaries-file-2 ../time-horizon-1-1/data/wrangled/logistic_fits/headline.csv
-      --label-2 "TH 1.1"
-      --release-dates ../../data/external/release_dates.yaml
-      --after-date "2023-01-01"
-      --output-plot-file plots/compare_doubling_times_vs_th_1_1.${plot_format}
-      --plot-format ${plot_format}
+  compare_task_distributions:
+    cmd: python -m horizon.plot.compare_task_distributions data/raw/runs.jsonl ../time-horizon-1-1/data/raw/runs.jsonl
+      --label1 "Time Horizon 1.0" --label2 "Time Horizon 1.1" --output plots/task_distribution_comparison.${plot_format}
       --log-level ${log_level}
     deps:
-      - ../../src/horizon/plot/compare_doubling_times.py
-      - ../../src/horizon/plot/bootstrap_ci.py
-      - ../../src/horizon/plot/logistic.py
-      - ../../src/horizon/compute_trendline_ci.py
-      - data/wrangled/bootstrap/headline.csv
-      - data/wrangled/logistic_fits/headline.csv
-      - ../time-horizon-1-1/data/wrangled/bootstrap/headline.csv
-      - ../time-horizon-1-1/data/wrangled/logistic_fits/headline.csv
-      - ../../data/external/release_dates.yaml
+    - ${code_dir}/horizon/plot/compare_task_distributions.py
+    - ${code_dir}/horizon/utils/plots.py
+    - data/raw/runs.jsonl
+    - ../time-horizon-1-1/data/raw/runs.jsonl
     params:
-      - log_level
-      - plot_format
+    - log_level
+    - plot_format
+    - fig_params/figs.yaml:
       - comparison_color_1
       - comparison_color_2
     plots:
-      - plots/compare_doubling_times_vs_th_1_1.${plot_format}:
-          persist: true
-    desc: Compare bootstrapped doubling times between time-horizon-1-0 and time-horizon-1-1 model reports for 2023+ SOTA models
-
-  compare_task_distributions:
-    cmd: >-
-      python -m horizon.plot.compare_task_distributions
-      data/raw/runs.jsonl
-      ../time-horizon-1-1/data/raw/runs.jsonl
-      --label1 "TH 1.0"
-      --label2 "TH 1.1"
-      --output plots/compare_task_distributions.${plot_format}
-    deps:
-      - ../../src/horizon/plot/compare_task_distributions.py
-      - data/raw/runs.jsonl
-      - ../time-horizon-1-1/data/raw/runs.jsonl
-    params:
-      - plot_format
-      - comparison_color_1
-      - comparison_color_2
-    plots:
-      - plots/compare_task_distributions.${plot_format}:
-          persist: true
-    desc: Compare task distributions by human_minutes between time-horizon-1-0 and time-horizon-1-1
+    - plots/task_distribution_comparison.${plot_format}
+    desc: Compare task distributions between Time Horizon 1.0 and 1.1

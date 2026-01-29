@@ -8,11 +8,10 @@ import numpy as np
 import pandas as pd
 import yaml
 
-from horizon.plot.bootstrap_ci import compute_bootstrap_confidence_region
-
-logging.basicConfig(
-    level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
+from horizon.plot.bootstrap_ci import (
+    compute_bootstrap_confidence_region,
 )
+
 logger = logging.getLogger(__name__)
 
 
@@ -87,7 +86,6 @@ def main() -> None:
     parser.add_argument("--log-level", type=str, default="INFO")
     parser.add_argument("--after-date", type=str, default="2019-01-01")
     parser.add_argument("--before-date", type=str, default=None)
-    parser.add_argument("--trendline-end-date", type=str, default="2027-01-01")
     args = parser.parse_args()
 
     logging.basicConfig(
@@ -130,7 +128,7 @@ def main() -> None:
         bootstrap_results=bootstrap_results_for_fitting,
         release_dates=release_dates,
         after_date=args.after_date,
-        max_date=pd.to_datetime(args.trendline_end_date),
+        max_date=pd.to_datetime(args.before_date or "2027-01-01"),
         confidence_level=confidence_level,
     )
 

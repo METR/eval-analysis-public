@@ -1,7 +1,7 @@
 import io
 import logging
 import pathlib
-from typing import TypedDict
+from typing import Any, TypedDict
 
 import cairosvg
 import matplotlib.axes
@@ -156,15 +156,16 @@ class PlotParams(TypedDict):
 def format_time_label(seconds: float) -> str:
     seconds = round(seconds)
     hours = seconds / 3600
-    if hours >= 24:
-        return f"{int(hours / 24)}d"
     if hours >= 1:
-        remainder = seconds % 3600
-        minutes_str = (", " + format_time_label(remainder)) if remainder > 60 else ""
-        return f"{int(hours)} hr" + ("s" if int(hours) > 1 else "") + minutes_str
+        # Always show as hours, even if > 24 hours
+        # Remove decimal point if it's a whole number
+        if hours == int(hours):
+            return f"{int(hours)}h"
+        else:
+            return f"{hours:.1f}h"
     if hours >= 1 / 60:
-        return f"{int(hours * 60)} min"
-    return f"{int(seconds)} sec"
+        return f"{int(hours * 60)}m"
+    return f"{int(seconds)}s"
 
 
 linear_ticks = np.linspace(0, 120, 9)
@@ -183,16 +184,38 @@ logarithmic_ticks = np.array(
         15,
         30,
         60,
-        120,
-        240,
-        480,
-        960,
-        24 * 60,
-        2 * 24 * 60,
-        4 * 24 * 60,
-        8 * 24 * 60,
+        2 * 60,
+        4 * 60,
+        8 * 60,
+        16 * 60,
+        32 * 60,
+        64 * 60,
+        128 * 60,
+        256 * 60,
     ]
 )
+
+
+def get_logarithmic_bins(
+    min_time: float, max_time: float
+) -> np.ndarray[Any, np.dtype[np.float64]]:
+    """Get logarithmic bins that cover the range [min_time, max_time].
+
+    The right edge extends past max_time so all data points fall within a bin.
+    """
+    start_idx = np.searchsorted(logarithmic_ticks, min_time, side="right") - 1
+    end_idx = np.searchsorted(logarithmic_ticks, max_time, side="right")
+
+    assert (
+        start_idx >= 0
+    ), f"min_time {min_time} is less than smallest tick {logarithmic_ticks[0]}"
+    assert max_time <= logarithmic_ticks[-1], (
+        f"max_time {max_time} exceeds largest tick {logarithmic_ticks[-1]}; "
+        "data at max_time would be excluded from histogram; "
+        "add more values to logarithmic_ticks"
+    )
+
+    return np.array(logarithmic_ticks[start_idx : end_idx + 1])
 
 
 def log_x_axis(

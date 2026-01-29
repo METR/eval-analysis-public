@@ -9,7 +9,11 @@ import yaml
 from matplotlib.axes import Axes
 from matplotlib.figure import Figure
 
-from horizon.utils.plots import PlotParams, get_agent_color, make_y_axis
+from horizon.utils.plots import (
+    PlotParams,
+    get_agent_color,
+    make_y_axis,
+)
 
 FIGSIZE = (9, 5)
 

@@ -2,11 +2,13 @@ log_level: INFO
 n_bootstrap: 1_000
 plot_format: png
 
-comparison_color_1: "#56B4E9"
-comparison_color_2: "#E69F00"
-
 benchmark:
   name: METR-Horizon-v1.0
+  # This commit was hardcoded in generate_benchmark_results.py
+  # See commit bbae384 which noted down these hashes
+  # Presumably they are hashes for mp4-tasks and small-tasks, but
+  # I could not find the long_tasks_version hash in the history of
+  # mp4-tasks.
   long_tasks_version: 2ce7f1e0c4f8b7f2653e7014941a1a9f3ca908e2
   swaa_version: 3d2ab4f0662a752409858a73e006af35e3fb7d64
 

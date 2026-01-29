@@ -14,7 +14,7 @@ from matplotlib.axes import Axes
 from matplotlib.dates import date2num
 from numpy.typing import NDArray
 
-import horizon.utils.plots
+import horizon.utils.plots as src_utils_plots
 from horizon.plot.logistic import (
     _get_title,
     _process_agent_summaries,
@@ -22,7 +22,11 @@ from horizon.plot.logistic import (
     plot_horizon_graph,
     plot_trendline,
 )
-from horizon.utils.plots import PlotParams, TrendlineParams, add_watermark
+from horizon.utils.plots import (
+    PlotParams,
+    TrendlineParams,
+    add_watermark,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -322,6 +326,7 @@ def _add_individual_labels(
     last_point = sorted_data.iloc[-1]
 
     # TODO would be great to map from agent names to label position, and ideally make this configurable in the yaml
+    second_to_last = sorted_data.iloc[-2]
     log_agents_to_label = [
         (first_point, (4, -6), None),
         (sorted_data.iloc[1], (8, 0), None),
@@ -329,6 +334,7 @@ def _add_individual_labels(
         (sorted_data.iloc[3], (-6, 0), None),  # gpt 4
         (sorted_data.iloc[5], (4, -2), None),  # gpt 4
         (sorted_data.iloc[9], (4, -10), None),
+        (second_to_last, (8, -10), None),
         (last_point, (8, -10), None),
     ]
 
@@ -345,6 +351,7 @@ def _add_individual_labels(
             (sorted_data.iloc[7], (-12, 0.1)),
             (sorted_data.iloc[8], (-12, 0.1)),
             (sorted_data.iloc[9], (-12, 0.1)),
+            (second_to_last, (-12, 0.1)),
             (last_point, (-12, 0.1)),
         ]
     ]
@@ -627,11 +634,10 @@ def main() -> None:
     upper_y_lim = script_params["upper_y_lim"]
     trendline_end_date = script_params["x_lim_end"]
     if args.y_scale == "linear":
-        end_date = agent_summaries_for_display["release_date"].max() + pd.Timedelta(
-            days=60
-        )
+        max_release_date = agent_summaries_for_display["release_date"].dropna().max()
+        end_date = max_release_date + pd.Timedelta(days=60)
         upper_y_lim = agent_summaries_for_display["p50"].max() * 1.2
-        trendline_end_date = agent_summaries_for_display["release_date"].max()
+        trendline_end_date = max_release_date
 
     # If there's an overlay, override agent colors to use comparison_color_1
     if script_params.get("overlay_results") is not None:
@@ -773,7 +779,9 @@ def main() -> None:
     labels = [rename_map.get(label, label) for label in labels]
 
     if script_params["individual_labels"]:
-        axs[0].get_legend().remove()
+        legend = axs[0].get_legend()
+        if legend is not None:
+            legend.remove()
     else:
         axs[0].legend(
             handles,
@@ -793,7 +801,7 @@ def main() -> None:
         axs[1].set_xticklabels(["Doubling times\n(days)"])
         axs[1].set_ylim(0, 365)
 
-    horizon.utils.plots.save_or_open_plot(args.output_file, params["plot_format"])
+    src_utils_plots.save_or_open_plot(args.output_file, params["plot_format"])
 
 
 if __name__ == "__main__":
