@@ -184,6 +184,8 @@ stages:
       --bootstrap-results-file data/wrangled/bootstrap/headline.csv --output-metrics-file
       metrics/benchmark_results.yaml --benchmark-name ${benchmark.name} --benchmark-long-tasks-version
       ${benchmark.long_tasks_version} --benchmark-swaa-version ${benchmark.swaa_version}
+      --benchmark-results-to-stitch ../time-horizon-1-0/metrics/benchmark_results.yaml
+      --model-names-to-stitch gpt2,davinci_002,gpt_3_5_turbo_instruct
     deps:
     - ${code_dir}/horizon/generate_benchmark_results.py
     - ${code_dir}/horizon/compute_trendline_ci.py
@@ -192,6 +194,7 @@ stages:
     - data/wrangled/logistic_fits/headline.csv
     - data/raw/runs.jsonl
     - ../../data/external/release_dates.yaml
+    - ../time-horizon-1-0/metrics/benchmark_results.yaml
     params:
     - benchmark
     metrics:

@@ -8,38 +8,18 @@ for two different datasets, allowing comparison of task difficulty distributions
 import argparse
 import logging
 import pathlib
-from typing import Any
 
 import dvc.api
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
-from horizon.utils.plots import format_time_label, logarithmic_ticks
+from horizon.utils.plots import (
+    format_time_label,
+    get_logarithmic_bins,
+)
 
 logger = logging.getLogger(__name__)
-
-
-def get_logarithmic_bins(
-    min_time: float, max_time: float
-) -> np.ndarray[Any, np.dtype[np.float64]]:
-    """Get logarithmic bins that cover the range [min_time, max_time].
-
-    Includes one bin beyond max_time to properly display the rightmost bar.
-    """
-    # Find bins in range, but include at least one bin beyond max_time
-    bins_in_range = logarithmic_ticks[logarithmic_ticks >= min_time]
-
-    # Find the index of the first bin that's > max_time
-    beyond_max_idx = np.searchsorted(bins_in_range, max_time, side="right")
-
-    # Include that bin (or all bins if max_time exceeds all bins)
-    if beyond_max_idx < len(bins_in_range):
-        bins = bins_in_range[: beyond_max_idx + 1]
-    else:
-        bins = bins_in_range
-
-    return np.array(bins)
 
 
 def load_unique_tasks(file_path: pathlib.Path) -> pd.DataFrame:

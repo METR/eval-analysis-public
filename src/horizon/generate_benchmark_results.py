@@ -127,6 +127,8 @@ def generate_benchmark_metrics(
     swaa_version: str,
     logger: logging.Logger,
     include_transcript_links: bool = False,
+    benchmark_results_to_stitch: dict[str, Any] | None = None,
+    model_names_to_stitch: list[str] | None = None,
 ) -> dict[str, Any]:
     results = dict()
     dated_results = defaultdict(set)
@@ -192,12 +194,33 @@ def generate_benchmark_metrics(
         results[model]["metrics"] = agent_result
         results[model]["release_date"] = release_dates[agent]
         results[model]["scaffolds"] = list(agent_df["scaffold"].unique())
+        results[model]["benchmark_name"] = benchmark_name
         dated_results[release_dates[agent]].add(
             (
                 model,
                 agent_result["p50_horizon_length"]["estimate"],
             )
         )
+
+    if benchmark_results_to_stitch:
+        assert (
+            model_names_to_stitch
+        ), "model_names_to_stitch is required when stitching benchmark results"
+        old_results = benchmark_results_to_stitch.get("results", {})
+        for model_name in model_names_to_stitch:
+            assert (
+                model_name in old_results
+            ), f"Model {model_name} not found in benchmark results to stitch"
+            assert (
+                model_name not in results
+            ), f"Model {model_name} already exists in current results"
+            results[model_name] = old_results[model_name].copy()
+            dated_results[results[model_name]["release_date"]].add(
+                (
+                    model_name,
+                    results[model_name]["metrics"]["p50_horizon_length"]["estimate"],
+                )
+            )
 
     highest_horizon_so_far = float("-inf")
     for release_date, results_on_date in sorted(dated_results.items()):
@@ -235,6 +258,8 @@ def main(
     benchmark_name: str,
     benchmark_long_tasks_version: str,
     benchmark_swaa_version: str,
+    benchmark_results_to_stitch: pathlib.Path | None = None,
+    model_names_to_stitch: list[str] | None = None,
 ) -> None:
     df_runs = pd.read_json(runs_file, lines=True, orient="records", convert_dates=False)
     assert "scaffold" in df_runs.columns, "scaffold column is required"
@@ -244,6 +269,10 @@ def main(
     release_dates = yaml.safe_load(release_dates_file.read_text())["date"]
 
     df_bootstrap_results = pd.read_csv(bootstrap_results_file)
+
+    old_benchmark_results = None
+    if benchmark_results_to_stitch:
+        old_benchmark_results = yaml.safe_load(benchmark_results_to_stitch.read_text())
 
     output_metrics_file.parent.mkdir(parents=True, exist_ok=True)
 
@@ -263,6 +292,8 @@ def main(
         benchmark_swaa_version,
         logger,
         include_transcript_links=include_transcript_links,
+        benchmark_results_to_stitch=old_benchmark_results,
+        model_names_to_stitch=model_names_to_stitch,
     )
 
     with open(output_metrics_file, "w") as f:
@@ -323,7 +354,25 @@ if __name__ == "__main__":
         required=True,
         help="Commit hash for the SWAA manifest file",
     )
+    parser.add_argument(
+        "--benchmark-results-to-stitch",
+        type=pathlib.Path,
+        default=None,
+        help="Optional path to benchmark_results.yaml to stitch models from",
+    )
+    parser.add_argument(
+        "--model-names-to-stitch",
+        type=str,
+        default=None,
+        help="Comma-separated list of model names to stitch from the old benchmark",
+    )
     args = parser.parse_args()
+
+    model_names_to_stitch = None
+    if args.model_names_to_stitch:
+        model_names_to_stitch = [
+            name.strip() for name in args.model_names_to_stitch.split(",")
+        ]
 
     main(
         runs_file=args.runs_file,
@@ -335,4 +384,6 @@ if __name__ == "__main__":
         benchmark_name=args.benchmark_name,
         benchmark_long_tasks_version=args.benchmark_long_tasks_version,
         benchmark_swaa_version=args.benchmark_swaa_version,
+        benchmark_results_to_stitch=args.benchmark_results_to_stitch,
+        model_names_to_stitch=model_names_to_stitch,
     )
