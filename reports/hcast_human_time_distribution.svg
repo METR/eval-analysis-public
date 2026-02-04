@@ -1,0 +1,539 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1177" viewBox="0 0 1200 1177" style="background:white;">
+<style>text { font-family: Arial, Helvetica, sans-serif; }</style>
+<text x="600.0" y="30" text-anchor="middle" font-size="16" font-weight="bold" fill="#222">Distribution of Human Completion Times for HCAST Eval Tasks</text>
+<text x="315.0" y="47" text-anchor="middle" font-size="13" fill="#333">Log-scale histogram</text>
+<line x1="70" y1="375" x2="560" y2="375" stroke="#333" />
+<line x1="70" y1="55" x2="70" y2="375" stroke="#333" />
+<text x="315.0" y="417" text-anchor="middle" font-size="12" fill="#333">Human completion time (hours)</text>
+<text x="20" y="215.0" text-anchor="middle" font-size="12" fill="#333" transform="rotate(-90,20,215.0)">Number of tasks</text>
+<text x="925.0" y="47" text-anchor="middle" font-size="13" fill="#333">Tasks by time bucket</text>
+<line x1="680" y1="375" x2="1170" y2="375" stroke="#333" />
+<line x1="680" y1="55" x2="680" y2="375" stroke="#333" />
+<text x="925.0" y="417" text-anchor="middle" font-size="12" fill="#333">Time bucket</text>
+<text x="630" y="215.0" text-anchor="middle" font-size="12" fill="#333" transform="rotate(-90,630,215.0)">Number of tasks</text>
+<text x="600.0" y="460" text-anchor="middle" font-size="13" fill="#333">Human time by task family (dots = tasks, line = median)</text>
+<line x1="314" y1="1067" x2="1150" y2="1067" stroke="#333" />
+<line x1="314" y1="475" x2="314" y2="1067" stroke="#333" />
+<text x="732.0" y="1105" text-anchor="middle" font-size="12" fill="#333">Time (hours)</text>
+<rect x="70.0" y="289.7" width="18.6" height="85.3" fill="#4C72B0" opacity="0.85" />
+<rect x="109.2" y="247.0" width="18.6" height="128.0" fill="#4C72B0" opacity="0.85" />
+<rect x="128.8" y="353.7" width="18.6" height="21.3" fill="#4C72B0" opacity="0.85" />
+<rect x="148.4" y="332.3" width="18.6" height="42.7" fill="#4C72B0" opacity="0.85" />
+<rect x="168.0" y="311.0" width="18.6" height="64.0" fill="#4C72B0" opacity="0.85" />
+<rect x="187.6" y="76.3" width="18.6" height="298.7" fill="#4C72B0" opacity="0.85" />
+<rect x="207.2" y="183.0" width="18.6" height="192.0" fill="#4C72B0" opacity="0.85" />
+<rect x="226.8" y="268.3" width="18.6" height="106.7" fill="#4C72B0" opacity="0.85" />
+<rect x="246.4" y="183.0" width="18.6" height="192.0" fill="#4C72B0" opacity="0.85" />
+<rect x="266.0" y="119.0" width="18.6" height="256.0" fill="#4C72B0" opacity="0.85" />
+<rect x="285.6" y="97.7" width="18.6" height="277.3" fill="#4C72B0" opacity="0.85" />
+<rect x="305.2" y="161.7" width="18.6" height="213.3" fill="#4C72B0" opacity="0.85" />
+<rect x="324.8" y="183.0" width="18.6" height="192.0" fill="#4C72B0" opacity="0.85" />
+<rect x="344.4" y="268.3" width="18.6" height="106.7" fill="#4C72B0" opacity="0.85" />
+<rect x="364.0" y="268.3" width="18.6" height="106.7" fill="#4C72B0" opacity="0.85" />
+<rect x="383.6" y="289.7" width="18.6" height="85.3" fill="#4C72B0" opacity="0.85" />
+<rect x="403.2" y="247.0" width="18.6" height="128.0" fill="#4C72B0" opacity="0.85" />
+<rect x="422.8" y="183.0" width="18.6" height="192.0" fill="#4C72B0" opacity="0.85" />
+<rect x="442.4" y="97.7" width="18.6" height="277.3" fill="#4C72B0" opacity="0.85" />
+<rect x="462.0" y="55.0" width="18.6" height="320.0" fill="#4C72B0" opacity="0.85" />
+<rect x="481.6" y="204.3" width="18.6" height="170.7" fill="#4C72B0" opacity="0.85" />
+<rect x="501.2" y="289.7" width="18.6" height="85.3" fill="#4C72B0" opacity="0.85" />
+<rect x="520.8" y="311.0" width="18.6" height="64.0" fill="#4C72B0" opacity="0.85" />
+<rect x="540.4" y="353.7" width="18.6" height="21.3" fill="#4C72B0" opacity="0.85" />
+<line x1="144.4" y1="375" x2="144.4" y2="381" stroke="#333" />
+<text x="144.4" y="395" text-anchor="middle" font-size="10" fill="#333">0.1</text>
+<line x1="189.5" y1="375" x2="189.5" y2="381" stroke="#333" />
+<text x="189.5" y="395" text-anchor="middle" font-size="10" fill="#333">0.1</text>
+<line x1="294.0" y1="375" x2="294.0" y2="381" stroke="#333" />
+<text x="294.0" y="395" text-anchor="middle" font-size="10" fill="#333">0.5</text>
+<line x1="339.0" y1="375" x2="339.0" y2="381" stroke="#333" />
+<text x="339.0" y="395" text-anchor="middle" font-size="10" fill="#333">1</text>
+<line x1="384.1" y1="375" x2="384.1" y2="381" stroke="#333" />
+<text x="384.1" y="395" text-anchor="middle" font-size="10" fill="#333">2</text>
+<line x1="443.6" y1="375" x2="443.6" y2="381" stroke="#333" />
+<text x="443.6" y="395" text-anchor="middle" font-size="10" fill="#333">5</text>
+<line x1="488.6" y1="375" x2="488.6" y2="381" stroke="#333" />
+<text x="488.6" y="395" text-anchor="middle" font-size="10" fill="#333">10</text>
+<line x1="515.0" y1="375" x2="515.0" y2="381" stroke="#333" />
+<text x="515.0" y="395" text-anchor="middle" font-size="10" fill="#333">15</text>
+<line x1="560.0" y1="375" x2="560.0" y2="381" stroke="#333" />
+<text x="560.0" y="395" text-anchor="middle" font-size="10" fill="#333">30</text>
+<line x1="64" y1="375.0" x2="70" y2="375.0" stroke="#333" />
+<line x1="70" y1="375.0" x2="560" y2="375.0" stroke="#ddd" />
+<text x="60" y="379.0" text-anchor="end" font-size="11" fill="#333">0</text>
+<line x1="64" y1="311.0" x2="70" y2="311.0" stroke="#333" />
+<line x1="70" y1="311.0" x2="560" y2="311.0" stroke="#ddd" />
+<text x="60" y="315.0" text-anchor="end" font-size="11" fill="#333">3</text>
+<line x1="64" y1="247.0" x2="70" y2="247.0" stroke="#333" />
+<line x1="70" y1="247.0" x2="560" y2="247.0" stroke="#ddd" />
+<text x="60" y="251.0" text-anchor="end" font-size="11" fill="#333">6</text>
+<line x1="64" y1="183.0" x2="70" y2="183.0" stroke="#333" />
+<line x1="70" y1="183.0" x2="560" y2="183.0" stroke="#ddd" />
+<text x="60" y="187.0" text-anchor="end" font-size="11" fill="#333">9</text>
+<line x1="64" y1="119.0" x2="70" y2="119.0" stroke="#333" />
+<line x1="70" y1="119.0" x2="560" y2="119.0" stroke="#ddd" />
+<text x="60" y="123.0" text-anchor="end" font-size="11" fill="#333">12</text>
+<line x1="64" y1="55.0" x2="70" y2="55.0" stroke="#333" />
+<line x1="70" y1="55.0" x2="560" y2="55.0" stroke="#ddd" />
+<text x="60" y="59.0" text-anchor="end" font-size="11" fill="#333">15</text>
+<rect x="380" y="61" width="175" height="88" rx="4" fill="white" fill-opacity="0.85" stroke="#ccc" />
+<text x="545" y="75" text-anchor="end" font-size="10" fill="#333" font-family="monospace">n = 170 tasks</text>
+<text x="545" y="91" text-anchor="end" font-size="10" fill="#333" font-family="monospace">min = 1.0 min</text>
+<text x="545" y="107" text-anchor="end" font-size="10" fill="#333" font-family="monospace">median = 0.8 hr</text>
+<text x="545" y="123" text-anchor="end" font-size="10" fill="#333" font-family="monospace">mean = 3.2 hr</text>
+<text x="545" y="139" text-anchor="end" font-size="10" fill="#333" font-family="monospace">max = 30.0 hr</text>
+<rect x="718.0" y="55.0" width="46.5" height="320.0" fill="#4C72B0" opacity="0.85" />
+<text x="741.2" y="50.0" text-anchor="middle" font-size="11" font-weight="bold" fill="#333">47</text>
+<text x="741.2" y="395" text-anchor="middle" font-size="10" fill="#333">< 15 min</text>
+<rect x="779.2" y="55.0" width="46.5" height="320.0" fill="#4C72B0" opacity="0.85" />
+<text x="802.5" y="50.0" text-anchor="middle" font-size="11" font-weight="bold" fill="#333">47</text>
+<text x="802.5" y="395" text-anchor="middle" font-size="10" fill="#333">15-60 min</text>
+<rect x="840.5" y="286.5" width="46.5" height="88.5" fill="#4C72B0" opacity="0.85" />
+<text x="863.8" y="281.5" text-anchor="middle" font-size="11" font-weight="bold" fill="#333">13</text>
+<text x="863.8" y="395" text-anchor="middle" font-size="10" fill="#333">1-2 hr</text>
+<rect x="901.7" y="306.9" width="46.5" height="68.1" fill="#4C72B0" opacity="0.85" />
+<text x="925.0" y="301.9" text-anchor="middle" font-size="11" font-weight="bold" fill="#333">10</text>
+<text x="925.0" y="395" text-anchor="middle" font-size="10" fill="#333">2-4 hr</text>
+<rect x="963.0" y="204.8" width="46.5" height="170.2" fill="#4C72B0" opacity="0.85" />
+<text x="986.2" y="199.8" text-anchor="middle" font-size="11" font-weight="bold" fill="#333">25</text>
+<text x="986.2" y="395" text-anchor="middle" font-size="10" fill="#333">4-8 hr</text>
+<rect x="1024.2" y="218.4" width="46.5" height="156.6" fill="#4C72B0" opacity="0.85" />
+<text x="1047.5" y="213.4" text-anchor="middle" font-size="11" font-weight="bold" fill="#333">23</text>
+<text x="1047.5" y="395" text-anchor="middle" font-size="10" fill="#333">8-16 hr</text>
+<rect x="1085.5" y="341.0" width="46.5" height="34.0" fill="#4C72B0" opacity="0.85" />
+<text x="1108.8" y="336.0" text-anchor="middle" font-size="11" font-weight="bold" fill="#333">5</text>
+<text x="1108.8" y="395" text-anchor="middle" font-size="10" fill="#333">16+ hr</text>
+<line x1="674" y1="375.0" x2="680" y2="375.0" stroke="#333" />
+<line x1="680" y1="375.0" x2="1170" y2="375.0" stroke="#ddd" />
+<text x="670" y="379.0" text-anchor="end" font-size="11" fill="#333">0</text>
+<line x1="674" y1="313.7" x2="680" y2="313.7" stroke="#333" />
+<line x1="680" y1="313.7" x2="1170" y2="313.7" stroke="#ddd" />
+<text x="670" y="317.7" text-anchor="end" font-size="11" fill="#333">9</text>
+<line x1="674" y1="252.4" x2="680" y2="252.4" stroke="#333" />
+<line x1="680" y1="252.4" x2="1170" y2="252.4" stroke="#ddd" />
+<text x="670" y="256.4" text-anchor="end" font-size="11" fill="#333">18</text>
+<line x1="674" y1="191.2" x2="680" y2="191.2" stroke="#333" />
+<line x1="680" y1="191.2" x2="1170" y2="191.2" stroke="#ddd" />
+<text x="670" y="195.2" text-anchor="end" font-size="11" fill="#333">27</text>
+<line x1="674" y1="129.9" x2="680" y2="129.9" stroke="#333" />
+<line x1="680" y1="129.9" x2="1170" y2="129.9" stroke="#ddd" />
+<text x="670" y="133.9" text-anchor="end" font-size="11" fill="#333">36</text>
+<line x1="674" y1="68.6" x2="680" y2="68.6" stroke="#333" />
+<line x1="680" y1="68.6" x2="1170" y2="68.6" stroke="#ddd" />
+<text x="670" y="72.6" text-anchor="end" font-size="11" fill="#333">45</text>
+<rect x="684.3" y="476.2" width="2.0" height="5.6" fill="#4C72B0" opacity="0.3" rx="2" />
+<line x1="684.3" y1="476.2" x2="684.3" y2="481.8" stroke="#4C72B0" stroke-width="2" />
+<circle cx="684.3" cy="479.0" r="3" fill="#55A868" opacity="0.7" />
+<text x="306" y="483.0" text-anchor="end" font-size="9" fill="#333">acdc_bug</text>
+<rect x="415.3" y="484.2" width="2.0" height="5.6" fill="#4C72B0" opacity="0.3" rx="2" />
+<line x1="415.3" y1="484.2" x2="415.3" y2="489.8" stroke="#4C72B0" stroke-width="2" />
+<circle cx="415.3" cy="487.0" r="3" fill="#55A868" opacity="0.7" />
+<text x="306" y="491.0" text-anchor="end" font-size="9" fill="#333">acronym_chatbot</text>
+<rect x="415.3" y="492.2" width="2.0" height="5.6" fill="#4C72B0" opacity="0.3" rx="2" />
+<line x1="415.3" y1="492.2" x2="415.3" y2="497.8" stroke="#4C72B0" stroke-width="2" />
+<circle cx="415.3" cy="495.0" r="3" fill="#55A868" opacity="0.7" />
+<text x="306" y="499.0" text-anchor="end" font-size="9" fill="#333">adversarially_robust_models</text>
+<rect x="360.5" y="500.2" width="2.0" height="5.6" fill="#4C72B0" opacity="0.3" rx="2" />
+<line x1="360.5" y1="500.2" x2="360.5" y2="505.8" stroke="#4C72B0" stroke-width="2" />
+<circle cx="360.5" cy="503.0" r="3" fill="#55A868" opacity="0.7" />
+<text x="306" y="507.0" text-anchor="end" font-size="9" fill="#333">anti_bot_site</text>
+<rect x="317.3" y="508.2" width="2.0" height="5.6" fill="#4C72B0" opacity="0.3" rx="2" />
+<line x1="317.3" y1="508.2" x2="317.3" y2="513.8" stroke="#4C72B0" stroke-width="2" />
+<circle cx="317.3" cy="511.0" r="3" fill="#55A868" opacity="0.7" />
+<text x="306" y="515.0" text-anchor="end" font-size="9" fill="#333">apps_dataset_debug</text>
+<rect x="445.3" y="516.2" width="20.7" height="5.6" fill="#4C72B0" opacity="0.3" rx="2" />
+<line x1="455.6" y1="516.2" x2="455.6" y2="521.8" stroke="#4C72B0" stroke-width="2" />
+<circle cx="445.3" cy="519.0" r="3" fill="#55A868" opacity="0.7" />
+<circle cx="466.0" cy="519.0" r="3" fill="#55A868" opacity="0.7" />
+<text x="306" y="523.0" text-anchor="end" font-size="9" fill="#333">audio_classification</text>
+<rect x="314.8" y="524.2" width="2.0" height="5.6" fill="#4C72B0" opacity="0.3" rx="2" />
+<line x1="314.8" y1="524.2" x2="314.8" y2="529.8" stroke="#4C72B0" stroke-width="2" />
+<circle cx="314.8" cy="527.0" r="3" fill="#55A868" opacity="0.7" />
+<text x="306" y="531.0" text-anchor="end" font-size="9" fill="#333">auto_days_since</text>
+<rect x="364.7" y="532.2" width="2.0" height="5.6" fill="#4C72B0" opacity="0.3" rx="2" />
+<line x1="364.7" y1="532.2" x2="364.7" y2="537.8" stroke="#4C72B0" stroke-width="2" />
+<circle cx="364.7" cy="535.0" r="3" fill="#55A868" opacity="0.7" />
+<text x="306" y="539.0" text-anchor="end" font-size="9" fill="#333">automatic_jailbreak</text>
+<rect x="323.2" y="540.2" width="16.1" height="5.6" fill="#4C72B0" opacity="0.3" rx="2" />
+<line x1="329.4" y1="540.2" x2="329.4" y2="545.8" stroke="#4C72B0" stroke-width="2" />
+<circle cx="323.2" cy="543.0" r="3" fill="#55A868" opacity="0.7" />
+<circle cx="328.6" cy="543.0" r="3" fill="#55A868" opacity="0.7" />
+<circle cx="329.4" cy="543.0" r="3" fill="#55A868" opacity="0.7" />
+<circle cx="333.1" cy="543.0" r="3" fill="#55A868" opacity="0.7" />
+<circle cx="339.3" cy="543.0" r="3" fill="#55A868" opacity="0.7" />
+<text x="306" y="547.0" text-anchor="end" font-size="9" fill="#333">avoid_shutdown</text>
+<rect x="592.7" y="548.2" width="2.0" height="5.6" fill="#4C72B0" opacity="0.3" rx="2" />
+<line x1="592.7" y1="548.2" x2="592.7" y2="553.8" stroke="#4C72B0" stroke-width="2" />
+<circle cx="592.7" cy="551.0" r="3" fill="#55A868" opacity="0.7" />
+<text x="306" y="555.0" text-anchor="end" font-size="9" fill="#333">backdoor_image_classifier</text>
+<rect x="318.2" y="556.2" width="22.7" height="5.6" fill="#4C72B0" opacity="0.3" rx="2" />
+<line x1="320.3" y1="556.2" x2="320.3" y2="561.8" stroke="#4C72B0" stroke-width="2" />
+<circle cx="318.2" cy="559.0" r="3" fill="#55A868" opacity="0.7" />
+<circle cx="318.2" cy="559.0" r="3" fill="#55A868" opacity="0.7" />
+<circle cx="319.1" cy="559.0" r="3" fill="#55A868" opacity="0.7" />
+<circle cx="321.4" cy="559.0" r="3" fill="#55A868" opacity="0.7" />
+<circle cx="329.5" cy="559.0" r="3" fill="#55A868" opacity="0.7" />
+<circle cx="341.0" cy="559.0" r="3" fill="#55A868" opacity="0.7" />
+<text x="306" y="563.0" text-anchor="end" font-size="9" fill="#333">blackbox</text>
+<rect x="318.1" y="564.2" width="2.0" height="5.6" fill="#4C72B0" opacity="0.3" rx="2" />
+<line x1="318.1" y1="564.2" x2="318.1" y2="569.8" stroke="#4C72B0" stroke-width="2" />
+<circle cx="318.1" cy="567.0" r="3" fill="#55A868" opacity="0.7" />
+<text x="306" y="571.0" text-anchor="end" font-size="9" fill="#333">browser_test_2</text>
+<rect x="440.7" y="572.2" width="25.3" height="5.6" fill="#4C72B0" opacity="0.3" rx="2" />
+<line x1="453.3" y1="572.2" x2="453.3" y2="577.8" stroke="#4C72B0" stroke-width="2" />
+<circle cx="440.7" cy="575.0" r="3" fill="#55A868" opacity="0.7" />
+<circle cx="466.0" cy="575.0" r="3" fill="#55A868" opacity="0.7" />
+<text x="306" y="579.0" text-anchor="end" font-size="9" fill="#333">code2code</text>
+<rect x="415.3" y="580.2" width="354.7" height="5.6" fill="#4C72B0" opacity="0.3" rx="2" />
+<line x1="567.3" y1="580.2" x2="567.3" y2="585.8" stroke="#4C72B0" stroke-width="2" />
+<circle cx="415.3" cy="583.0" r="3" fill="#55A868" opacity="0.7" />
+<circle cx="567.3" cy="583.0" r="3" fill="#55A868" opacity="0.7" />
+<circle cx="770.0" cy="583.0" r="3" fill="#55A868" opacity="0.7" />
+<text x="306" y="587.0" text-anchor="end" font-size="9" fill="#333">continue_pattern</text>
+<rect x="314.4" y="588.2" width="2.0" height="5.6" fill="#4C72B0" opacity="0.3" rx="2" />
+<line x1="314.6" y1="588.2" x2="314.6" y2="593.8" stroke="#4C72B0" stroke-width="2" />
+<circle cx="314.4" cy="591.0" r="3" fill="#55A868" opacity="0.7" />
+<circle cx="314.4" cy="591.0" r="3" fill="#55A868" opacity="0.7" />
+<circle cx="314.8" cy="591.0" r="3" fill="#55A868" opacity="0.7" />
+<circle cx="314.8" cy="591.0" r="3" fill="#55A868" opacity="0.7" />
+<text x="306" y="595.0" text-anchor="end" font-size="9" fill="#333">count_words</text>
+<rect x="315.4" y="596.2" width="10.0" height="5.6" fill="#4C72B0" opacity="0.3" rx="2" />
+<line x1="320.4" y1="596.2" x2="320.4" y2="601.8" stroke="#4C72B0" stroke-width="2" />
+<circle cx="315.4" cy="599.0" r="3" fill="#55A868" opacity="0.7" />
+<circle cx="325.4" cy="599.0" r="3" fill="#55A868" opacity="0.7" />
+<text x="306" y="603.0" text-anchor="end" font-size="9" fill="#333">credit_card_validity</text>
+<rect x="516.7" y="604.2" width="2.0" height="5.6" fill="#4C72B0" opacity="0.3" rx="2" />
+<line x1="516.7" y1="604.2" x2="516.7" y2="609.8" stroke="#4C72B0" stroke-width="2" />
+<circle cx="516.7" cy="607.0" r="3" fill="#55A868" opacity="0.7" />
+<text x="306" y="611.0" text-anchor="end" font-size="9" fill="#333">cuda_backtesting</text>
+<rect x="316.5" y="612.2" width="2.0" height="5.6" fill="#4C72B0" opacity="0.3" rx="2" />
+<line x1="316.5" y1="612.2" x2="316.5" y2="617.8" stroke="#4C72B0" stroke-width="2" />
+<circle cx="316.5" cy="615.0" r="3" fill="#55A868" opacity="0.7" />
+<circle cx="316.5" cy="615.0" r="3" fill="#55A868" opacity="0.7" />
+<circle cx="316.5" cy="615.0" r="3" fill="#55A868" opacity="0.7" />
+<circle cx="316.5" cy="615.0" r="3" fill="#55A868" opacity="0.7" />
+<circle cx="316.5" cy="615.0" r="3" fill="#55A868" opacity="0.7" />
+<circle cx="316.5" cy="615.0" r="3" fill="#55A868" opacity="0.7" />
+<circle cx="316.5" cy="615.0" r="3" fill="#55A868" opacity="0.7" />
+<text x="306" y="619.0" text-anchor="end" font-size="9" fill="#333">data_cleaning_arjun</text>
+<rect x="466.0" y="620.2" width="2.0" height="5.6" fill="#4C72B0" opacity="0.3" rx="2" />
+<line x1="466.0" y1="620.2" x2="466.0" y2="625.8" stroke="#4C72B0" stroke-width="2" />
+<circle cx="466.0" cy="623.0" r="3" fill="#55A868" opacity="0.7" />
+<text x="306" y="627.0" text-anchor="end" font-size="9" fill="#333">data_deduplication</text>
+<rect x="326.7" y="628.2" width="27.5" height="5.6" fill="#4C72B0" opacity="0.3" rx="2" />
+<line x1="349.7" y1="628.2" x2="349.7" y2="633.8" stroke="#4C72B0" stroke-width="2" />
+<circle cx="326.7" cy="631.0" r="3" fill="#55A868" opacity="0.7" />
+<circle cx="349.7" cy="631.0" r="3" fill="#55A868" opacity="0.7" />
+<circle cx="354.2" cy="631.0" r="3" fill="#55A868" opacity="0.7" />
+<text x="306" y="635.0" text-anchor="end" font-size="9" fill="#333">debug_small_libs</text>
+<rect x="324.3" y="636.2" width="23.4" height="5.6" fill="#4C72B0" opacity="0.3" rx="2" />
+<line x1="336.0" y1="636.2" x2="336.0" y2="641.8" stroke="#4C72B0" stroke-width="2" />
+<circle cx="324.3" cy="639.0" r="3" fill="#55A868" opacity="0.7" />
+<circle cx="347.7" cy="639.0" r="3" fill="#55A868" opacity="0.7" />
+<text x="306" y="643.0" text-anchor="end" font-size="9" fill="#333">detect_data_tampering</text>
+<rect x="332.5" y="644.2" width="262.3" height="5.6" fill="#4C72B0" opacity="0.3" rx="2" />
+<line x1="386.4" y1="644.2" x2="386.4" y2="649.8" stroke="#4C72B0" stroke-width="2" />
+<circle cx="332.5" cy="647.0" r="3" fill="#55A868" opacity="0.7" />
+<circle cx="333.6" cy="647.0" r="3" fill="#55A868" opacity="0.7" />
+<circle cx="338.8" cy="647.0" r="3" fill="#55A868" opacity="0.7" />
+<circle cx="352.2" cy="647.0" r="3" fill="#55A868" opacity="0.7" />
+<circle cx="386.4" cy="647.0" r="3" fill="#55A868" opacity="0.7" />
+<circle cx="390.0" cy="647.0" r="3" fill="#55A868" opacity="0.7" />
+<circle cx="418.6" cy="647.0" r="3" fill="#55A868" opacity="0.7" />
+<circle cx="484.4" cy="647.0" r="3" fill="#55A868" opacity="0.7" />
+<circle cx="594.8" cy="647.0" r="3" fill="#55A868" opacity="0.7" />
+<text x="306" y="651.0" text-anchor="end" font-size="9" fill="#333">env_scientist</text>
+<rect x="324.3" y="652.2" width="4.5" height="5.6" fill="#4C72B0" opacity="0.3" rx="2" />
+<line x1="326.6" y1="652.2" x2="326.6" y2="657.8" stroke="#4C72B0" stroke-width="2" />
+<circle cx="324.3" cy="655.0" r="3" fill="#55A868" opacity="0.7" />
+<circle cx="328.8" cy="655.0" r="3" fill="#55A868" opacity="0.7" />
+<text x="306" y="659.0" text-anchor="end" font-size="9" fill="#333">esolang</text>
+<rect x="516.7" y="660.2" width="2.0" height="5.6" fill="#4C72B0" opacity="0.3" rx="2" />
+<line x1="516.7" y1="660.2" x2="516.7" y2="665.8" stroke="#4C72B0" stroke-width="2" />
+<circle cx="516.7" cy="663.0" r="3" fill="#55A868" opacity="0.7" />
+<text x="306" y="667.0" text-anchor="end" font-size="9" fill="#333">few_shot_prompting</text>
+<rect x="459.9" y="668.2" width="2.0" height="5.6" fill="#4C72B0" opacity="0.3" rx="2" />
+<line x1="459.9" y1="668.2" x2="459.9" y2="673.8" stroke="#4C72B0" stroke-width="2" />
+<circle cx="459.9" cy="671.0" r="3" fill="#55A868" opacity="0.7" />
+<text x="306" y="675.0" text-anchor="end" font-size="9" fill="#333">file_recovery</text>
+<rect x="321.6" y="676.2" width="2.0" height="5.6" fill="#4C72B0" opacity="0.3" rx="2" />
+<line x1="321.6" y1="676.2" x2="321.6" y2="681.8" stroke="#4C72B0" stroke-width="2" />
+<circle cx="321.6" cy="679.0" r="3" fill="#55A868" opacity="0.7" />
+<text x="306" y="683.0" text-anchor="end" font-size="9" fill="#333">gaia</text>
+<rect x="567.3" y="684.2" width="2.0" height="5.6" fill="#4C72B0" opacity="0.3" rx="2" />
+<line x1="567.3" y1="684.2" x2="567.3" y2="689.8" stroke="#4C72B0" stroke-width="2" />
+<circle cx="567.3" cy="687.0" r="3" fill="#55A868" opacity="0.7" />
+<text x="306" y="691.0" text-anchor="end" font-size="9" fill="#333">gpt2_algo_circuits</text>
+<rect x="704.8" y="692.2" width="2.0" height="5.6" fill="#4C72B0" opacity="0.3" rx="2" />
+<line x1="704.8" y1="692.2" x2="704.8" y2="697.8" stroke="#4C72B0" stroke-width="2" />
+<circle cx="704.8" cy="695.0" r="3" fill="#55A868" opacity="0.7" />
+<text x="306" y="699.0" text-anchor="end" font-size="9" fill="#333">gradient_inversion</text>
+<rect x="466.0" y="700.2" width="2.0" height="5.6" fill="#4C72B0" opacity="0.3" rx="2" />
+<line x1="466.0" y1="700.2" x2="466.0" y2="705.8" stroke="#4C72B0" stroke-width="2" />
+<circle cx="466.0" cy="703.0" r="3" fill="#55A868" opacity="0.7" />
+<text x="306" y="707.0" text-anchor="end" font-size="9" fill="#333">gsm_8k</text>
+<rect x="402.1" y="708.2" width="2.0" height="5.6" fill="#4C72B0" opacity="0.3" rx="2" />
+<line x1="402.1" y1="708.2" x2="402.1" y2="713.8" stroke="#4C72B0" stroke-width="2" />
+<circle cx="402.1" cy="711.0" r="3" fill="#55A868" opacity="0.7" />
+<text x="306" y="715.0" text-anchor="end" font-size="9" fill="#333">hack_container</text>
+<rect x="316.8" y="716.2" width="35.2" height="5.6" fill="#4C72B0" opacity="0.3" rx="2" />
+<line x1="333.0" y1="716.2" x2="333.0" y2="721.8" stroke="#4C72B0" stroke-width="2" />
+<circle cx="316.8" cy="719.0" r="3" fill="#55A868" opacity="0.7" />
+<circle cx="333.0" cy="719.0" r="3" fill="#55A868" opacity="0.7" />
+<circle cx="352.0" cy="719.0" r="3" fill="#55A868" opacity="0.7" />
+<text x="306" y="723.0" text-anchor="end" font-size="9" fill="#333">hackthebox</text>
+<rect x="415.3" y="724.2" width="2.0" height="5.6" fill="#4C72B0" opacity="0.3" rx="2" />
+<line x1="415.3" y1="724.2" x2="415.3" y2="729.8" stroke="#4C72B0" stroke-width="2" />
+<circle cx="415.3" cy="727.0" r="3" fill="#55A868" opacity="0.7" />
+<text x="306" y="731.0" text-anchor="end" font-size="9" fill="#333">hash_collision</text>
+<rect x="317.8" y="732.2" width="17.0" height="5.6" fill="#4C72B0" opacity="0.3" rx="2" />
+<line x1="320.2" y1="732.2" x2="320.2" y2="737.8" stroke="#4C72B0" stroke-width="2" />
+<circle cx="317.8" cy="735.0" r="3" fill="#55A868" opacity="0.7" />
+<circle cx="318.3" cy="735.0" r="3" fill="#55A868" opacity="0.7" />
+<circle cx="320.1" cy="735.0" r="3" fill="#55A868" opacity="0.7" />
+<circle cx="320.2" cy="735.0" r="3" fill="#55A868" opacity="0.7" />
+<circle cx="325.7" cy="735.0" r="3" fill="#55A868" opacity="0.7" />
+<circle cx="334.8" cy="735.0" r="3" fill="#55A868" opacity="0.7" />
+<text x="306" y="739.0" text-anchor="end" font-size="9" fill="#333">hypothesis_testing</text>
+<rect x="479.3" y="740.2" width="304.2" height="5.6" fill="#4C72B0" opacity="0.3" rx="2" />
+<line x1="534.2" y1="740.2" x2="534.2" y2="745.8" stroke="#4C72B0" stroke-width="2" />
+<circle cx="479.3" cy="743.0" r="3" fill="#55A868" opacity="0.7" />
+<circle cx="534.2" cy="743.0" r="3" fill="#55A868" opacity="0.7" />
+<circle cx="783.5" cy="743.0" r="3" fill="#55A868" opacity="0.7" />
+<text x="306" y="747.0" text-anchor="end" font-size="9" fill="#333">iclr_authors</text>
+<rect x="350.9" y="748.2" width="165.8" height="5.6" fill="#4C72B0" opacity="0.3" rx="2" />
+<line x1="375.9" y1="748.2" x2="375.9" y2="753.8" stroke="#4C72B0" stroke-width="2" />
+<circle cx="350.9" cy="751.0" r="3" fill="#55A868" opacity="0.7" />
+<circle cx="375.9" cy="751.0" r="3" fill="#55A868" opacity="0.7" />
+<circle cx="516.7" cy="751.0" r="3" fill="#55A868" opacity="0.7" />
+<text x="306" y="755.0" text-anchor="end" font-size="9" fill="#333">image_labeling</text>
+<rect x="567.3" y="756.2" width="152.0" height="5.6" fill="#4C72B0" opacity="0.3" rx="2" />
+<line x1="643.3" y1="756.2" x2="643.3" y2="761.8" stroke="#4C72B0" stroke-width="2" />
+<circle cx="567.3" cy="759.0" r="3" fill="#55A868" opacity="0.7" />
+<circle cx="719.3" cy="759.0" r="3" fill="#55A868" opacity="0.7" />
+<text x="306" y="763.0" text-anchor="end" font-size="9" fill="#333">implement_ace_oauth</text>
+<rect x="466.0" y="764.2" width="2.0" height="5.6" fill="#4C72B0" opacity="0.3" rx="2" />
+<line x1="466.0" y1="764.2" x2="466.0" y2="769.8" stroke="#4C72B0" stroke-width="2" />
+<circle cx="466.0" cy="767.0" r="3" fill="#55A868" opacity="0.7" />
+<text x="306" y="771.0" text-anchor="end" font-size="9" fill="#333">inference_optimization</text>
+<rect x="315.3" y="772.2" width="5.7" height="5.6" fill="#4C72B0" opacity="0.3" rx="2" />
+<line x1="318.2" y1="772.2" x2="318.2" y2="777.8" stroke="#4C72B0" stroke-width="2" />
+<circle cx="315.3" cy="775.0" r="3" fill="#55A868" opacity="0.7" />
+<circle cx="321.0" cy="775.0" r="3" fill="#55A868" opacity="0.7" />
+<text x="306" y="779.0" text-anchor="end" font-size="9" fill="#333">interpret_building_data</text>
+<rect x="318.5" y="780.2" width="3.3" height="5.6" fill="#4C72B0" opacity="0.3" rx="2" />
+<line x1="319.4" y1="780.2" x2="319.4" y2="785.8" stroke="#4C72B0" stroke-width="2" />
+<circle cx="318.5" cy="783.0" r="3" fill="#55A868" opacity="0.7" />
+<circle cx="319.4" cy="783.0" r="3" fill="#55A868" opacity="0.7" />
+<circle cx="321.8" cy="783.0" r="3" fill="#55A868" opacity="0.7" />
+<text x="306" y="787.0" text-anchor="end" font-size="9" fill="#333">interpret_data</text>
+<rect x="820.7" y="788.2" width="2.0" height="5.6" fill="#4C72B0" opacity="0.3" rx="2" />
+<line x1="820.7" y1="788.2" x2="820.7" y2="793.8" stroke="#4C72B0" stroke-width="2" />
+<circle cx="820.7" cy="791.0" r="3" fill="#55A868" opacity="0.7" />
+<text x="306" y="795.0" text-anchor="end" font-size="9" fill="#333">lie_detector</text>
+<rect x="316.7" y="796.2" width="5.8" height="5.6" fill="#4C72B0" opacity="0.3" rx="2" />
+<line x1="319.6" y1="796.2" x2="319.6" y2="801.8" stroke="#4C72B0" stroke-width="2" />
+<circle cx="316.7" cy="799.0" r="3" fill="#55A868" opacity="0.7" />
+<circle cx="322.5" cy="799.0" r="3" fill="#55A868" opacity="0.7" />
+<text x="306" y="803.0" text-anchor="end" font-size="9" fill="#333">local_research</text>
+<rect x="324.0" y="804.2" width="4.9" height="5.6" fill="#4C72B0" opacity="0.3" rx="2" />
+<line x1="324.3" y1="804.2" x2="324.3" y2="809.8" stroke="#4C72B0" stroke-width="2" />
+<circle cx="324.0" cy="807.0" r="3" fill="#55A868" opacity="0.7" />
+<circle cx="324.3" cy="807.0" r="3" fill="#55A868" opacity="0.7" />
+<circle cx="328.9" cy="807.0" r="3" fill="#55A868" opacity="0.7" />
+<text x="306" y="811.0" text-anchor="end" font-size="9" fill="#333">local_research_tex</text>
+<rect x="320.2" y="812.2" width="7.0" height="5.6" fill="#4C72B0" opacity="0.3" rx="2" />
+<line x1="323.7" y1="812.2" x2="323.7" y2="817.8" stroke="#4C72B0" stroke-width="2" />
+<circle cx="320.2" cy="815.0" r="3" fill="#55A868" opacity="0.7" />
+<circle cx="327.3" cy="815.0" r="3" fill="#55A868" opacity="0.7" />
+<text x="306" y="819.0" text-anchor="end" font-size="9" fill="#333">make_web_server</text>
+<rect x="516.7" y="820.2" width="2.0" height="5.6" fill="#4C72B0" opacity="0.3" rx="2" />
+<line x1="516.7" y1="820.2" x2="516.7" y2="825.8" stroke="#4C72B0" stroke-width="2" />
+<circle cx="516.7" cy="823.0" r="3" fill="#55A868" opacity="0.7" />
+<circle cx="516.7" cy="823.0" r="3" fill="#55A868" opacity="0.7" />
+<circle cx="516.7" cy="823.0" r="3" fill="#55A868" opacity="0.7" />
+<circle cx="516.7" cy="823.0" r="3" fill="#55A868" opacity="0.7" />
+<text x="306" y="827.0" text-anchor="end" font-size="9" fill="#333">mlab</text>
+<rect x="320.8" y="828.2" width="190.3" height="5.6" fill="#4C72B0" opacity="0.3" rx="2" />
+<line x1="325.4" y1="828.2" x2="325.4" y2="833.8" stroke="#4C72B0" stroke-width="2" />
+<circle cx="320.8" cy="831.0" r="3" fill="#55A868" opacity="0.7" />
+<circle cx="325.4" cy="831.0" r="3" fill="#55A868" opacity="0.7" />
+<circle cx="511.1" cy="831.0" r="3" fill="#55A868" opacity="0.7" />
+<text x="306" y="835.0" text-anchor="end" font-size="9" fill="#333">molecule_structure</text>
+<rect x="336.0" y="836.2" width="2.0" height="5.6" fill="#4C72B0" opacity="0.3" rx="2" />
+<line x1="336.0" y1="836.2" x2="336.0" y2="841.8" stroke="#4C72B0" stroke-width="2" />
+<circle cx="336.0" cy="839.0" r="3" fill="#55A868" opacity="0.7" />
+<text x="306" y="843.0" text-anchor="end" font-size="9" fill="#333">multiarmed_bandit</text>
+<rect x="317.4" y="844.2" width="51.2" height="5.6" fill="#4C72B0" opacity="0.3" rx="2" />
+<line x1="332.2" y1="844.2" x2="332.2" y2="849.8" stroke="#4C72B0" stroke-width="2" />
+<circle cx="317.4" cy="847.0" r="3" fill="#55A868" opacity="0.7" />
+<circle cx="330.5" cy="847.0" r="3" fill="#55A868" opacity="0.7" />
+<circle cx="334.0" cy="847.0" r="3" fill="#55A868" opacity="0.7" />
+<circle cx="368.6" cy="847.0" r="3" fill="#55A868" opacity="0.7" />
+<text x="306" y="851.0" text-anchor="end" font-size="9" fill="#333">munge_data</text>
+<rect x="425.9" y="852.2" width="23.0" height="5.6" fill="#4C72B0" opacity="0.3" rx="2" />
+<line x1="437.4" y1="852.2" x2="437.4" y2="857.8" stroke="#4C72B0" stroke-width="2" />
+<circle cx="425.9" cy="855.0" r="3" fill="#55A868" opacity="0.7" />
+<circle cx="448.9" cy="855.0" r="3" fill="#55A868" opacity="0.7" />
+<text x="306" y="859.0" text-anchor="end" font-size="9" fill="#333">network_routing</text>
+<rect x="372.2" y="860.2" width="2.0" height="5.6" fill="#4C72B0" opacity="0.3" rx="2" />
+<line x1="372.2" y1="860.2" x2="372.2" y2="865.8" stroke="#4C72B0" stroke-width="2" />
+<circle cx="372.2" cy="863.0" r="3" fill="#55A868" opacity="0.7" />
+<text x="306" y="867.0" text-anchor="end" font-size="9" fill="#333">novel_exploit</text>
+<rect x="383.0" y="868.2" width="33.6" height="5.6" fill="#4C72B0" opacity="0.3" rx="2" />
+<line x1="391.9" y1="868.2" x2="391.9" y2="873.8" stroke="#4C72B0" stroke-width="2" />
+<circle cx="383.0" cy="871.0" r="3" fill="#55A868" opacity="0.7" />
+<circle cx="391.9" cy="871.0" r="3" fill="#55A868" opacity="0.7" />
+<circle cx="416.6" cy="871.0" r="3" fill="#55A868" opacity="0.7" />
+<text x="306" y="875.0" text-anchor="end" font-size="9" fill="#333">number_list_steganography</text>
+<rect x="317.7" y="876.2" width="2.0" height="5.6" fill="#4C72B0" opacity="0.3" rx="2" />
+<line x1="317.7" y1="876.2" x2="317.7" y2="881.8" stroke="#4C72B0" stroke-width="2" />
+<circle cx="317.7" cy="879.0" r="3" fill="#55A868" opacity="0.7" />
+<text x="306" y="883.0" text-anchor="end" font-size="9" fill="#333">oxdna_simple</text>
+<rect x="322.7" y="884.2" width="193.9" height="5.6" fill="#4C72B0" opacity="0.3" rx="2" />
+<line x1="401.4" y1="884.2" x2="401.4" y2="889.8" stroke="#4C72B0" stroke-width="2" />
+<circle cx="322.7" cy="887.0" r="3" fill="#55A868" opacity="0.7" />
+<circle cx="324.6" cy="887.0" r="3" fill="#55A868" opacity="0.7" />
+<circle cx="336.8" cy="887.0" r="3" fill="#55A868" opacity="0.7" />
+<circle cx="466.0" cy="887.0" r="3" fill="#55A868" opacity="0.7" />
+<circle cx="516.7" cy="887.0" r="3" fill="#55A868" opacity="0.7" />
+<circle cx="516.7" cy="887.0" r="3" fill="#55A868" opacity="0.7" />
+<text x="306" y="891.0" text-anchor="end" font-size="9" fill="#333">palisade_crackme</text>
+<rect x="314.4" y="892.2" width="13.3" height="5.6" fill="#4C72B0" opacity="0.3" rx="2" />
+<line x1="317.1" y1="892.2" x2="317.1" y2="897.8" stroke="#4C72B0" stroke-width="2" />
+<circle cx="314.4" cy="895.0" r="3" fill="#55A868" opacity="0.7" />
+<circle cx="314.9" cy="895.0" r="3" fill="#55A868" opacity="0.7" />
+<circle cx="316.8" cy="895.0" r="3" fill="#55A868" opacity="0.7" />
+<circle cx="317.4" cy="895.0" r="3" fill="#55A868" opacity="0.7" />
+<circle cx="322.8" cy="895.0" r="3" fill="#55A868" opacity="0.7" />
+<circle cx="327.7" cy="895.0" r="3" fill="#55A868" opacity="0.7" />
+<text x="306" y="899.0" text-anchor="end" font-size="9" fill="#333">password_check</text>
+<rect x="314.9" y="900.2" width="34.6" height="5.6" fill="#4C72B0" opacity="0.3" rx="2" />
+<line x1="319.1" y1="900.2" x2="319.1" y2="905.8" stroke="#4C72B0" stroke-width="2" />
+<circle cx="314.9" cy="903.0" r="3" fill="#55A868" opacity="0.7" />
+<circle cx="315.9" cy="903.0" r="3" fill="#55A868" opacity="0.7" />
+<circle cx="316.8" cy="903.0" r="3" fill="#55A868" opacity="0.7" />
+<circle cx="319.1" cy="903.0" r="3" fill="#55A868" opacity="0.7" />
+<circle cx="319.9" cy="903.0" r="3" fill="#55A868" opacity="0.7" />
+<circle cx="344.0" cy="903.0" r="3" fill="#55A868" opacity="0.7" />
+<circle cx="349.5" cy="903.0" r="3" fill="#55A868" opacity="0.7" />
+<text x="306" y="907.0" text-anchor="end" font-size="9" fill="#333">pico_ctf</text>
+<rect x="567.3" y="908.2" width="50.7" height="5.6" fill="#4C72B0" opacity="0.3" rx="2" />
+<line x1="592.7" y1="908.2" x2="592.7" y2="913.8" stroke="#4C72B0" stroke-width="2" />
+<circle cx="567.3" cy="911.0" r="3" fill="#55A868" opacity="0.7" />
+<circle cx="618.0" cy="911.0" r="3" fill="#55A868" opacity="0.7" />
+<text x="306" y="915.0" text-anchor="end" font-size="9" fill="#333">prune_attn_heads</text>
+<rect x="315.9" y="916.2" width="2.0" height="5.6" fill="#4C72B0" opacity="0.3" rx="2" />
+<line x1="315.9" y1="916.2" x2="315.9" y2="921.8" stroke="#4C72B0" stroke-width="2" />
+<circle cx="315.9" cy="919.0" r="3" fill="#55A868" opacity="0.7" />
+<text x="306" y="923.0" text-anchor="end" font-size="9" fill="#333">questions</text>
+<rect x="339.3" y="924.2" width="88.7" height="5.6" fill="#4C72B0" opacity="0.3" rx="2" />
+<line x1="383.7" y1="924.2" x2="383.7" y2="929.8" stroke="#4C72B0" stroke-width="2" />
+<circle cx="339.3" cy="927.0" r="3" fill="#55A868" opacity="0.7" />
+<circle cx="428.0" cy="927.0" r="3" fill="#55A868" opacity="0.7" />
+<text x="306" y="931.0" text-anchor="end" font-size="9" fill="#333">rcrce</text>
+<rect x="315.6" y="932.2" width="11.5" height="5.6" fill="#4C72B0" opacity="0.3" rx="2" />
+<line x1="322.5" y1="932.2" x2="322.5" y2="937.8" stroke="#4C72B0" stroke-width="2" />
+<circle cx="315.6" cy="935.0" r="3" fill="#55A868" opacity="0.7" />
+<circle cx="316.5" cy="935.0" r="3" fill="#55A868" opacity="0.7" />
+<circle cx="322.5" cy="935.0" r="3" fill="#55A868" opacity="0.7" />
+<circle cx="323.3" cy="935.0" r="3" fill="#55A868" opacity="0.7" />
+<circle cx="327.1" cy="935.0" r="3" fill="#55A868" opacity="0.7" />
+<text x="306" y="939.0" text-anchor="end" font-size="9" fill="#333">reverse_hash</text>
+<rect x="1074.0" y="940.2" width="2.0" height="5.6" fill="#4C72B0" opacity="0.3" rx="2" />
+<line x1="1074.0" y1="940.2" x2="1074.0" y2="945.8" stroke="#4C72B0" stroke-width="2" />
+<circle cx="1074.0" cy="943.0" r="3" fill="#55A868" opacity="0.7" />
+<text x="306" y="947.0" text-anchor="end" font-size="9" fill="#333">robot_control</text>
+<rect x="320.3" y="948.2" width="6.3" height="5.6" fill="#4C72B0" opacity="0.3" rx="2" />
+<line x1="323.5" y1="948.2" x2="323.5" y2="953.8" stroke="#4C72B0" stroke-width="2" />
+<circle cx="320.3" cy="951.0" r="3" fill="#55A868" opacity="0.7" />
+<circle cx="326.7" cy="951.0" r="3" fill="#55A868" opacity="0.7" />
+<text x="306" y="955.0" text-anchor="end" font-size="9" fill="#333">root_me</text>
+<rect x="317.6" y="956.2" width="2.0" height="5.6" fill="#4C72B0" opacity="0.3" rx="2" />
+<line x1="317.6" y1="956.2" x2="317.6" y2="961.8" stroke="#4C72B0" stroke-width="2" />
+<circle cx="317.6" cy="959.0" r="3" fill="#55A868" opacity="0.7" />
+<text x="306" y="963.0" text-anchor="end" font-size="9" fill="#333">sadservers</text>
+<rect x="316.2" y="964.2" width="2.0" height="5.6" fill="#4C72B0" opacity="0.3" rx="2" />
+<line x1="316.4" y1="964.2" x2="316.4" y2="969.8" stroke="#4C72B0" stroke-width="2" />
+<circle cx="316.2" cy="967.0" r="3" fill="#55A868" opacity="0.7" />
+<circle cx="316.6" cy="967.0" r="3" fill="#55A868" opacity="0.7" />
+<text x="306" y="971.0" text-anchor="end" font-size="9" fill="#333">search_server</text>
+<rect x="334.8" y="972.2" width="2.0" height="5.6" fill="#4C72B0" opacity="0.3" rx="2" />
+<line x1="334.8" y1="972.2" x2="334.8" y2="977.8" stroke="#4C72B0" stroke-width="2" />
+<circle cx="334.8" cy="975.0" r="3" fill="#55A868" opacity="0.7" />
+<text x="306" y="979.0" text-anchor="end" font-size="9" fill="#333">sentiment_probe</text>
+<rect x="518.5" y="980.2" width="2.0" height="5.6" fill="#4C72B0" opacity="0.3" rx="2" />
+<line x1="518.5" y1="980.2" x2="518.5" y2="985.8" stroke="#4C72B0" stroke-width="2" />
+<circle cx="518.5" cy="983.0" r="3" fill="#55A868" opacity="0.7" />
+<text x="306" y="987.0" text-anchor="end" font-size="9" fill="#333">smart_contract_exploit</text>
+<rect x="504.0" y="988.2" width="2.0" height="5.6" fill="#4C72B0" opacity="0.3" rx="2" />
+<line x1="504.0" y1="988.2" x2="504.0" y2="993.8" stroke="#4C72B0" stroke-width="2" />
+<circle cx="504.0" cy="991.0" r="3" fill="#55A868" opacity="0.7" />
+<text x="306" y="995.0" text-anchor="end" font-size="9" fill="#333">sparse_adversarial_perturbations</text>
+<rect x="390.0" y="996.2" width="126.7" height="5.6" fill="#4C72B0" opacity="0.3" rx="2" />
+<line x1="440.7" y1="996.2" x2="440.7" y2="1001.8" stroke="#4C72B0" stroke-width="2" />
+<circle cx="390.0" cy="999.0" r="3" fill="#55A868" opacity="0.7" />
+<circle cx="440.7" cy="999.0" r="3" fill="#55A868" opacity="0.7" />
+<circle cx="516.7" cy="999.0" r="3" fill="#55A868" opacity="0.7" />
+<text x="306" y="1003.0" text-anchor="end" font-size="9" fill="#333">spn_cryptanalysis</text>
+<rect x="325.6" y="1004.2" width="2.0" height="5.6" fill="#4C72B0" opacity="0.3" rx="2" />
+<line x1="325.6" y1="1004.2" x2="325.6" y2="1009.8" stroke="#4C72B0" stroke-width="2" />
+<circle cx="325.6" cy="1007.0" r="3" fill="#55A868" opacity="0.7" />
+<text x="306" y="1011.0" text-anchor="end" font-size="9" fill="#333">sql_injection</text>
+<rect x="333.8" y="1012.2" width="18.2" height="5.6" fill="#4C72B0" opacity="0.3" rx="2" />
+<line x1="342.9" y1="1012.2" x2="342.9" y2="1017.8" stroke="#4C72B0" stroke-width="2" />
+<circle cx="333.8" cy="1015.0" r="3" fill="#55A868" opacity="0.7" />
+<circle cx="352.0" cy="1015.0" r="3" fill="#55A868" opacity="0.7" />
+<text x="306" y="1019.0" text-anchor="end" font-size="9" fill="#333">symbolic_regression</text>
+<rect x="415.3" y="1020.2" width="2.0" height="5.6" fill="#4C72B0" opacity="0.3" rx="2" />
+<line x1="415.3" y1="1020.2" x2="415.3" y2="1025.8" stroke="#4C72B0" stroke-width="2" />
+<circle cx="415.3" cy="1023.0" r="3" fill="#55A868" opacity="0.7" />
+<text x="306" y="1027.0" text-anchor="end" font-size="9" fill="#333">tree_traversal_kernel</text>
+<rect x="681.3" y="1028.2" width="2.0" height="5.6" fill="#4C72B0" opacity="0.3" rx="2" />
+<line x1="681.3" y1="1028.2" x2="681.3" y2="1033.8" stroke="#4C72B0" stroke-width="2" />
+<circle cx="681.3" cy="1031.0" r="3" fill="#55A868" opacity="0.7" />
+<text x="306" y="1035.0" text-anchor="end" font-size="9" fill="#333">uav_search</text>
+<rect x="335.4" y="1036.2" width="2.0" height="5.6" fill="#4C72B0" opacity="0.3" rx="2" />
+<line x1="335.4" y1="1036.2" x2="335.4" y2="1041.8" stroke="#4C72B0" stroke-width="2" />
+<circle cx="335.4" cy="1039.0" r="3" fill="#55A868" opacity="0.7" />
+<text x="306" y="1043.0" text-anchor="end" font-size="9" fill="#333">vulnerability_detection</text>
+<rect x="323.4" y="1044.2" width="9.7" height="5.6" fill="#4C72B0" opacity="0.3" rx="2" />
+<line x1="327.8" y1="1044.2" x2="327.8" y2="1049.8" stroke="#4C72B0" stroke-width="2" />
+<circle cx="323.4" cy="1047.0" r="3" fill="#55A868" opacity="0.7" />
+<circle cx="327.8" cy="1047.0" r="3" fill="#55A868" opacity="0.7" />
+<circle cx="333.1" cy="1047.0" r="3" fill="#55A868" opacity="0.7" />
+<text x="306" y="1051.0" text-anchor="end" font-size="9" fill="#333">web_hacking</text>
+<rect x="443.5" y="1052.2" width="123.9" height="5.6" fill="#4C72B0" opacity="0.3" rx="2" />
+<line x1="505.4" y1="1052.2" x2="505.4" y2="1057.8" stroke="#4C72B0" stroke-width="2" />
+<circle cx="443.5" cy="1055.0" r="3" fill="#55A868" opacity="0.7" />
+<circle cx="567.3" cy="1055.0" r="3" fill="#55A868" opacity="0.7" />
+<text x="306" y="1059.0" text-anchor="end" font-size="9" fill="#333">white_box_attack</text>
+<rect x="314.5" y="1060.2" width="2.0" height="5.6" fill="#4C72B0" opacity="0.3" rx="2" />
+<line x1="314.6" y1="1060.2" x2="314.6" y2="1065.8" stroke="#4C72B0" stroke-width="2" />
+<circle cx="314.5" cy="1063.0" r="3" fill="#55A868" opacity="0.7" />
+<circle cx="314.8" cy="1063.0" r="3" fill="#55A868" opacity="0.7" />
+<text x="306" y="1067.0" text-anchor="end" font-size="9" fill="#333">wikipedia_research</text>
+<line x1="314.0" y1="1067" x2="314.0" y2="1073" stroke="#333" />
+<line x1="314.0" y1="475" x2="314.0" y2="1067" stroke="#eee" />
+<text x="314.0" y="1085" text-anchor="middle" font-size="10" fill="#333">0 hr</text>
+<line x1="415.3" y1="1067" x2="415.3" y2="1073" stroke="#333" />
+<line x1="415.3" y1="475" x2="415.3" y2="1067" stroke="#eee" />
+<text x="415.3" y="1085" text-anchor="middle" font-size="10" fill="#333">4 hr</text>
+<line x1="516.7" y1="1067" x2="516.7" y2="1073" stroke="#333" />
+<line x1="516.7" y1="475" x2="516.7" y2="1067" stroke="#eee" />
+<text x="516.7" y="1085" text-anchor="middle" font-size="10" fill="#333">8 hr</text>
+<line x1="618.0" y1="1067" x2="618.0" y2="1073" stroke="#333" />
+<line x1="618.0" y1="475" x2="618.0" y2="1067" stroke="#eee" />
+<text x="618.0" y="1085" text-anchor="middle" font-size="10" fill="#333">12 hr</text>
+<line x1="719.3" y1="1067" x2="719.3" y2="1073" stroke="#333" />
+<line x1="719.3" y1="475" x2="719.3" y2="1067" stroke="#eee" />
+<text x="719.3" y="1085" text-anchor="middle" font-size="10" fill="#333">16 hr</text>
+<line x1="820.7" y1="1067" x2="820.7" y2="1073" stroke="#333" />
+<line x1="820.7" y1="475" x2="820.7" y2="1067" stroke="#eee" />
+<text x="820.7" y="1085" text-anchor="middle" font-size="10" fill="#333">20 hr</text>
+<line x1="922.0" y1="1067" x2="922.0" y2="1073" stroke="#333" />
+<line x1="922.0" y1="475" x2="922.0" y2="1067" stroke="#eee" />
+<text x="922.0" y="1085" text-anchor="middle" font-size="10" fill="#333">24 hr</text>
+<line x1="1023.3" y1="1067" x2="1023.3" y2="1073" stroke="#333" />
+<line x1="1023.3" y1="475" x2="1023.3" y2="1067" stroke="#eee" />
+<text x="1023.3" y="1085" text-anchor="middle" font-size="10" fill="#333">28 hr</text>
+</svg>
