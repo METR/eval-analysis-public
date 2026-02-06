@@ -1,0 +1,221 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="850" viewBox="0 0 1200 850" style="background:white;">
+<style>text { font-family: Arial, Helvetica, sans-serif; }</style>
+<text x="600.0" y="30" text-anchor="middle" font-size="16" font-weight="bold" fill="#222">Distribution of Human Completion Times for SWAA Eval Tasks</text>
+<text x="315.0" y="47" text-anchor="middle" font-size="13" fill="#333">Histogram (linear scale)</text>
+<line x1="70" y1="375" x2="560" y2="375" stroke="#333" />
+<line x1="70" y1="55" x2="70" y2="375" stroke="#333" />
+<text x="315.0" y="417" text-anchor="middle" font-size="12" fill="#333">Human completion time (seconds)</text>
+<text x="20" y="215.0" text-anchor="middle" font-size="12" fill="#333" transform="rotate(-90,20,215.0)">Number of tasks</text>
+<text x="925.0" y="47" text-anchor="middle" font-size="13" fill="#333">Tasks by time bucket</text>
+<line x1="680" y1="375" x2="1170" y2="375" stroke="#333" />
+<line x1="680" y1="55" x2="680" y2="375" stroke="#333" />
+<text x="925.0" y="417" text-anchor="middle" font-size="12" fill="#333">Time bucket</text>
+<text x="630" y="215.0" text-anchor="middle" font-size="12" fill="#333" transform="rotate(-90,630,215.0)">Number of tasks</text>
+<text x="600.0" y="460" text-anchor="middle" font-size="13" fill="#333">Human time by task family (dots = tasks, line = median)</text>
+<line x1="230" y1="600" x2="1150" y2="600" stroke="#333" />
+<line x1="230" y1="475" x2="230" y2="600" stroke="#333" />
+<text x="690.0" y="642" text-anchor="middle" font-size="12" fill="#333">Time (seconds)</text>
+<rect x="70.0" y="285.4" width="23.5" height="89.6" fill="#4C72B0" opacity="0.85" />
+<rect x="94.5" y="55.0" width="23.5" height="320.0" fill="#4C72B0" opacity="0.85" />
+<rect x="119.0" y="195.8" width="23.5" height="179.2" fill="#4C72B0" opacity="0.85" />
+<rect x="143.5" y="349.4" width="23.5" height="25.6" fill="#4C72B0" opacity="0.85" />
+<rect x="168.0" y="285.4" width="23.5" height="89.6" fill="#4C72B0" opacity="0.85" />
+<rect x="192.5" y="336.6" width="23.5" height="38.4" fill="#4C72B0" opacity="0.85" />
+<rect x="217.0" y="362.2" width="23.5" height="12.8" fill="#4C72B0" opacity="0.85" />
+<rect x="241.5" y="336.6" width="23.5" height="38.4" fill="#4C72B0" opacity="0.85" />
+<rect x="315.0" y="362.2" width="23.5" height="12.8" fill="#4C72B0" opacity="0.85" />
+<rect x="339.5" y="362.2" width="23.5" height="12.8" fill="#4C72B0" opacity="0.85" />
+<rect x="364.0" y="362.2" width="23.5" height="12.8" fill="#4C72B0" opacity="0.85" />
+<rect x="535.5" y="362.2" width="23.5" height="12.8" fill="#4C72B0" opacity="0.85" />
+<line x1="70.0" y1="375" x2="70.0" y2="381" stroke="#333" />
+<text x="70.0" y="395" text-anchor="middle" font-size="11" fill="#333">0s</text>
+<line x1="124.4" y1="375" x2="124.4" y2="381" stroke="#333" />
+<text x="124.4" y="395" text-anchor="middle" font-size="11" fill="#333">5s</text>
+<line x1="178.9" y1="375" x2="178.9" y2="381" stroke="#333" />
+<text x="178.9" y="395" text-anchor="middle" font-size="11" fill="#333">10s</text>
+<line x1="233.3" y1="375" x2="233.3" y2="381" stroke="#333" />
+<text x="233.3" y="395" text-anchor="middle" font-size="11" fill="#333">15s</text>
+<line x1="287.8" y1="375" x2="287.8" y2="381" stroke="#333" />
+<text x="287.8" y="395" text-anchor="middle" font-size="11" fill="#333">20s</text>
+<line x1="342.2" y1="375" x2="342.2" y2="381" stroke="#333" />
+<text x="342.2" y="395" text-anchor="middle" font-size="11" fill="#333">25s</text>
+<line x1="396.7" y1="375" x2="396.7" y2="381" stroke="#333" />
+<text x="396.7" y="395" text-anchor="middle" font-size="11" fill="#333">30s</text>
+<line x1="451.1" y1="375" x2="451.1" y2="381" stroke="#333" />
+<text x="451.1" y="395" text-anchor="middle" font-size="11" fill="#333">35s</text>
+<line x1="505.6" y1="375" x2="505.6" y2="381" stroke="#333" />
+<text x="505.6" y="395" text-anchor="middle" font-size="11" fill="#333">40s</text>
+<line x1="560.0" y1="375" x2="560.0" y2="381" stroke="#333" />
+<text x="560.0" y="395" text-anchor="middle" font-size="11" fill="#333">45s</text>
+<line x1="64" y1="375.0" x2="70" y2="375.0" stroke="#333" />
+<line x1="70" y1="375.0" x2="560" y2="375.0" stroke="#ddd" />
+<text x="60" y="379.0" text-anchor="end" font-size="11" fill="#333">0</text>
+<line x1="64" y1="311.0" x2="70" y2="311.0" stroke="#333" />
+<line x1="70" y1="311.0" x2="560" y2="311.0" stroke="#ddd" />
+<text x="60" y="315.0" text-anchor="end" font-size="11" fill="#333">5</text>
+<line x1="64" y1="247.0" x2="70" y2="247.0" stroke="#333" />
+<line x1="70" y1="247.0" x2="560" y2="247.0" stroke="#ddd" />
+<text x="60" y="251.0" text-anchor="end" font-size="11" fill="#333">10</text>
+<line x1="64" y1="183.0" x2="70" y2="183.0" stroke="#333" />
+<line x1="70" y1="183.0" x2="560" y2="183.0" stroke="#ddd" />
+<text x="60" y="187.0" text-anchor="end" font-size="11" fill="#333">15</text>
+<line x1="64" y1="119.0" x2="70" y2="119.0" stroke="#333" />
+<line x1="70" y1="119.0" x2="560" y2="119.0" stroke="#ddd" />
+<text x="60" y="123.0" text-anchor="end" font-size="11" fill="#333">20</text>
+<line x1="64" y1="55.0" x2="70" y2="55.0" stroke="#333" />
+<line x1="70" y1="55.0" x2="560" y2="55.0" stroke="#ddd" />
+<text x="60" y="59.0" text-anchor="end" font-size="11" fill="#333">25</text>
+<rect x="395" y="61" width="160" height="88" rx="4" fill="white" fill-opacity="0.85" stroke="#ccc" />
+<text x="545" y="75" text-anchor="end" font-size="10" fill="#333" font-family="monospace">n = 66 tasks</text>
+<text x="545" y="91" text-anchor="end" font-size="10" fill="#333" font-family="monospace">min = 1.2s</text>
+<text x="545" y="107" text-anchor="end" font-size="10" fill="#333" font-family="monospace">median = 4.7s</text>
+<text x="545" y="123" text-anchor="end" font-size="10" fill="#333" font-family="monospace">mean = 7.3s</text>
+<text x="545" y="139" text-anchor="end" font-size="10" fill="#333" font-family="monospace">max = 43.2s</text>
+<rect x="723.4" y="146.4" width="53.2" height="228.6" fill="#4C72B0" opacity="0.85" />
+<text x="750.0" y="141.4" text-anchor="middle" font-size="11" font-weight="bold" fill="#333">15</text>
+<text x="750.0" y="395" text-anchor="middle" font-size="10" fill="#333">0-3s</text>
+<rect x="793.4" y="55.0" width="53.2" height="320.0" fill="#4C72B0" opacity="0.85" />
+<text x="820.0" y="50.0" text-anchor="middle" font-size="11" font-weight="bold" fill="#333">21</text>
+<text x="820.0" y="395" text-anchor="middle" font-size="10" fill="#333">3-5s</text>
+<rect x="863.4" y="146.4" width="53.2" height="228.6" fill="#4C72B0" opacity="0.85" />
+<text x="890.0" y="141.4" text-anchor="middle" font-size="11" font-weight="bold" fill="#333">15</text>
+<text x="890.0" y="395" text-anchor="middle" font-size="10" fill="#333">5-10s</text>
+<rect x="933.4" y="268.3" width="53.2" height="106.7" fill="#4C72B0" opacity="0.85" />
+<text x="960.0" y="263.3" text-anchor="middle" font-size="11" font-weight="bold" fill="#333">7</text>
+<text x="960.0" y="395" text-anchor="middle" font-size="10" fill="#333">10-15s</text>
+<rect x="1003.4" y="268.3" width="53.2" height="106.7" fill="#4C72B0" opacity="0.85" />
+<text x="1030.0" y="263.3" text-anchor="middle" font-size="11" font-weight="bold" fill="#333">7</text>
+<text x="1030.0" y="395" text-anchor="middle" font-size="10" fill="#333">15-30s</text>
+<rect x="1073.4" y="359.8" width="53.2" height="15.2" fill="#4C72B0" opacity="0.85" />
+<text x="1100.0" y="354.8" text-anchor="middle" font-size="11" font-weight="bold" fill="#333">1</text>
+<text x="1100.0" y="395" text-anchor="middle" font-size="10" fill="#333">30s+</text>
+<line x1="674" y1="375.0" x2="680" y2="375.0" stroke="#333" />
+<line x1="680" y1="375.0" x2="1170" y2="375.0" stroke="#ddd" />
+<text x="670" y="379.0" text-anchor="end" font-size="11" fill="#333">0</text>
+<line x1="674" y1="314.0" x2="680" y2="314.0" stroke="#333" />
+<line x1="680" y1="314.0" x2="1170" y2="314.0" stroke="#ddd" />
+<text x="670" y="318.0" text-anchor="end" font-size="11" fill="#333">4</text>
+<line x1="674" y1="253.1" x2="680" y2="253.1" stroke="#333" />
+<line x1="680" y1="253.1" x2="1170" y2="253.1" stroke="#ddd" />
+<text x="670" y="257.1" text-anchor="end" font-size="11" fill="#333">8</text>
+<line x1="674" y1="192.1" x2="680" y2="192.1" stroke="#333" />
+<line x1="680" y1="192.1" x2="1170" y2="192.1" stroke="#ddd" />
+<text x="670" y="196.1" text-anchor="end" font-size="11" fill="#333">12</text>
+<line x1="674" y1="131.2" x2="680" y2="131.2" stroke="#333" />
+<line x1="680" y1="131.2" x2="1170" y2="131.2" stroke="#ddd" />
+<text x="670" y="135.2" text-anchor="end" font-size="11" fill="#333">16</text>
+<line x1="674" y1="70.2" x2="680" y2="70.2" stroke="#333" />
+<line x1="680" y1="70.2" x2="1170" y2="70.2" stroke="#ddd" />
+<text x="670" y="74.2" text-anchor="end" font-size="11" fill="#333">20</text>
+<rect x="310.3" y="478.8" width="116.6" height="17.5" fill="#4C72B0" opacity="0.3" rx="2" />
+<line x1="334.5" y1="478.8" x2="334.5" y2="496.2" stroke="#4C72B0" stroke-width="2.5" />
+<circle cx="310.3" cy="487.5" r="3" fill="#55A868" opacity="0.7" />
+<circle cx="311.9" cy="487.5" r="3" fill="#55A868" opacity="0.7" />
+<circle cx="325.2" cy="487.5" r="3" fill="#55A868" opacity="0.7" />
+<circle cx="328.8" cy="487.5" r="3" fill="#55A868" opacity="0.7" />
+<circle cx="328.9" cy="487.5" r="3" fill="#55A868" opacity="0.7" />
+<circle cx="340.1" cy="487.5" r="3" fill="#55A868" opacity="0.7" />
+<circle cx="344.4" cy="487.5" r="3" fill="#55A868" opacity="0.7" />
+<circle cx="346.7" cy="487.5" r="3" fill="#55A868" opacity="0.7" />
+<circle cx="353.6" cy="487.5" r="3" fill="#55A868" opacity="0.7" />
+<circle cx="426.9" cy="487.5" r="3" fill="#55A868" opacity="0.7" />
+<text x="222" y="491.5" text-anchor="end" font-size="11" fill="#333">alert_triage</text>
+<rect x="253.1" y="503.8" width="813.2" height="17.5" fill="#4C72B0" opacity="0.3" rx="2" />
+<line x1="353.0" y1="503.8" x2="353.0" y2="521.2" stroke="#4C72B0" stroke-width="2.5" />
+<circle cx="253.1" cy="512.5" r="3" fill="#55A868" opacity="0.7" />
+<circle cx="261.9" cy="512.5" r="3" fill="#55A868" opacity="0.7" />
+<circle cx="263.0" cy="512.5" r="3" fill="#55A868" opacity="0.7" />
+<circle cx="264.0" cy="512.5" r="3" fill="#55A868" opacity="0.7" />
+<circle cx="267.2" cy="512.5" r="3" fill="#55A868" opacity="0.7" />
+<circle cx="267.2" cy="512.5" r="3" fill="#55A868" opacity="0.7" />
+<circle cx="271.6" cy="512.5" r="3" fill="#55A868" opacity="0.7" />
+<circle cx="280.7" cy="512.5" r="3" fill="#55A868" opacity="0.7" />
+<circle cx="307.1" cy="512.5" r="3" fill="#55A868" opacity="0.7" />
+<circle cx="320.0" cy="512.5" r="3" fill="#55A868" opacity="0.7" />
+<circle cx="385.9" cy="512.5" r="3" fill="#55A868" opacity="0.7" />
+<circle cx="413.1" cy="512.5" r="3" fill="#55A868" opacity="0.7" />
+<circle cx="426.3" cy="512.5" r="3" fill="#55A868" opacity="0.7" />
+<circle cx="429.7" cy="512.5" r="3" fill="#55A868" opacity="0.7" />
+<circle cx="431.1" cy="512.5" r="3" fill="#55A868" opacity="0.7" />
+<circle cx="557.4" cy="512.5" r="3" fill="#55A868" opacity="0.7" />
+<circle cx="699.4" cy="512.5" r="3" fill="#55A868" opacity="0.7" />
+<circle cx="729.2" cy="512.5" r="3" fill="#55A868" opacity="0.7" />
+<circle cx="765.5" cy="512.5" r="3" fill="#55A868" opacity="0.7" />
+<circle cx="1066.4" cy="512.5" r="3" fill="#55A868" opacity="0.7" />
+<text x="222" y="516.5" text-anchor="end" font-size="11" fill="#333">arithmetic</text>
+<rect x="281.2" y="528.8" width="61.7" height="17.5" fill="#4C72B0" opacity="0.3" rx="2" />
+<line x1="310.6" y1="528.8" x2="310.6" y2="546.2" stroke="#4C72B0" stroke-width="2.5" />
+<circle cx="281.2" cy="537.5" r="3" fill="#55A868" opacity="0.7" />
+<circle cx="304.0" cy="537.5" r="3" fill="#55A868" opacity="0.7" />
+<circle cx="306.2" cy="537.5" r="3" fill="#55A868" opacity="0.7" />
+<circle cx="310.6" cy="537.5" r="3" fill="#55A868" opacity="0.7" />
+<circle cx="328.2" cy="537.5" r="3" fill="#55A868" opacity="0.7" />
+<circle cx="341.9" cy="537.5" r="3" fill="#55A868" opacity="0.7" />
+<circle cx="342.9" cy="537.5" r="3" fill="#55A868" opacity="0.7" />
+<text x="222" y="541.5" text-anchor="end" font-size="11" fill="#333">code_completion</text>
+<rect x="273.6" y="553.8" width="66.4" height="17.5" fill="#4C72B0" opacity="0.3" rx="2" />
+<line x1="298.3" y1="553.8" x2="298.3" y2="571.2" stroke="#4C72B0" stroke-width="2.5" />
+<circle cx="273.6" cy="562.5" r="3" fill="#55A868" opacity="0.7" />
+<circle cx="279.3" cy="562.5" r="3" fill="#55A868" opacity="0.7" />
+<circle cx="279.8" cy="562.5" r="3" fill="#55A868" opacity="0.7" />
+<circle cx="280.4" cy="562.5" r="3" fill="#55A868" opacity="0.7" />
+<circle cx="281.3" cy="562.5" r="3" fill="#55A868" opacity="0.7" />
+<circle cx="284.7" cy="562.5" r="3" fill="#55A868" opacity="0.7" />
+<circle cx="291.0" cy="562.5" r="3" fill="#55A868" opacity="0.7" />
+<circle cx="292.8" cy="562.5" r="3" fill="#55A868" opacity="0.7" />
+<circle cx="294.1" cy="562.5" r="3" fill="#55A868" opacity="0.7" />
+<circle cx="297.7" cy="562.5" r="3" fill="#55A868" opacity="0.7" />
+<circle cx="298.9" cy="562.5" r="3" fill="#55A868" opacity="0.7" />
+<circle cx="301.0" cy="562.5" r="3" fill="#55A868" opacity="0.7" />
+<circle cx="304.1" cy="562.5" r="3" fill="#55A868" opacity="0.7" />
+<circle cx="305.1" cy="562.5" r="3" fill="#55A868" opacity="0.7" />
+<circle cx="308.7" cy="562.5" r="3" fill="#55A868" opacity="0.7" />
+<circle cx="308.7" cy="562.5" r="3" fill="#55A868" opacity="0.7" />
+<circle cx="309.7" cy="562.5" r="3" fill="#55A868" opacity="0.7" />
+<circle cx="323.7" cy="562.5" r="3" fill="#55A868" opacity="0.7" />
+<circle cx="323.7" cy="562.5" r="3" fill="#55A868" opacity="0.7" />
+<circle cx="340.0" cy="562.5" r="3" fill="#55A868" opacity="0.7" />
+<text x="222" y="566.5" text-anchor="end" font-size="11" fill="#333">file_selection</text>
+<rect x="382.9" y="578.8" width="193.6" height="17.5" fill="#4C72B0" opacity="0.3" rx="2" />
+<line x1="464.8" y1="578.8" x2="464.8" y2="596.2" stroke="#4C72B0" stroke-width="2.5" />
+<circle cx="382.9" cy="587.5" r="3" fill="#55A868" opacity="0.7" />
+<circle cx="406.8" cy="587.5" r="3" fill="#55A868" opacity="0.7" />
+<circle cx="419.8" cy="587.5" r="3" fill="#55A868" opacity="0.7" />
+<circle cx="457.5" cy="587.5" r="3" fill="#55A868" opacity="0.7" />
+<circle cx="464.8" cy="587.5" r="3" fill="#55A868" opacity="0.7" />
+<circle cx="468.8" cy="587.5" r="3" fill="#55A868" opacity="0.7" />
+<circle cx="526.2" cy="587.5" r="3" fill="#55A868" opacity="0.7" />
+<circle cx="547.8" cy="587.5" r="3" fill="#55A868" opacity="0.7" />
+<circle cx="576.5" cy="587.5" r="3" fill="#55A868" opacity="0.7" />
+<text x="222" y="591.5" text-anchor="end" font-size="11" fill="#333">request_routing</text>
+<line x1="230.0" y1="600" x2="230.0" y2="606" stroke="#333" />
+<line x1="230.0" y1="475" x2="230.0" y2="600" stroke="#eee" />
+<text x="230.0" y="620" text-anchor="middle" font-size="11" fill="#333">0s</text>
+<line x1="326.8" y1="600" x2="326.8" y2="606" stroke="#333" />
+<line x1="326.8" y1="475" x2="326.8" y2="600" stroke="#eee" />
+<text x="326.8" y="620" text-anchor="middle" font-size="11" fill="#333">5s</text>
+<line x1="423.5" y1="600" x2="423.5" y2="606" stroke="#333" />
+<line x1="423.5" y1="475" x2="423.5" y2="600" stroke="#eee" />
+<text x="423.5" y="620" text-anchor="middle" font-size="11" fill="#333">10s</text>
+<line x1="520.3" y1="600" x2="520.3" y2="606" stroke="#333" />
+<line x1="520.3" y1="475" x2="520.3" y2="600" stroke="#eee" />
+<text x="520.3" y="620" text-anchor="middle" font-size="11" fill="#333">15s</text>
+<line x1="617.0" y1="600" x2="617.0" y2="606" stroke="#333" />
+<line x1="617.0" y1="475" x2="617.0" y2="600" stroke="#eee" />
+<text x="617.0" y="620" text-anchor="middle" font-size="11" fill="#333">20s</text>
+<line x1="713.8" y1="600" x2="713.8" y2="606" stroke="#333" />
+<line x1="713.8" y1="475" x2="713.8" y2="600" stroke="#eee" />
+<text x="713.8" y="620" text-anchor="middle" font-size="11" fill="#333">25s</text>
+<line x1="810.5" y1="600" x2="810.5" y2="606" stroke="#333" />
+<line x1="810.5" y1="475" x2="810.5" y2="600" stroke="#eee" />
+<text x="810.5" y="620" text-anchor="middle" font-size="11" fill="#333">30s</text>
+<line x1="907.3" y1="600" x2="907.3" y2="606" stroke="#333" />
+<line x1="907.3" y1="475" x2="907.3" y2="600" stroke="#eee" />
+<text x="907.3" y="620" text-anchor="middle" font-size="11" fill="#333">35s</text>
+<line x1="1004.0" y1="600" x2="1004.0" y2="606" stroke="#333" />
+<line x1="1004.0" y1="475" x2="1004.0" y2="600" stroke="#eee" />
+<text x="1004.0" y="620" text-anchor="middle" font-size="11" fill="#333">40s</text>
+<line x1="1100.8" y1="600" x2="1100.8" y2="606" stroke="#333" />
+<line x1="1100.8" y1="475" x2="1100.8" y2="600" stroke="#eee" />
+<text x="1100.8" y="620" text-anchor="middle" font-size="11" fill="#333">45s</text>
+</svg>
