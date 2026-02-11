@@ -36,14 +36,14 @@ import argparse
 import logging
 import pathlib
 from collections import defaultdict
-from typing import Any
+from typing import Any, List
 
 import pandas as pd
 import yaml
 
-from horizon.compute_trendline_ci import get_sota_agents
 from horizon.plot.bootstrap_ci import (
     DoublingTimeStats,
+    _compute_doubling_time_and_predictions_from_p50s,
     compute_bootstrap_confidence_region,
 )
 
@@ -61,22 +61,13 @@ def _get_trend_stats(
     after_date: str,
     before_date: str,
 ) -> DoublingTimeStats:
-    sota_agents = get_sota_agents(
-        agent_summaries, release_dates, after_date, before_date
-    )
-    agent_summaries_for_fitting = agent_summaries[
-        agent_summaries["agent"].isin(sota_agents)
-    ]
-    assert len(agent_summaries_for_fitting) == len(sota_agents)
-    bootstrap_results_for_fitting = bootstrap_results[
-        [f"{agent}_p50" for agent in sota_agents]
-    ]
     stats, _, _, _ = compute_bootstrap_confidence_region(
-        agent_summaries=agent_summaries_for_fitting,
-        bootstrap_results=bootstrap_results_for_fitting,
-        release_dates={"date": release_dates},  # type: ignore
+        agent_summaries=agent_summaries,
+        bootstrap_results=bootstrap_results,
+        release_dates={"date": release_dates},
         after_date=after_date,
-        max_date=pd.to_datetime(before_date),
+        sota_before_date=before_date,
+        trendline_end_date=before_date,
         confidence_level=0.95,
     )
     return stats
@@ -108,6 +99,51 @@ def _get_all_trend_stats(
             "point_estimate": round(all_time_stats.point_estimate, 3),
             "ci_low": round(all_time_stats.ci_lower, 3),
             "ci_high": round(all_time_stats.ci_upper, 3),
+        },
+        "from_2023_on": {
+            "point_estimate": round(from_2023_on_stats.point_estimate, 3),
+            "ci_low": round(from_2023_on_stats.ci_lower, 3),
+            "ci_high": round(from_2023_on_stats.ci_upper, 3),
+        },
+    }
+
+
+def _get_all_trend_stats_for_stitched(
+    stitched_p50s: List[float],
+    stitched_dates: List[str],
+    agent_summaries: pd.DataFrame,
+    bootstrap_results: pd.DataFrame,
+    release_dates: dict[str, str],
+) -> dict[str, dict[str, float]]:
+    """
+    In the case of the stitched trend, we can't easily compute CIs just yet. We avoid
+    this messiness, we just get the point estimate for the trendline, and don't get
+    the CIs.
+
+    Issue tracking this is here: https://github.com/METR/eval-pipeline/issues/728
+    """
+
+    time_points = pd.date_range(
+        start=pd.to_datetime("2019-01-01"),
+        end=pd.to_datetime("2030-01-01"),
+        freq="D",
+    )
+
+    all_time_point_estimate, _ = _compute_doubling_time_and_predictions_from_p50s(
+        list(zip(stitched_p50s, stitched_dates)), time_points
+    )
+
+    from_2023_on_stats = _get_trend_stats(
+        agent_summaries,
+        bootstrap_results,
+        release_dates,
+        "2023-01-01",
+        "2030-01-01",
+    )
+
+    return {
+        "all_time_stitched": {
+            "point_estimate": round(all_time_point_estimate, 3),
         },
         "from_2023_on": {
             "point_estimate": round(from_2023_on_stats.point_estimate, 3),
@@ -223,6 +259,8 @@ def generate_benchmark_metrics(
             )
 
     highest_horizon_so_far = float("-inf")
+    stitched_p50s = []
+    stitched_dates = []
     for release_date, results_on_date in sorted(dated_results.items()):
         highest_horizon_so_far = max(
             highest_horizon_so_far, max(horizon for model, horizon in results_on_date)
@@ -232,12 +270,27 @@ def generate_benchmark_metrics(
                 results[model]["metrics"]["is_sota"] = False
             else:
                 results[model]["metrics"]["is_sota"] = True
+                stitched_p50s.append(
+                    results[model]["metrics"]["p50_horizon_length"]["estimate"]
+                )
+                stitched_dates.append(release_date)
 
     results = defaultdict_to_dict(results)
 
-    doubling_time_stats = _get_all_trend_stats(
-        df_summaries, df_bootstrap_results, release_dates
-    )
+    if benchmark_results_to_stitch is None:
+        doubling_time_stats = _get_all_trend_stats(
+            df_summaries,
+            df_bootstrap_results,
+            release_dates,
+        )
+    else:
+        doubling_time_stats = _get_all_trend_stats_for_stitched(
+            stitched_p50s,
+            stitched_dates,
+            df_summaries,
+            df_bootstrap_results,
+            release_dates,
+        )
 
     return {
         "benchmark_name": benchmark_name,

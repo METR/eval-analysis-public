@@ -43,6 +43,7 @@ class ScriptParams(TypedDict):
     include_agents: list[str]
     type: list[Literal["stacked", "overlaid", "normal"]]
     width: float
+    rename_labels: dict[str, str]
 
 
 def _darken_color(
@@ -371,8 +372,10 @@ def plot_logistic_regression_on_histogram(
         if plot_type == "normal":
             # Customize subplot
             axes[ax_idx].tick_params(axis="x", rotation=45)
+            # Use rename_labels if provided, otherwise use agent name as-is
+            display_name = script_params.get("rename_labels", {}).get(agent, agent)
             axes[ax_idx].set_title(
-                f"{agent}",
+                f"{display_name}",
                 fontsize=plot_params["ax_label_fontsize"],
             )
         # if last row, add xlabel

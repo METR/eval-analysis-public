@@ -14,7 +14,6 @@ import numpy as np
 import pandas as pd
 import yaml
 
-from horizon.compute_trendline_ci import get_sota_agents
 from horizon.plot.bootstrap_ci import (
     compute_bootstrap_confidence_region,
 )
@@ -33,7 +32,7 @@ def compute_doubling_times_for_report(
     agent_summaries_file: pathlib.Path,
     release_dates: dict[str, str],
     after_date: str,
-    before_date: str | None,
+    before_date: str,
     trendline_end_date: str,
 ) -> tuple[list[float], list[str], float]:
     """Compute doubling times for a single model report.
@@ -44,41 +43,21 @@ def compute_doubling_times_for_report(
     bootstrap_results = pd.read_csv(bootstrap_file)
     agent_summaries = pd.read_csv(agent_summaries_file)
 
-    sota_agents = get_sota_agents(
-        agent_summaries, release_dates, after_date, before_date
-    )
-    logger.info(f"SOTA agents for {bootstrap_file.parent.parent.name}: {sota_agents}")
-
-    # Filter to agents with bootstrap results
-    sota_agents_with_data = [
-        agent for agent in sota_agents if f"{agent}_p50" in bootstrap_results.columns
-    ]
-    if len(sota_agents_with_data) < len(sota_agents):
-        missing = set(sota_agents) - set(sota_agents_with_data)
-        logger.warning(f"Missing bootstrap data for agents: {missing}")
-
-    agent_summaries_for_fitting = agent_summaries[
-        agent_summaries["agent"].isin(sota_agents_with_data)
-    ]
-    bootstrap_results_for_fitting = bootstrap_results[
-        [f"{agent}_p50" for agent in sota_agents_with_data]
-    ]
-
-    # Wrap release_dates in the expected format
-    release_dates_wrapped = {
-        "date": {k: pd.to_datetime(v).date() for k, v in release_dates.items()}
-    }
-
     stats, _, _, _ = compute_bootstrap_confidence_region(
-        agent_summaries=agent_summaries_for_fitting,
-        bootstrap_results=bootstrap_results_for_fitting,
-        release_dates=release_dates_wrapped,
+        agent_summaries=agent_summaries,
+        bootstrap_results=bootstrap_results,
+        release_dates={"date": release_dates},
         after_date=after_date,
-        max_date=pd.to_datetime(trendline_end_date),
+        sota_before_date=before_date,
+        trendline_end_date=trendline_end_date,
         confidence_level=0.95,
     )
 
-    return stats.all_doubling_times, sota_agents_with_data, stats.point_estimate
+    logger.info(
+        f"SOTA agents for {bootstrap_file.parent.parent.name}: {stats.sota_agents}"
+    )
+
+    return stats.all_doubling_times, stats.sota_agents, stats.point_estimate
 
 
 def plot_overlapping_histograms(
@@ -260,7 +239,7 @@ def main() -> None:
     parser.add_argument(
         "--before-date",
         type=str,
-        default=None,
+        default="2030-01-01",
         help="Only include SOTA models released before this date",
     )
     parser.add_argument(

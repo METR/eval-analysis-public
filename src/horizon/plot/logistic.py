@@ -246,44 +246,15 @@ def plot_horizon_graph(
     annotations = []
 
     for trendline in trendlines:
-        if trendline["fit_type"] == "linear":
-            log_scale = False
-        elif trendline["fit_type"] == "exponential":
-            log_scale = True
-        else:
-            raise ValueError(f"Invalid fit type: {trendline['fit_type']}")
-
-        if trendline["data_file"] is not None:
-            data_file = trendline["data_file"]
-            data = pd.read_csv(data_file)
-        else:
-            data = agent_summaries
-
-        trendline_exclude_agents = trendline.get("exclude_agents", exclude_agents)
-        data = _process_agent_summaries(
-            trendline_exclude_agents,
-            data,
-            release_dates,
-            after_date=trendline["after_date"],
-        )
-
-        print(f"fitting on {len(data)} models")
-        trendline_success_percent = trendline.get("success_percent", success_percent)
-        reg, score = fit_trendline(
-            data[f"p{trendline_success_percent}"],
-            pd.to_datetime(data["release_date"]),
-            log_scale=log_scale,
-        )
-        dashed_outside = (data["release_date"].min(), data["release_date"].max())
         annotations.append(
             plot_trendline(
                 ax,
                 plot_params,
                 trendline_params=trendline,
-                dashed_outside=dashed_outside,
-                reg=reg,
-                score=score,
-                log_scale=log_scale,
+                agent_summaries=agent_summaries,
+                release_dates=release_dates,
+                default_exclude_agents=exclude_agents,
+                default_success_percent=success_percent,
             )
         )
 
@@ -473,13 +444,67 @@ def plot_trendline(
     ax: Axes,
     plot_params: plots.PlotParams,
     trendline_params: plots.TrendlineParams,
-    dashed_outside: tuple[pd.Timestamp, pd.Timestamp] | None,
-    reg: LinearRegression | FitFunctionWrapper,
-    score: float,
-    log_scale: bool = False,
+    dashed_outside: tuple[pd.Timestamp, pd.Timestamp] | None = None,
+    reg: LinearRegression | FitFunctionWrapper | None = None,
+    score: float | None = None,
+    log_scale: bool | None = None,
     plot_kwargs: dict[str, Any] = {},
+    *,
+    agent_summaries: pd.DataFrame | None = None,
+    release_dates: Any = None,
+    default_exclude_agents: list[str] | None = None,
+    default_success_percent: int = 50,
 ) -> dict[str, Any] | None:
-    """Plot a trendline showing the relationship between release date and time horizon."""
+    """Plot a trendline. Pass reg/score/dashed_outside directly, or pass
+    agent_summaries/release_dates to have the function fit the data itself.
+    """
+    # Determine log_scale from fit_type if not provided
+    if log_scale is None:
+        if trendline_params["fit_type"] == "linear":
+            log_scale = False
+        elif trendline_params["fit_type"] == "exponential":
+            log_scale = True
+        else:
+            raise ValueError(f"Invalid fit type: {trendline_params['fit_type']}")
+
+    # Self-fitting mode: load data, process, and fit
+    if reg is None:
+        if agent_summaries is None:
+            raise ValueError("Either reg or agent_summaries must be provided")
+        if release_dates is None:
+            raise ValueError("release_dates required for fitting")
+
+        data_file = trendline_params.get("data_file")
+        if data_file is not None:
+            data = pd.read_csv(data_file)
+        else:
+            data = agent_summaries.copy()
+
+        trendline_exclude_agents = trendline_params.get(
+            "exclude_agents", default_exclude_agents
+        )
+        data = _process_agent_summaries(
+            trendline_exclude_agents,
+            data,
+            release_dates,
+            after_date=trendline_params.get("after_date"),
+            before_date=trendline_params.get("before_date"),
+        )
+
+        logging.info(f"fitting trendline on {len(data)} models")
+        trendline_success_percent = trendline_params.get(
+            "success_percent", default_success_percent
+        )
+        reg, score = fit_trendline(
+            data[f"p{trendline_success_percent}"],
+            pd.to_datetime(data["release_date"]),
+            log_scale=log_scale,
+        )
+        dashed_outside = (data["release_date"].min(), data["release_date"].max())
+
+    assert reg is not None
+    assert score is not None
+
     trendline_styling = plot_params["performance_over_time_trendline_styling"]
 
     # Extract values from trendline_params
@@ -558,20 +583,24 @@ def plot_trendline(
             )
         ax.plot(x_dates[undashed_mask], y_values[undashed_mask], **pk)
 
-    if caption is None:
-        caption = ""
-
     if skip_annotation:
         return None
-    annotation = caption
+
+    # Build annotation in order: doubling time, caption/date, R²
+    annotation_parts = []
     if fit_type == "exponential":
         assert isinstance(reg, LinearRegression)
         doubling_time = 1 / reg.coef_[0] * np.log(2)
-        annotation += f"\nDoubling time: {doubling_time:.0f} days"
-    if display_after_date:
-        annotation += "\n" + ("All data" if after == "0000-00-00" else f"{after}+ data")
+        annotation_parts.append(f"Doubling time: {doubling_time:.0f} days")
+    if caption:
+        annotation_parts.append(caption)
+    elif display_after_date:
+        annotation_parts.append(
+            "All data" if after == "0000-00-00" else f"{after}+ data"
+        )
     if display_r_squared:
-        annotation += f"\nR²: {score:.2f}"
+        annotation_parts.append(f"R²: {score:.2f}")
+    annotation = "\n".join(annotation_parts)
 
     annotation_styling = {
         "color": fit_color,

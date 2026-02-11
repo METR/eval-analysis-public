@@ -2,7 +2,6 @@ import argparse
 import logging
 import pathlib
 from dataclasses import dataclass
-from datetime import date
 from typing import Any, List, Literal
 
 import dvc.api
@@ -276,8 +275,18 @@ def _add_overlay_and_trendline(
             )
 
 
-def _add_time_markers(ax: Axes) -> None:
-    """Add reference time markers on the y-axis."""
+def _add_time_markers(
+    ax: Axes,
+    lower_y_lim: float,
+    upper_y_lim: float,
+) -> None:
+    """Add reference time markers on the y-axis.
+
+    Args:
+        ax: matplotlib axes to add markers to
+        lower_y_lim: lower y-axis limit (in minutes)
+        upper_y_lim: upper y-axis limit (in minutes)
+    """
     time_markers = {
         15 / 60: "Answer question",
         2: "Count words in passage",
@@ -286,9 +295,13 @@ def _add_time_markers(ax: Axes) -> None:
         4 * 60: "Train adversarially robust image model",
     }
 
-    for seconds, label in time_markers.items():
+    for minutes, label in time_markers.items():
+        # Skip markers outside the visible y-axis range
+        if minutes < lower_y_lim or minutes > upper_y_lim:
+            continue
+
         ax.axhline(
-            y=seconds,
+            y=minutes,
             color="#2c7c58",
             linestyle="-",
             alpha=0.4,
@@ -298,7 +311,7 @@ def _add_time_markers(ax: Axes) -> None:
         )
         ax.text(
             0.02,
-            seconds,
+            minutes,
             label,
             transform=ax.get_yaxis_transform(),
             verticalalignment="center",
@@ -378,6 +391,7 @@ def _add_individual_labels(
 
 @dataclass
 class DoublingTimeStats:
+    sota_agents: list[str]
     point_estimate: float
     median: float
     ci_lower: float
@@ -389,13 +403,15 @@ class DoublingTimeStats:
 
 
 def _compute_doubling_time_and_predictions_from_p50s(
-    p50s: List[float],
-    dates: List[pd.Timestamp],
+    p50s_and_dates: list[tuple[float, str]],
     time_points: pd.DatetimeIndex,
 ) -> tuple[float, NDArray[Any]]:
+    p50s_and_dates.sort(key=lambda x: x[1])
+    p50s = pd.Series([p50 for p50, _ in p50s_and_dates])
+    dates = pd.Series([pd.to_datetime(date) for _, date in p50s_and_dates])
     reg, _ = fit_trendline(
-        pd.Series(p50s),
-        pd.Series(pd.to_datetime(dates)),
+        p50s,
+        dates,
         log_scale=True,
     )
     time_x = date2num(time_points)
@@ -405,63 +421,134 @@ def _compute_doubling_time_and_predictions_from_p50s(
     return float(doubling_time), predictions
 
 
+def get_sota_agents(
+    agent_summaries: pd.DataFrame,
+    release_dates: dict[str, str],
+    after_date: str | None = None,
+    before_date: str | None = None,
+) -> list[str]:
+    """Determine which agents are SOTA based on p50 horizon at release time.
+
+    An agent is SOTA if its p50 horizon is >= the highest p50 seen among
+    all agents released on or before the same date.
+
+    If after_date is provided, only returns SOTA agents released on or after that date.
+    If before_date is provided, only returns SOTA agents released before that date.
+    """
+    agents_with_dates = []
+    for _, row in agent_summaries.iterrows():
+        agent = row["agent"]
+        if agent == "human":
+            continue
+
+        assert agent in release_dates, f"Agent {agent} not found in release dates"
+        p50 = row["p50"]
+        assert not pd.isna(p50) and not np.isinf(
+            p50
+        ), f"Agent {agent} has invalid p50: {p50}"
+        agents_with_dates.append(
+            {
+                "agent": agent,
+                "release_date": pd.to_datetime(release_dates[agent]).date(),
+                "p50": p50,
+            }
+        )
+
+    df = pd.DataFrame(agents_with_dates)
+    assert not df.empty, "No agents with valid p50s found"
+
+    df = df.sort_values("release_date")
+
+    # Then, we filter to after_date and before_date if provided
+    if after_date:
+        df = df[df["release_date"] >= pd.to_datetime(after_date).date()]
+    if before_date:
+        df = df[df["release_date"] < pd.to_datetime(before_date).date()]
+
+    sota_agents = []
+    highest_horizon_so_far = float("-inf")
+
+    for release_date in df["release_date"].unique():
+        agents_on_date = df[df["release_date"] == release_date]
+        max_horizon_on_date = agents_on_date["p50"].max()
+        highest_horizon_so_far = max(highest_horizon_so_far, max_horizon_on_date)
+
+        for _, row in agents_on_date.iterrows():
+            if row["p50"] >= highest_horizon_so_far:
+                sota_agents.append(row["agent"])
+
+    assert len(sota_agents) > 0, "No SOTA agents found after filtering"
+    return sota_agents
+
+
 def compute_bootstrap_confidence_region(
     agent_summaries: pd.DataFrame,
     bootstrap_results: pd.DataFrame,
-    release_dates: dict[str, dict[str, date]],
+    release_dates: dict[str, dict[str, str]],
     after_date: str,
-    max_date: pd.Timestamp,
+    sota_before_date: str,
+    trendline_end_date: str,
     confidence_level: float,
+    filter_sota: bool = True,
 ) -> tuple[DoublingTimeStats, pd.DatetimeIndex, NDArray[Any], NDArray[Any]]:
     """Compute bootstrap confidence intervals from bootstrap samples.
 
     Args:
+        agent_summaries: DataFrame with agent summary data including p50 values.
         bootstrap_results: DataFrame with columns for each agent containing p50s.
         release_dates: Dictionary mapping agent names to release dates
         after_date: Start date for trendline
-        max_date: End date for trendline
+        sota_before_date: Only consider agents released before this date when determining SOTA agents for the trendline fit
+        trendline_end_date: End date for trendline
         confidence_level: Confidence level for the interval (e.g. 0.95)
+        filter_sota: If True, filter to SOTA agents before computing. If False,
+            use all provided agents.
 
     Returns:
         Tuple of (doubling_time_stats, time_points, lower_bound, upper_bound)
     """
     dates = release_dates["date"]
 
-    focus_agents = [
-        colname.removesuffix("_p50") for colname in bootstrap_results.columns
-    ]
+    # Filter to _p50 columns, rename to agent names
+    bootstrap_results = bootstrap_results.filter(like="_p50")
+    bootstrap_results.columns = pd.Index(
+        [col.removesuffix("_p50") for col in bootstrap_results.columns]
+    )
+
+    if filter_sota:
+        sota_agents = get_sota_agents(
+            agent_summaries, dates, after_date, sota_before_date
+        )
+        bootstrap_results = bootstrap_results[sota_agents]
+        agent_summaries = agent_summaries[agent_summaries["agent"].isin(sota_agents)]
+    else:
+        sota_agents = agent_summaries["agent"].tolist()
 
     doubling_times = []
     n_bootstraps = len(bootstrap_results)
 
     time_points = pd.date_range(
         start=pd.to_datetime(after_date),
-        end=max_date,
+        end=trendline_end_date,
         freq="D",
     )
     predictions = np.zeros((n_bootstraps, len(time_points)))
     assert n_bootstraps > 0
     for sample_idx in range(n_bootstraps):
-        valid_p50s = []
-        valid_dates = []
-
-        for agent in focus_agents:
-            p50 = pd.to_numeric(
-                bootstrap_results[f"{agent}_p50"].iloc[sample_idx], errors="coerce"
-            )
-
+        p50s = pd.to_numeric(bootstrap_results.iloc[sample_idx], errors="raise")
+        valid_p50s_dates = []
+        for agent in bootstrap_results.columns:
+            p50 = p50s[agent]
             if pd.isna(p50) or np.isinf(p50) or p50 < 1e-3:
                 continue
+            valid_p50s_dates.append((p50, dates[agent]))
 
-            valid_p50s.append(p50)
-            valid_dates.append(dates[agent])
-
-        if len(valid_p50s) < 2:
+        if len(valid_p50s_dates) < 2:
             continue
 
         doubling_time, predictions_for_sample = (
             _compute_doubling_time_and_predictions_from_p50s(
-                valid_p50s, valid_dates, time_points
+                valid_p50s_dates, time_points
             )
         )
         if doubling_time > 0:
@@ -470,8 +557,12 @@ def compute_bootstrap_confidence_region(
 
     # Fit a single trendline to the agent summaries, to compute the point estimate for the trendline
     point_estimate_doubling_time, _ = _compute_doubling_time_and_predictions_from_p50s(
-        agent_summaries["p50"].tolist(),
-        agent_summaries["release_date"].tolist(),
+        list(
+            zip(
+                agent_summaries["p50"].tolist(),
+                agent_summaries["release_date"].tolist(),
+            )
+        ),
         time_points,
     )
 
@@ -485,6 +576,7 @@ def compute_bootstrap_confidence_region(
     ci_upper = float(np.percentile(doubling_times, high_q * 100))
 
     stats = DoublingTimeStats(
+        sota_agents=sota_agents,
         point_estimate=point_estimate_doubling_time,
         median=median,
         ci_lower=ci_lower,
@@ -502,11 +594,12 @@ def add_bootstrap_confidence_region(
     ax: Axes,
     agent_summaries: pd.DataFrame,
     bootstrap_results: pd.DataFrame,
-    release_dates: dict[str, dict[str, date]],
+    release_dates: dict[str, dict[str, str]],
     after_date: str,
-    max_date: pd.Timestamp,
+    max_date: str,
     confidence_level: float,
     color: str = "#d2dfd7",
+    filter_sota: bool = True,
 ) -> DoublingTimeStats:
     """Add bootstrap confidence intervals and region to an existing plot.
 
@@ -517,6 +610,8 @@ def add_bootstrap_confidence_region(
         after_date: Start date for trendline
         max_date: End date for trendline
         confidence_level: Confidence level for the interval (e.g. 0.95)
+        filter_sota: If True, filter to SOTA agents before computing. If False,
+            use all provided agents.
 
     Returns:
         DoublingTimeStats with median and confidence interval
@@ -527,7 +622,9 @@ def add_bootstrap_confidence_region(
         release_dates,
         after_date,
         max_date,
+        max_date,  # trendline_end_date and sota_before_date are the same
         confidence_level,
+        filter_sota=filter_sota,
     )
 
     ax.fill_between(
@@ -587,11 +684,11 @@ def main() -> None:
     )
     # Filter agents for fitting trendline: exclude if in exclude_agents OR in exclude_agents_from_all_fits
     exclude_agents_from_all_fits = script_params.get("exclude_agents_from_all_fits", [])
-    exclude_agents_from_all_fits = (
+    exclude_agents_for_fitting = (
         script_params["exclude_agents"] + exclude_agents_from_all_fits
     )
     agent_summaries_for_fitting = _process_agent_summaries(
-        exclude_agents_from_all_fits,
+        exclude_agents_for_fitting,
         agent_summaries,
         release_dates,
         after_date,
@@ -668,7 +765,11 @@ def main() -> None:
     )
 
     if script_params.get("show_example_tasks", False):
-        _add_time_markers(axs[0])
+        _add_time_markers(
+            axs[0],
+            lower_y_lim=script_params["lower_y_lim"],
+            upper_y_lim=upper_y_lim,
+        )
 
     if script_params.get("show_watermark", False):
         parent_dir = pathlib.Path(__file__).parent.parent.parent
@@ -710,10 +811,12 @@ def main() -> None:
                 "color": base_trendline_color,
                 "line_start_date": script_params["trendlines"][0]["line_start_date"],
                 "line_end_date": trendline_end_date,
-                "display_r_squared": True,
+                "display_r_squared": script_params["trendlines"][0].get(
+                    "display_r_squared", True
+                ),
                 "data_file": None,
                 "styling": None,
-                "caption": None,
+                "caption": script_params["trendlines"][0].get("caption"),
                 "skip_annotation": False,
                 "fit_type": "exponential",
             },
@@ -725,10 +828,10 @@ def main() -> None:
             not script_params.get("hide_regression_info", False)
             and annotation is not None
         ):
-            # Position annotation at bottom right
+            # Position annotation at right side (above additional trendline annotations)
             axs[0].annotate(
                 **annotation,
-                xy=(0.98, 0.02),
+                xy=(0.98, 0.14),
                 xycoords="axes fraction",
                 ha="right",
                 va="bottom",
@@ -752,6 +855,7 @@ def main() -> None:
             max_date=trendline_end_date,
             confidence_level=confidence_level,
             color=confidence_region_color,
+            filter_sota=False,
         )
         logger.info(
             f"95% CI for doubling times: [{stats.ci_lower:.0f}, {stats.ci_upper:.0f}] days "
@@ -768,6 +872,28 @@ def main() -> None:
         base_color=comparison_color_1,
         overlay_color=comparison_color_2,
     )
+
+    # Plot additional trendlines if configured
+    if len(script_params["trendlines"]) > 1:
+        for idx, trendline in enumerate(script_params["trendlines"][1:]):
+            annotation = plot_trendline(
+                ax=axs[0],
+                plot_params=plot_params,
+                trendline_params=trendline,
+                agent_summaries=agent_summaries,
+                release_dates=release_dates,
+                default_exclude_agents=script_params["exclude_agents"],
+                default_success_percent=script_params.get("success_percent", 50),
+            )
+            if annotation is not None:
+                y_position = 0.02 + (idx * 0.12)
+                axs[0].annotate(
+                    **annotation,
+                    xy=(0.98, y_position),
+                    xycoords="axes fraction",
+                    ha="right",
+                    va="bottom",
+                )
 
     # Add confidence region and existing scatter points to legend
     handles, labels = axs[0].get_legend_handles_labels()

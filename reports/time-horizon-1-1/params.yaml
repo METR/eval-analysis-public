@@ -19,12 +19,14 @@ weighting:
 
 agent_summary:
   agents:
-    # - Gemini 3 Pro
+    - GPT-5.2
+    - Gemini 3 Pro
     - Claude 3 Opus (Inspect)
     - Claude 3.5 Sonnet (Old) (Inspect)
     - Claude 3.5 Sonnet (New) (Inspect)
     - Claude 3.7 Sonnet (Inspect)
     - Claude 4 Opus (Inspect)
+    - Claude 4.1 Opus (Inspect)
     - Claude Opus 4.5 (Inspect)
     - GPT-4 1106 (Inspect)
     - GPT-4o (Inspect)
@@ -32,11 +34,12 @@ agent_summary:
     - o3 (Inspect)
     - o1 (Inspect)
     - GPT-5 (Inspect)
+    - GPT-5.1-Codex-Max (Inspect)
     - o1-preview
     - GPT-4 0314
 
 plots:
-  suptitle_fontsize: 14
+  suptitle_fontsize: 13
   xlabelpad: 10
   ylabelpad: 10
   ax_label_fontsize: 14
@@ -84,6 +87,10 @@ plots:
       lab_color: &anthropic_color "#d97757"
       marker: "*"
       unique_color: "#9C5EDA"
+    "Claude 4.1 Opus (Inspect)":
+      lab_color: *anthropic_color
+      marker: "h"
+      unique_color: "#A86ED9"
     "Claude Opus 4.5 (Inspect)":
       lab_color: *anthropic_color
       marker: ">"
@@ -112,6 +119,14 @@ plots:
       lab_color: *openai_color
       marker: "p"
       unique_color: "#5AB2FA"
+    "GPT-5.1-Codex-Max (Inspect)":
+      lab_color: *openai_color
+      marker: ">"
+      unique_color: "#5AB2FA"
+    "GPT-5.2":
+      lab_color: *openai_color
+      marker: "o"
+      unique_color: "#4AA0E8"
     "o1 (Inspect)":
       lab_color: *openai_color
       marker: "P"
@@ -180,6 +195,7 @@ plots:
   legend_order:
     - Claude Opus 4.5 (Inspect)
     - Claude 4 Opus (Inspect)
+    - Claude 4.1 Opus (Inspect)
     - Gemini 3 Pro
     - Claude 3.7 Sonnet (Inspect)
     - Claude 3.5 Sonnet (New) (Inspect)
@@ -194,3 +210,5 @@ plots:
     - o3 (Inspect)
     - o1 (Inspect)
     - GPT-5 (Inspect)
+    - GPT-5.1-Codex-Max (Inspect)
+    - GPT-5.2

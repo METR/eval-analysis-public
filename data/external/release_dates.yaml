@@ -36,6 +36,7 @@ date:
   Grok 4: 2025-07-09
   o3 (Inspect): 2025-04-16
   o4-mini (Inspect): 2025-04-16
+  GPT-5.1-Codex-Max (Inspect): 2025-11-19
   GPT-5 (Inspect): 2025-08-07
   GPT-4o mini (Inspect): 2024-07-18
   GPT-4 Turbo (Inspect): 2024-04-09
@@ -70,3 +71,4 @@ date:
   gpt-oss-120b: 2025-08-05
   Kimi K2 Thinking: 2025-11-06
   Gemini 3 Pro: 2025-11-18
+  GPT-5.2: 2025-12-11
