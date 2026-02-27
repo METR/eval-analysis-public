@@ -137,4 +137,6 @@ If you use this code or data, please cite:
 
 ## License
 
-See LICENSE file for details.
+This repository is licensed under the MIT License. See [LICENSE](./LICENSE).
+
+If you use this code or data in downstream work, please cite the paper listed above.
