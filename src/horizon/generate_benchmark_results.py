@@ -18,17 +18,12 @@ results:
           estimate: float
           ci_low: float
           ci_high: float
-        usage:
-          usd: float
-          tokens: float
-          working_time: float
       agent-2: ...
     release_date: str
   ...
 
 
 Notes:
-- `working_time` is the time taken by the agent to complete one run on each task
 - This does not support multiple scaffolds per alias
 """
 
@@ -204,14 +199,6 @@ def generate_benchmark_metrics(
             for metric_summary_key, df_col in metric_summary_column_map.items():
                 agent_result[metric][metric_summary_key] = float(agent_summary[df_col])
         agent_result["average_score"]["estimate"] = float(agent_summary["average"])
-
-        # data from runs
-        agent_result["usage"]["working_time"] = (
-            agent_df.groupby("task_id")["duration_minutes"].mean().sum().item()
-        )
-        agent_result["usage"]["usd"] = (
-            agent_df.groupby("task_id")["generation_cost"].mean().sum().item()
-        )
 
         transcript_links = []
         if include_transcript_links and agent != "GPT-2":

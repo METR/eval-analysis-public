@@ -82,7 +82,7 @@ figs:
       runs_file: &runs_file data/raw/runs.jsonl
       weighting: invsqrt_task_weight
       categories: ftr
-      regularization: 0.1
+      regularization: 0.00001
       exclude: []
       success_percents: [50, 80]
       confidence_level: 0.95

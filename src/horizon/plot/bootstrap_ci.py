@@ -290,9 +290,9 @@ def _add_time_markers(
     time_markers = {
         15 / 60: "Answer question",
         2: "Count words in passage",
-        10: "Find fact on web",
         49: "Train classifier",
         4 * 60: "Train adversarially robust image model",
+        16 * 60: "Implement complex protocol from multiple RFCs",
     }
 
     for minutes, label in time_markers.items():
@@ -327,7 +327,6 @@ def _add_individual_labels(
     script_params: dict[str, Any],
     scale: Literal["log", "linear"],
 ) -> None:
-    # Label first and last points
     sorted_data = agent_summaries.sort_values("release_date")
     rename_map = script_params["rename_legend_labels"]
 
@@ -335,10 +334,35 @@ def _add_individual_labels(
         return rename_map.get(x, x)
 
     sorted_data["agent"] = sorted_data["agent"].map(rename_with_default)
+
+    label_positions: dict[str, list[int]] | None = script_params.get("label_positions")
+    if label_positions is not None:
+        # Use YAML-configured label positions keyed by renamed agent name
+        success_col = f"p{script_params.get('success_percent', 50)}"
+        for _, point in sorted_data.iterrows():
+            agent_name = point["agent"]
+            if agent_name not in label_positions:
+                continue
+            offset = label_positions[agent_name]
+            axs[0].annotate(
+                agent_name,
+                xy=(
+                    pd.to_datetime(point["release_date"]),
+                    point[success_col],
+                ),
+                xytext=(offset[0], offset[1]),
+                textcoords="offset points",
+                ha="left" if offset[0] > 0 else "right",
+                va="bottom" if offset[1] > 0 else "top",
+                fontsize=12,
+                color="grey",
+            )
+        return
+
+    # Fallback: hardcoded index-based label positions
     first_point = sorted_data.iloc[0]
     last_point = sorted_data.iloc[-1]
 
-    # TODO would be great to map from agent names to label position, and ideally make this configurable in the yaml
     second_to_last = sorted_data.iloc[-2]
     log_agents_to_label = [
         (first_point, (4, -6), None),
@@ -897,8 +921,11 @@ def main() -> None:
 
     # Add confidence region and existing scatter points to legend
     handles, labels = axs[0].get_legend_handles_labels()
+    legend_order = plot_params["legend_order"]
+    max_idx = len(legend_order)
     sorted_items = sorted(
-        zip(handles, labels), key=lambda x: plot_params["legend_order"].index(x[1])
+        zip(handles, labels),
+        key=lambda x: legend_order.index(x[1]) if x[1] in legend_order else max_idx,
     )
     handles, labels = zip(*sorted_items)
     rename_map = script_params["rename_legend_labels"]

@@ -17,6 +17,7 @@ default_agents: &default_agents
   - GPT-5 (Inspect)
   - Gemini 3 Pro
   - GPT-5.1-Codex-Max (Inspect)
+  - Claude Opus 4.6 (Inspect)
   - Claude Opus 4.5 (Inspect)
   - GPT-5.2
   - Claude 4 Opus (Inspect)
@@ -30,14 +31,52 @@ default_agents: &default_agents
   - GPT-4 1106 (Inspect)
   - o1-preview
   - GPT-4 0314
+  - Gemini 3 Pro
+
+horizon_exclude_agents_with_human: &horizon_exclude_agents_with_human
+  - GPT-4 0125
+  - DeepSeek-R1-0528
+  - DeepSeek-V3-0324
+  - DeepSeek-R1
+  - DeepSeek-V3
+  - Qwen2.5-72B
+  - Qwen2-72B
+  - o4-mini
+  - Claude Sonnet 4.5
+  - Claude 4.1 Opus
+  - Claude 4 Opus
+  - Claude 4 Sonnet
+  - Claude 3 Opus
+  - GPT-4 Turbo
+  - Claude 3.5 Sonnet (Old)
+  - GPT-2
+  - davinci-002 (GPT-3)
+  - GPT-4 1106
+  - gpt-3.5-turbo-instruct
+  - GPT-4 0314
+  - human
+  - o3 (Inspect)
+  - Claude 4 Opus (Inspect)
+  - Claude 4.1 Opus (Inspect)
+  - Claude 3.7 Sonnet (Inspect)
+  - o1 (Inspect)
+  - o1-preview
+  - Claude 3.5 Sonnet (New) (Inspect)
+  - Claude 3.5 Sonnet (Old) (Inspect)
+  - GPT-4o (Inspect)
+  - GPT-4 1106 (Inspect)
+  - GPT-4 Turbo (Inspect)
+  - Claude 3 Opus (Inspect)
+  - human
 
 figs:
   wrangle_logistic:
     headline: &wrangle_headline
       runs_file: &runs_file data/raw/runs.jsonl
+      additional_runs_dep: data/raw/runs.jsonl
       weighting: invsqrt_task_weight
       categories: ftr
-      regularization: 0.1
+      regularization: 0.00001
       exclude: []
       success_percents: [50, 80]
       confidence_level: 0.95
@@ -76,6 +115,8 @@ figs:
     default: &default_histogram
       annotate_p50: true
       logistic_file: "data/wrangled/logistic_fits/headline.csv"
+      runs_file: *runs_file
+      additional_runs_dep: *runs_file
       weighting: "invsqrt_task_weight"
       title: "Success probabilities at different task lengths on 1.1 task suite"
       n_subplot_cols: 3
@@ -102,9 +143,17 @@ figs:
       annotate_p50: false
       type: "overlaid"
 
+    scatter_default:
+      <<: *default_histogram
+      display_mode: "scatter"
+      title: "Task-level success rates vs task length"
+      point_size_scale: 100
+      alpha: 0.5
+
   plot_logistic_regression:
     headline: &plot_headline
       <<: *wrangle_headline
+      logistic_file: headline
       trendlines:
         - fit_type: exponential
           caption: null
@@ -140,11 +189,13 @@ figs:
         "GPT-4o (Inspect)": "GPT 4o"
         "GPT-4 0314": "GPT-4"
         "o1-preview": "o1-preview"
-        "Claude 4 Opus (Inspect)": "Claude Opus 4"
-        "Claude 3.7 Sonnet (Inspect)": "Sonnet 3.7"
-        "Claude 3.5 Sonnet (New) (Inspect)": "Sonnet 3.6"
-        "Claude 3.5 Sonnet (Old) (Inspect)": "Sonnet 3.5"
-        "Claude 3 Opus (Inspect)": "Claude Opus 3"
+        "Claude 4 Opus (Inspect)": "Opus 4 (Inspect)"
+        "Claude 4.1 Opus (Inspect)": "Opus 4.1 (Inspect)"
+        "Claude Opus 4.6 (Inspect)": "Opus 4.6 (Inspect)"
+        "Claude 3.7 Sonnet (Inspect)": "Sonnet 3.7 (Inspect)"
+        "Claude 3.5 Sonnet (New) (Inspect)": "Sonnet 3.6 (Inspect)"
+        "Claude 3.5 Sonnet (Old) (Inspect)": "Sonnet 3.5 (Inspect)"
+        "Claude 3 Opus (Inspect)": "Opus 3 (Inspect)"
         "o3 (Inspect)": "o3"
         "o1 (Inspect)": "o1"
         "o1-preview (Inspect)": "o1 preview"
@@ -156,10 +207,17 @@ figs:
         "Claude Opus 4.5 (Inspect)": "Claude Opus 4.5"
         "GPT-5.2": "GPT-5.2 (high)"
       show_y_label: true
-    twitter_headline:
+    twitter_headline: &twitter_headline_config
       <<: *plot_headline
-      lower_y_lim: 0.5 # overriding plot_headline y_lim
-      title: "GPT-5.2 (high) has a 50%-time-horizon of about 6.6 hrs (95% CI: 200 to 1050 min)"
+      lower_y_lim: 3 # start at ~3 mins
+      upper_y_lim: 1440 # 24 hours
+      x_lim_start: "2024-03-29"
+      rename_legend_labels:
+        "GPT-4o (Inspect)": "GPT 4o"
+        "Claude Opus 4.6 (Inspect)": "Claude Opus 4.6"
+        "Claude 3.7 Sonnet (Inspect)": "Sonnet 3.7"
+        "GPT-5.2": "GPT-5.2 (high)"
+      title: "Claude Opus 4.6 has a 50%-time-horizon of about 14.5 hours (95% CI: 6 hrs to 98 hrs)"
       subtitle: "Task length (at 50% success rate)"
       # Override trendlines to add grey historical reference lines
       # Comment out trendlines 2 or 3 to disable them
@@ -213,7 +271,7 @@ figs:
       hide_regression_info: false
       annotation_fontsize: 20
       legend_frameon: false
-      xticks_skip: 2
+      xticks_skip: 1
       show_watermark: true
       show_example_tasks: true
       show_minor_xticks: true
@@ -234,11 +292,17 @@ figs:
           scatter:
             s: 75
         agent_styling:
+          "Claude Opus 4.6 (Inspect)":
+            lab_color: &metr_pink "#c86592"
+            marker: "o"
           "Claude Opus 4.5 (Inspect)":
             lab_color: &metr_green "#2c7c58"
             marker: "o"
-          "Claude 4 Opus (Inspect)":
+          "Claude 4.1 Opus (Inspect)":
             lab_color: &metr_gray "#A0A0A0"
+            marker: "o"
+          "Claude 4 Opus (Inspect)":
+            lab_color: *metr_gray
             marker: "o"
           "o3 (Inspect)":
             lab_color: *metr_green
@@ -303,13 +367,18 @@ figs:
             marker: "p"
             unique_color: "#4285F4"
           "GPT-5.2":
-            lab_color: &metr_pink "#c86592"
+            lab_color: *metr_green
             marker: "o"
           "default":
             lab_color: "black"
             marker: "o"
             unique_color: "black"
       individual_labels: true
+      label_positions:
+        "GPT 4o": [7, -24]
+        "Sonnet 3.7": [-8, 24]
+        "GPT-5.2 (high)": [7, -28]
+        "Claude Opus 4.6": [7, -40]
       show_y_label: false
     p80:
       <<: *plot_headline
@@ -382,7 +451,7 @@ figs:
       exclude_agents: *exclude_agents
       exclude_agents_from_all_fits: *exclude_agents_from_all_fits
       lower_y_lim: 0.0083333 # 0.5 seconds
-      upper_y_lim: 960
+      upper_y_lim: 1920
       x_lim_start: "2018-09-03"
       x_lim_end: "2025-12-31"
       show_y_label: true
@@ -391,3 +460,61 @@ figs:
     exclude_agents: *exclude_agents
     exclude_agents_from_all_fits: *exclude_agents_from_all_fits
     confidence_level: 0.95
+
+  wrangle_score_over_resource_horizon:
+    generation_cost:
+      x: generation_cost
+      wrangle_params: ga_rebench
+      score_column: score_binarized
+      output: ga_rebench
+      include_human_flag: "--include-human"
+      exclude_agents: *horizon_exclude_agents_with_human
+    tokens_count:
+      x: tokens_count
+      wrangle_params: ga_rebench
+      score_column: score_binarized
+      output: ga_rebench_tokens
+      include_human_flag: ""
+      exclude_agents: *horizon_exclude_agents_with_human
+
+  plot_score_over_resource_horizon:
+    linear_cost:
+      y_scale: linear
+      weighting_column: p50
+      score_column: p50
+      y_lim_lower: 0
+      y_lim_upper: 145
+      wrangled: ga_rebench
+      output_file: ga_rebench_linear
+      x: generation_cost
+      exclude_agents: *horizon_exclude_agents_with_human
+    log_cost:
+      y_scale: log
+      weighting_column: p50
+      score_column: p50
+      y_lim_lower: 0.70
+      y_lim_upper: none
+      wrangled: ga_rebench
+      output_file: ga_rebench_log
+      x: generation_cost
+      exclude_agents: *horizon_exclude_agents_with_human
+    linear_tokens:
+      y_scale: linear
+      weighting_column: p50
+      score_column: p50
+      y_lim_lower: 0
+      y_lim_upper: 1920
+      wrangled: ga_rebench_tokens
+      output_file: ga_rebench_tokens_linear
+      x: tokens_count
+      exclude_agents: *horizon_exclude_agents_with_human
+    log_tokens:
+      y_scale: log
+      weighting_column: p50
+      score_column: p50
+      y_lim_lower: 0.70
+      y_lim_upper: 1920
+      wrangled: ga_rebench_tokens
+      output_file: ga_rebench_tokens_log
+      x: tokens_count
+      exclude_agents: *horizon_exclude_agents_with_human

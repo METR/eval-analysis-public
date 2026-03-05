@@ -3,7 +3,7 @@ from __future__ import annotations
 import argparse
 import logging
 import pathlib
-from typing import TYPE_CHECKING, Any, TypedDict
+from typing import TYPE_CHECKING, Any, NotRequired, TypedDict
 
 import dvc.api
 import numpy as np
@@ -12,6 +12,7 @@ import yaml
 from sklearn.linear_model import LogisticRegression
 
 from horizon.compute_task_weights import add_task_weight_columns
+from horizon.load_runs import load_runs_with_additional_files
 from horizon.utils.logistic import (
     get_x_for_quantile,
     logistic_regression,
@@ -31,6 +32,7 @@ class WrangleParams(TypedDict):
     exclude: list[str]
     success_percents: list[int]
     confidence_level: float
+    additional_runs_files: NotRequired[list[str]]
 
 
 def empirical_success_rates(
@@ -270,8 +272,10 @@ def main(
     params = dvc.api.params_show(stages="wrangle_logistic_regression", deps=True)
     wrangle_params = params["figs"]["wrangle_logistic"][fig_name]
 
-    runs = pd.read_json(runs_file, lines=True, orient="records", convert_dates=False)
-    logger.info(f"Loaded {len(runs)} runs")
+    additional_runs_files = wrangle_params.get("additional_runs_files", [])
+    runs = load_runs_with_additional_files(
+        runs_file, additional_runs_files, convert_dates=False
+    )
 
     regressions = run_logistic_regressions(
         runs,

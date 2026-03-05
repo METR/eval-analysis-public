@@ -8,6 +8,7 @@ import numpy as np
 import pandas as pd
 from joblib import Parallel, delayed
 
+from horizon.load_runs import load_runs_with_additional_files
 from horizon.utils.logistic import (
     get_x_for_quantile,
     logistic_regression,
@@ -24,6 +25,7 @@ class WrangleParams(TypedDict):
     success_percents: List[int]
     score_col: NotRequired[str]
     exclude: NotRequired[str]
+    additional_runs_files: NotRequired[List[str]]
 
 
 def bootstrap_runs_by_task_agent(
@@ -293,8 +295,9 @@ def main() -> None:
     )
 
     # Load data
-    data = pd.read_json(args.runs_file, lines=True, orient="records")
-    logging.info(f"Loaded {len(data)} runs from {args.runs_file}")
+    additional_runs_files = wrangle_params.get("additional_runs_files", [])
+    data = load_runs_with_additional_files(args.runs_file, additional_runs_files)
+
     data.rename(columns={"alias": "agent"}, inplace=True)
 
     if "exclude" in wrangle_params and wrangle_params["exclude"]:

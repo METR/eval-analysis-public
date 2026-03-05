@@ -33,6 +33,7 @@ stages:
         --output-bootstrap-horizons-file data/wrangled/bootstrap/${key}.csv --n-bootstrap
         ${n_bootstrap}
       deps:
+      - ${code_dir}/horizon/load_runs.py
       - ${code_dir}/horizon/wrangle/bootstrap.py
       - ${code_dir}/horizon/utils/logistic.py
       - ${code_dir}/horizon/compute_task_weights.py
@@ -55,6 +56,7 @@ stages:
       - ${item.runs_file}
       - ../../data/external/release_dates.yaml
       - data/wrangled/bootstrap/${key}.csv
+      - ${code_dir}/horizon/load_runs.py
       - ${code_dir}/horizon/wrangle/logistic.py
       - ${code_dir}/horizon/utils/logistic.py
       - ${code_dir}/horizon/compute_task_weights.py
@@ -113,6 +115,7 @@ stages:
       - ${item.logistic_file}
       - data/raw/runs.jsonl
       - matplotlibrc
+      - ${code_dir}/horizon/load_runs.py
       - ${code_dir}/horizon/plot/individual_histograms.py
       - ${code_dir}/horizon/utils/plots.py
       params:

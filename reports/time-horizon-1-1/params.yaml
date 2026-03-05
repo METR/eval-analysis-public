@@ -28,6 +28,7 @@ agent_summary:
     - Claude 4 Opus (Inspect)
     - Claude 4.1 Opus (Inspect)
     - Claude Opus 4.5 (Inspect)
+    - Claude Opus 4.6 (Inspect)
     - GPT-4 1106 (Inspect)
     - GPT-4o (Inspect)
     - GPT-4 Turbo (Inspect)
@@ -35,6 +36,7 @@ agent_summary:
     - o1 (Inspect)
     - GPT-5 (Inspect)
     - GPT-5.1-Codex-Max (Inspect)
+    - GPT-5.3-Codex
     - o1-preview
     - GPT-4 0314
 
@@ -95,6 +97,10 @@ plots:
       lab_color: *anthropic_color
       marker: ">"
       unique_color: "#9C5EDA"
+    "Claude Opus 4.6 (Inspect)":
+      lab_color: *anthropic_color
+      marker: "<"
+      unique_color: "#8A4ED0"
     "Claude 3.7 Sonnet (Inspect)":
       lab_color: *anthropic_color
       marker: "D"
@@ -127,6 +133,10 @@ plots:
       lab_color: *openai_color
       marker: "o"
       unique_color: "#4AA0E8"
+    "GPT-5.3-Codex":
+      lab_color: *openai_color
+      marker: "H"
+      unique_color: "#3A90D8"
     "o1 (Inspect)":
       lab_color: *openai_color
       marker: "P"
@@ -193,6 +203,7 @@ plots:
         linewidth: 2
 
   legend_order:
+    - Claude Opus 4.6 (Inspect)
     - Claude Opus 4.5 (Inspect)
     - Claude 4 Opus (Inspect)
     - Claude 4.1 Opus (Inspect)
@@ -212,3 +223,32 @@ plots:
     - GPT-5 (Inspect)
     - GPT-5.1-Codex-Max (Inspect)
     - GPT-5.2
+    - GPT-5.3-Codex
+
+  score_over_resource_line:
+    y_params:
+      equal_task_weight:
+        y_col_lims: [0, 1]
+        y_label: "Weighted Success Rate"
+        subtitle: "Weighting Tasks Equally"
+      invsqrt_task_weight:
+        y_col_lims: [0, 1]
+        y_label: "Weighted Success Rate"
+        subtitle: "Weighted by Task Diversity"
+      p50:
+        y_col_lims: [0.5, 1920]
+        y_label: "50% Time Horizon"
+        subtitle: "50% Time Horizon"
+    x_params:
+      generation_cost:
+        by_title: "by Cost"
+        x_label: "Max Cost per Run ($)"
+        x_col_lims: [0.001, 10000]
+      action_count:
+        by_title: "by Actions"
+        x_label: "Max Actions per Run"
+        x_col_lims: [0.001, 10000]
+      tokens_count:
+        by_title: "by Token Count"
+        x_label: "Allowed Tokens per Run"
+        x_col_lims: [1000, 100000000]

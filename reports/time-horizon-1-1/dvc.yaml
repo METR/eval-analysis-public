@@ -29,9 +29,11 @@ stages:
         --output-bootstrap-horizons-file data/wrangled/bootstrap/${key}.csv --n-bootstrap
         ${n_bootstrap}
       deps:
+      - ${code_dir}/horizon/load_runs.py
       - ${code_dir}/horizon/wrangle/bootstrap.py
       - ${code_dir}/horizon/utils/logistic.py
       - ${item.runs_file}
+      - ${item.additional_runs_dep}
       params:
       - fig_params/figs.yaml:
         - figs.wrangle_logistic.${key}
@@ -48,8 +50,10 @@ stages:
         --output-metrics-file metrics/logistic_fits/${key}.yaml
       deps:
       - ${item.runs_file}
+      - ${item.additional_runs_dep}
       - ../../data/external/release_dates.yaml
       - data/wrangled/bootstrap/${key}.csv
+      - ${code_dir}/horizon/load_runs.py
       - ${code_dir}/horizon/wrangle/logistic.py
       - ${code_dir}/horizon/utils/logistic.py
       params:
@@ -65,14 +69,16 @@ stages:
   plot_individual_histograms:
     foreach: ${figs.plot_individual_histograms}
     do:
-      cmd: python -m horizon.plot.individual_histograms --all-runs-file data/raw/runs.jsonl
+      cmd: python -m horizon.plot.individual_histograms --all-runs-file ${item.runs_file}
         --output-file plots/individual_histograms/${key}/histograms.${plot_format}
         --plot-format ${plot_format} --log-level ${log_level} --script-parameter-group
         ${key} --params-file "params.yaml"
       deps:
       - ${item.logistic_file}
-      - data/raw/runs.jsonl
+      - ${item.runs_file}
+      - ${item.additional_runs_dep}
       - matplotlibrc
+      - ${code_dir}/horizon/load_runs.py
       - ${code_dir}/horizon/plot/individual_histograms.py
       - ${code_dir}/horizon/utils/plots.py
       params:
@@ -112,35 +118,32 @@ stages:
           persist: true
       desc: Plot showing horizon growth over time.
   plot_bootstrap_ci:
-    matrix:
-      fig_name:
-      - headline
-      - twitter_headline
-      y_scale:
-      - log
-      - linear
-    cmd: python -m horizon.plot.bootstrap_ci --fig-name ${item.fig_name} --input-file
-      data/wrangled/bootstrap/headline.csv --agent-summaries-file data/wrangled/logistic_fits/headline.csv
-      --release-dates ../../data/external/release_dates.yaml --output-file plots/bootstrap/${item.fig_name}-${item.y_scale}.${plot_format}
-      --log-level ${log_level} --y-scale ${item.y_scale}
-    deps:
-    - ${code_dir}/horizon/plot/bootstrap_ci.py
-    - ${code_dir}/horizon/plot/logistic.py
-    - data/wrangled/bootstrap/headline.csv
-    - data/wrangled/logistic_fits/headline.csv
-    - ../../data/external/release_dates.yaml
-    - matplotlibrc
-    params:
-    - log_level
-    - plot_format
-    - plots
-    - fig_params/figs.yaml:
-      - comparison_color_1
-      - comparison_color_2
-      - figs.plot_logistic_regression.${item.fig_name}
-    plots:
-    - plots/bootstrap/${item.fig_name}-${item.y_scale}.${plot_format}
-    desc: Generate plot of bootstrap confidence intervals
+    foreach:
+      headline: ${figs.plot_logistic_regression.headline}
+      twitter_headline: ${figs.plot_logistic_regression.twitter_headline}
+    do:
+      cmd: python -m horizon.plot.bootstrap_ci --fig-name ${key} --input-file data/wrangled/bootstrap/${item.logistic_file}.csv
+        --agent-summaries-file data/wrangled/logistic_fits/${item.logistic_file}.csv
+        --release-dates ../../data/external/release_dates.yaml --output-file plots/bootstrap/${key}.${plot_format}
+        --log-level ${log_level} --y-scale log
+      deps:
+      - ${code_dir}/horizon/plot/bootstrap_ci.py
+      - ${code_dir}/horizon/plot/logistic.py
+      - data/wrangled/bootstrap/${item.logistic_file}.csv
+      - data/wrangled/logistic_fits/${item.logistic_file}.csv
+      - ../../data/external/release_dates.yaml
+      - matplotlibrc
+      params:
+      - log_level
+      - plot_format
+      - plots
+      - fig_params/figs.yaml:
+        - comparison_color_1
+        - comparison_color_2
+        - figs.plot_logistic_regression.${key}
+      plots:
+      - plots/bootstrap/${key}.${plot_format}
+      desc: Generate plot of bootstrap confidence intervals
   compute_trendline_ci:
     foreach:
       headline_from_2023:
@@ -215,3 +218,43 @@ stages:
     metrics:
     - metrics/compare_trend_headline_latest_agent_test.yaml
     - metrics/compare_max_headline_latest_agent_test.yaml
+  wrangle_score_over_resource_horizon:
+    foreach: ${figs.wrangle_score_over_resource_horizon}
+    do:
+      cmd: python -m horizon.wrangle.score_over_resource_horizon --runs-file data/raw/runs.jsonl
+        --output-file data/wrangled/score_over_resource_horizon/${item.output}.jsonl
+        --x ${item.x} --score-column ${item.score_column} ${item.include_human_flag}
+        --wrangle-params ${item.wrangle_params} --include-best-model --fig-name ${key}
+      deps:
+      - data/raw/runs.jsonl
+      - ${code_dir}/horizon/wrangle/score_over_resource_horizon.py
+      - ${code_dir}/horizon/wrangle/score_over_resource.py
+      - ${code_dir}/horizon/wrangle/logistic.py
+      params:
+      - fig_params/figs.yaml:
+        - figs.wrangle_score_over_resource_horizon.${key}.exclude_agents
+        - figs.wrangle_logistic.ga_rebench
+      outs:
+      - data/wrangled/score_over_resource_horizon/${item.output}.jsonl
+      desc: Wrangle the score over resource data for time horizon y-axis.
+  plot_score_over_resource_horizon:
+    foreach: ${figs.plot_score_over_resource_horizon}
+    do:
+      cmd: python -m horizon.plot.score_over_resource_line --wrangled-resource-file
+        data/wrangled/score_over_resource_horizon/${item.wrangled}.jsonl --output-file
+        plots/success_over_resource_horizon/${item.output_file}.${plot_format} --params-file
+        params.yaml --x ${item.x} --score-column ${item.score_column} --weighting-column
+        ${item.weighting_column} --fig-name ${key} --y-scale ${item.y_scale} --y-lim-lower
+        ${item.y_lim_lower} --y-lim-upper ${item.y_lim_upper}
+      deps:
+      - data/wrangled/score_over_resource_horizon/${item.wrangled}.jsonl
+      - ${code_dir}/horizon/plot/score_over_resource_line.py
+      - ${code_dir}/horizon/utils/plots.py
+      params:
+      - plot_format
+      - plots
+      - fig_params/figs.yaml:
+        - figs.plot_score_over_resource_horizon.${key}.exclude_agents
+      outs:
+      - plots/success_over_resource_horizon/${item.output_file}.${plot_format}
+      desc: Plot showing the score over resource line chart for the horizon.

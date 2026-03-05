@@ -215,14 +215,15 @@ def plot_horizon_graph(
                 **plot_style["error_bar"],
             )
         ax.grid(**plot_style["grid"])
+        style = agent_style.get(agent, agent_style.get("default", {}))
         if marker_override is not None:
             marker = marker_override
         else:
-            marker = agent_style[agent]["marker"]
+            marker = style["marker"]
         scatter_handle = ax.scatter(
             agent_summaries["release_date"].iloc[i],
             y_clipped.iloc[i],
-            color=agent_style[agent]["lab_color"],
+            color=style["lab_color"],
             marker=marker,
             label=agent,
             **plot_style["scatter"],
@@ -352,10 +353,14 @@ def plot_horizon_graph(
     available_agents = [
         agent for agent in plot_params["legend_order"] if agent in legend_labels
     ]
-    # Sort handles and labels based on the filtered order
+    # Sort handles and labels based on the filtered order;
+    # agents not in legend_order are appended at the end
+    max_idx = len(available_agents)
     sorted_pairs = sorted(
         zip(legend_handles, legend_labels),
-        key=lambda pair: available_agents.index(pair[1]),
+        key=lambda pair: available_agents.index(pair[1])
+        if pair[1] in available_agents
+        else max_idx,
     )
     legend_handles, legend_labels = zip(*sorted_pairs)
 
