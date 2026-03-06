@@ -5,27 +5,36 @@ stages:
       data/raw/runs.jsonl --output-bootstrap-horizons-file 
       data/wrangled/bootstrap/headline.csv --n-bootstrap 1000
     deps:
+    - path: ../../src/horizon/load_runs.py
+      hash: md5
+      md5: dc1060094a827042e16ddc4c336f5936
+      size: 1998
     - path: ../../src/horizon/utils/logistic.py
       hash: md5
       md5: ae23e24e9ab314fc28cd59d958f85165
       size: 2485
     - path: ../../src/horizon/wrangle/bootstrap.py
       hash: md5
-      md5: f9395d50909ea3d225eb8c0e7efaf213
-      size: 12018
+      md5: e47348c68043c4334fb46b44e8611999
+      size: 12152
     - path: data/raw/runs.jsonl
       hash: md5
-      md5: 8df649bdb5e94e8b762d528b8b534f9c
-      size: 10707640
+      md5: 0d7aa8717a346d1b4f57bda29372fbf6
+      size: 15008064
+    - path: data/raw/runs.jsonl
+      hash: md5
+      md5: 0d7aa8717a346d1b4f57bda29372fbf6
+      size: 15008064
     params:
       params.yaml:
         n_bootstrap: 1000
       fig_params/figs.yaml:
         figs.wrangle_logistic.headline:
           runs_file: data/raw/runs.jsonl
+          additional_runs_dep: data/raw/runs.jsonl
           weighting: invsqrt_task_weight
           categories: ftr
-          regularization: 0.1
+          regularization: 1e-05
           exclude: []
           success_percents:
           - 50
@@ -34,8 +43,8 @@ stages:
     outs:
     - path: data/wrangled/bootstrap/headline.csv
       hash: md5
-      md5: bd56fc5c39c62806bb0f6c7fdf696cc5
-      size: 592981
+      md5: 36f71641cff00d67da81d6fef5014c3b
+      size: 774825
   wrangle_logistic_regression@headline:
     cmd: python -m horizon.wrangle.logistic --fig-name headline --runs-file 
       data/raw/runs.jsonl --output-logistic-fits-file 
@@ -46,31 +55,40 @@ stages:
     deps:
     - path: ../../data/external/release_dates.yaml
       hash: md5
-      md5: 4fe0fadb5914a33c457f78f6bbc024e9
-      size: 2310
+      md5: ab22e7d1436da09901b454e60a77335e
+      size: 2442
+    - path: ../../src/horizon/load_runs.py
+      hash: md5
+      md5: dc1060094a827042e16ddc4c336f5936
+      size: 1998
     - path: ../../src/horizon/utils/logistic.py
       hash: md5
       md5: ae23e24e9ab314fc28cd59d958f85165
       size: 2485
     - path: ../../src/horizon/wrangle/logistic.py
       hash: md5
-      md5: 77cbb33cf41510ba88f1fab2663d5ebe
-      size: 11133
+      md5: 3beb7fc48a4dc0cd521b2986d08a9b32
+      size: 11316
     - path: data/raw/runs.jsonl
       hash: md5
-      md5: 8df649bdb5e94e8b762d528b8b534f9c
-      size: 10707640
+      md5: 0d7aa8717a346d1b4f57bda29372fbf6
+      size: 15008064
+    - path: data/raw/runs.jsonl
+      hash: md5
+      md5: 0d7aa8717a346d1b4f57bda29372fbf6
+      size: 15008064
     - path: data/wrangled/bootstrap/headline.csv
       hash: md5
-      md5: bd56fc5c39c62806bb0f6c7fdf696cc5
-      size: 592981
+      md5: 36f71641cff00d67da81d6fef5014c3b
+      size: 774825
     params:
       fig_params/figs.yaml:
         figs.wrangle_logistic.headline:
           runs_file: data/raw/runs.jsonl
+          additional_runs_dep: data/raw/runs.jsonl
           weighting: invsqrt_task_weight
           categories: ftr
-          regularization: 0.1
+          regularization: 1e-05
           exclude: []
           success_percents:
           - 50
@@ -79,12 +97,12 @@ stages:
     outs:
     - path: data/wrangled/logistic_fits/headline.csv
       hash: md5
-      md5: d333b474f68bbac9e8034d23374f85ce
-      size: 2971
+      md5: b5c921dee08314b6bf61d0b9cd00a1ca
+      size: 3895
     - path: metrics/logistic_fits/headline.yaml
       hash: md5
-      md5: 3ef22ac4ceb82cb10837c12391f4a26d
-      size: 3768
+      md5: df4714eca67fb953ea734c61b5691b0c
+      size: 4966
   plot_individual_histograms@overlaid:
     cmd: python -m horizon.plot.individual_histograms --all-runs-file 
       data/raw/runs.jsonl --output-file 
@@ -92,22 +110,30 @@ stages:
       --log-level INFO --script-parameter-group overlaid --params-file 
       "params.yaml"
     deps:
+    - path: ../../src/horizon/load_runs.py
+      hash: md5
+      md5: dc1060094a827042e16ddc4c336f5936
+      size: 1998
     - path: ../../src/horizon/plot/individual_histograms.py
       hash: md5
-      md5: cf46f7360675d770c5daccb9622cdf29
-      size: 15468
+      md5: 3619422402ea3add986ed87babf4e82f
+      size: 17959
     - path: ../../src/horizon/utils/plots.py
       hash: md5
       md5: 00deb4fc0dfb155171937c382ea95f9e
       size: 11883
     - path: data/raw/runs.jsonl
       hash: md5
-      md5: 8df649bdb5e94e8b762d528b8b534f9c
-      size: 10707640
+      md5: 0d7aa8717a346d1b4f57bda29372fbf6
+      size: 15008064
+    - path: data/raw/runs.jsonl
+      hash: md5
+      md5: 0d7aa8717a346d1b4f57bda29372fbf6
+      size: 15008064
     - path: data/wrangled/logistic_fits/headline.csv
       hash: md5
-      md5: d333b474f68bbac9e8034d23374f85ce
-      size: 2971
+      md5: b5c921dee08314b6bf61d0b9cd00a1ca
+      size: 3895
     - path: matplotlibrc
       hash: md5
       md5: a6268afa6b0de2d0f934ff95c60851e4
@@ -117,7 +143,7 @@ stages:
         log_level: INFO
         plot_format: png
         plots:
-          suptitle_fontsize: 14
+          suptitle_fontsize: 13
           xlabelpad: 10
           ylabelpad: 10
           ax_label_fontsize: 14
@@ -162,10 +188,18 @@ stages:
               lab_color: '#d97757'
               marker: '*'
               unique_color: '#9C5EDA'
+            Claude 4.1 Opus (Inspect):
+              lab_color: '#d97757'
+              marker: h
+              unique_color: '#A86ED9'
             Claude Opus 4.5 (Inspect):
               lab_color: '#d97757'
               marker: '>'
               unique_color: '#9C5EDA'
+            Claude Opus 4.6 (Inspect):
+              lab_color: '#d97757'
+              marker: <
+              unique_color: '#8A4ED0'
             Claude 3.7 Sonnet (Inspect):
               lab_color: '#d97757'
               marker: D
@@ -190,6 +224,18 @@ stages:
               lab_color: '#18a683'
               marker: p
               unique_color: '#5AB2FA'
+            GPT-5.1-Codex-Max (Inspect):
+              lab_color: '#18a683'
+              marker: '>'
+              unique_color: '#5AB2FA'
+            GPT-5.2:
+              lab_color: '#18a683'
+              marker: o
+              unique_color: '#4AA0E8'
+            GPT-5.3-Codex:
+              lab_color: '#18a683'
+              marker: H
+              unique_color: '#3A90D8'
             o1 (Inspect):
               lab_color: '#18a683'
               marker: P
@@ -253,8 +299,10 @@ stages:
                 alpha: 0.5
                 linewidth: 2
           legend_order:
+          - Claude Opus 4.6 (Inspect)
           - Claude Opus 4.5 (Inspect)
           - Claude 4 Opus (Inspect)
+          - Claude 4.1 Opus (Inspect)
           - Gemini 3 Pro
           - Claude 3.7 Sonnet (Inspect)
           - Claude 3.5 Sonnet (New) (Inspect)
@@ -269,10 +317,54 @@ stages:
           - o3 (Inspect)
           - o1 (Inspect)
           - GPT-5 (Inspect)
+          - GPT-5.1-Codex-Max (Inspect)
+          - GPT-5.2
+          - GPT-5.3-Codex
+          score_over_resource_line:
+            y_params:
+              equal_task_weight:
+                y_col_lims:
+                - 0
+                - 1
+                y_label: Weighted Success Rate
+                subtitle: Weighting Tasks Equally
+              invsqrt_task_weight:
+                y_col_lims:
+                - 0
+                - 1
+                y_label: Weighted Success Rate
+                subtitle: Weighted by Task Diversity
+              p50:
+                y_col_lims:
+                - 0.5
+                - 1920
+                y_label: 50% Time Horizon
+                subtitle: 50% Time Horizon
+            x_params:
+              generation_cost:
+                by_title: by Cost
+                x_label: Max Cost per Run ($)
+                x_col_lims:
+                - 0.001
+                - 10000
+              action_count:
+                by_title: by Actions
+                x_label: Max Actions per Run
+                x_col_lims:
+                - 0.001
+                - 10000
+              tokens_count:
+                by_title: by Token Count
+                x_label: Allowed Tokens per Run
+                x_col_lims:
+                - 1000
+                - 100000000
       fig_params/figs.yaml:
         figs.plot_individual_histograms.overlaid:
           annotate_p50: false
           logistic_file: data/wrangled/logistic_fits/headline.csv
+          runs_file: data/raw/runs.jsonl
+          additional_runs_dep: data/raw/runs.jsonl
           weighting: invsqrt_task_weight
           title: Models are succeeding at increasingly long tasks
           n_subplot_cols: 1
@@ -294,8 +386,8 @@ stages:
     outs:
     - path: plots/individual_histograms/overlaid/histograms.png
       hash: md5
-      md5: 6656c3e8cd34db130c44fdffd5844094
-      size: 89803
+      md5: 9275d391c837b7b082481d0df8728b7a
+      size: 79183
   plot_individual_histograms@default:
     cmd: python -m horizon.plot.individual_histograms --all-runs-file 
       data/raw/runs.jsonl --output-file 
@@ -303,22 +395,30 @@ stages:
       --log-level INFO --script-parameter-group default --params-file 
       "params.yaml"
     deps:
+    - path: ../../src/horizon/load_runs.py
+      hash: md5
+      md5: dc1060094a827042e16ddc4c336f5936
+      size: 1998
     - path: ../../src/horizon/plot/individual_histograms.py
       hash: md5
-      md5: cf46f7360675d770c5daccb9622cdf29
-      size: 15468
+      md5: 3619422402ea3add986ed87babf4e82f
+      size: 17959
     - path: ../../src/horizon/utils/plots.py
       hash: md5
       md5: 00deb4fc0dfb155171937c382ea95f9e
       size: 11883
     - path: data/raw/runs.jsonl
       hash: md5
-      md5: 8df649bdb5e94e8b762d528b8b534f9c
-      size: 10707640
+      md5: 0d7aa8717a346d1b4f57bda29372fbf6
+      size: 15008064
+    - path: data/raw/runs.jsonl
+      hash: md5
+      md5: 0d7aa8717a346d1b4f57bda29372fbf6
+      size: 15008064
     - path: data/wrangled/logistic_fits/headline.csv
       hash: md5
-      md5: d333b474f68bbac9e8034d23374f85ce
-      size: 2971
+      md5: b5c921dee08314b6bf61d0b9cd00a1ca
+      size: 3895
     - path: matplotlibrc
       hash: md5
       md5: a6268afa6b0de2d0f934ff95c60851e4
@@ -328,7 +428,7 @@ stages:
         log_level: INFO
         plot_format: png
         plots:
-          suptitle_fontsize: 14
+          suptitle_fontsize: 13
           xlabelpad: 10
           ylabelpad: 10
           ax_label_fontsize: 14
@@ -373,10 +473,18 @@ stages:
               lab_color: '#d97757'
               marker: '*'
               unique_color: '#9C5EDA'
+            Claude 4.1 Opus (Inspect):
+              lab_color: '#d97757'
+              marker: h
+              unique_color: '#A86ED9'
             Claude Opus 4.5 (Inspect):
               lab_color: '#d97757'
               marker: '>'
               unique_color: '#9C5EDA'
+            Claude Opus 4.6 (Inspect):
+              lab_color: '#d97757'
+              marker: <
+              unique_color: '#8A4ED0'
             Claude 3.7 Sonnet (Inspect):
               lab_color: '#d97757'
               marker: D
@@ -401,6 +509,18 @@ stages:
               lab_color: '#18a683'
               marker: p
               unique_color: '#5AB2FA'
+            GPT-5.1-Codex-Max (Inspect):
+              lab_color: '#18a683'
+              marker: '>'
+              unique_color: '#5AB2FA'
+            GPT-5.2:
+              lab_color: '#18a683'
+              marker: o
+              unique_color: '#4AA0E8'
+            GPT-5.3-Codex:
+              lab_color: '#18a683'
+              marker: H
+              unique_color: '#3A90D8'
             o1 (Inspect):
               lab_color: '#18a683'
               marker: P
@@ -464,8 +584,10 @@ stages:
                 alpha: 0.5
                 linewidth: 2
           legend_order:
+          - Claude Opus 4.6 (Inspect)
           - Claude Opus 4.5 (Inspect)
           - Claude 4 Opus (Inspect)
+          - Claude 4.1 Opus (Inspect)
           - Gemini 3 Pro
           - Claude 3.7 Sonnet (Inspect)
           - Claude 3.5 Sonnet (New) (Inspect)
@@ -480,13 +602,57 @@ stages:
           - o3 (Inspect)
           - o1 (Inspect)
           - GPT-5 (Inspect)
+          - GPT-5.1-Codex-Max (Inspect)
+          - GPT-5.2
+          - GPT-5.3-Codex
+          score_over_resource_line:
+            y_params:
+              equal_task_weight:
+                y_col_lims:
+                - 0
+                - 1
+                y_label: Weighted Success Rate
+                subtitle: Weighting Tasks Equally
+              invsqrt_task_weight:
+                y_col_lims:
+                - 0
+                - 1
+                y_label: Weighted Success Rate
+                subtitle: Weighted by Task Diversity
+              p50:
+                y_col_lims:
+                - 0.5
+                - 1920
+                y_label: 50% Time Horizon
+                subtitle: 50% Time Horizon
+            x_params:
+              generation_cost:
+                by_title: by Cost
+                x_label: Max Cost per Run ($)
+                x_col_lims:
+                - 0.001
+                - 10000
+              action_count:
+                by_title: by Actions
+                x_label: Max Actions per Run
+                x_col_lims:
+                - 0.001
+                - 10000
+              tokens_count:
+                by_title: by Token Count
+                x_label: Allowed Tokens per Run
+                x_col_lims:
+                - 1000
+                - 100000000
       fig_params/figs.yaml:
         figs.plot_individual_histograms.default:
           annotate_p50: true
           logistic_file: data/wrangled/logistic_fits/headline.csv
+          runs_file: data/raw/runs.jsonl
+          additional_runs_dep: data/raw/runs.jsonl
           weighting: invsqrt_task_weight
-          title: Length of tasks AI agents have been able to complete 
-            autonomously
+          title: Success probabilities at different task lengths on 1.1 task 
+            suite
           n_subplot_cols: 3
           horizontal_lines:
           - p_success: 0.5
@@ -504,8 +670,13 @@ stages:
           - o3 (Inspect)
           - o1 (Inspect)
           - GPT-5 (Inspect)
+          - Gemini 3 Pro
+          - GPT-5.1-Codex-Max (Inspect)
+          - Claude Opus 4.6 (Inspect)
           - Claude Opus 4.5 (Inspect)
+          - GPT-5.2
           - Claude 4 Opus (Inspect)
+          - Claude 4.1 Opus (Inspect)
           - Claude 3.7 Sonnet (Inspect)
           - Claude 3.5 Sonnet (New) (Inspect)
           - Claude 3.5 Sonnet (Old) (Inspect)
@@ -515,37 +686,47 @@ stages:
           - GPT-4 1106 (Inspect)
           - o1-preview
           - GPT-4 0314
+          - Gemini 3 Pro
     outs:
     - path: plots/individual_histograms/default/histograms.png
       hash: md5
-      md5: a3e150535f25bc36abe9deda1042e16d
-      size: 605214
+      md5: c993fcddf0e50fca470bdae58a5b467a
+      size: 751616
   wrangle_bootstrap_logistic@ga_rebench:
     cmd: python -m horizon.wrangle.bootstrap --fig-name ga_rebench --runs-file 
       data/raw/runs.jsonl --output-bootstrap-horizons-file 
       data/wrangled/bootstrap/ga_rebench.csv --n-bootstrap 1000
     deps:
+    - path: ../../src/horizon/load_runs.py
+      hash: md5
+      md5: dc1060094a827042e16ddc4c336f5936
+      size: 1998
     - path: ../../src/horizon/utils/logistic.py
       hash: md5
       md5: ae23e24e9ab314fc28cd59d958f85165
       size: 2485
     - path: ../../src/horizon/wrangle/bootstrap.py
       hash: md5
-      md5: f9395d50909ea3d225eb8c0e7efaf213
-      size: 12018
+      md5: e47348c68043c4334fb46b44e8611999
+      size: 12152
     - path: data/raw/runs.jsonl
       hash: md5
-      md5: 8df649bdb5e94e8b762d528b8b534f9c
-      size: 10707640
+      md5: 0d7aa8717a346d1b4f57bda29372fbf6
+      size: 15008064
+    - path: data/raw/runs.jsonl
+      hash: md5
+      md5: 0d7aa8717a346d1b4f57bda29372fbf6
+      size: 15008064
     params:
       params.yaml:
         n_bootstrap: 1000
       fig_params/figs.yaml:
         figs.wrangle_logistic.ga_rebench:
           runs_file: data/raw/runs.jsonl
+          additional_runs_dep: data/raw/runs.jsonl
           weighting: invsqrt_task_weight
           categories: ftr
-          regularization: 0.1
+          regularization: 1e-05
           exclude:
           - SWAA
           success_percents:
@@ -554,8 +735,8 @@ stages:
     outs:
     - path: data/wrangled/bootstrap/ga_rebench.csv
       hash: md5
-      md5: 24ef3c87335c4cdafd1db47a4023da12
-      size: 295655
+      md5: 5419f29113af063d750edbe097ae3dcb
+      size: 387038
   compute_trendline_ci@headline_from_2019:
     cmd: python -m horizon.compute_trendline_ci --input-file 
       data/wrangled/bootstrap/headline.csv --agent-summaries-file 
@@ -606,31 +787,40 @@ stages:
     deps:
     - path: ../../data/external/release_dates.yaml
       hash: md5
-      md5: 4fe0fadb5914a33c457f78f6bbc024e9
-      size: 2310
+      md5: ab22e7d1436da09901b454e60a77335e
+      size: 2442
+    - path: ../../src/horizon/load_runs.py
+      hash: md5
+      md5: dc1060094a827042e16ddc4c336f5936
+      size: 1998
     - path: ../../src/horizon/utils/logistic.py
       hash: md5
       md5: ae23e24e9ab314fc28cd59d958f85165
       size: 2485
     - path: ../../src/horizon/wrangle/logistic.py
       hash: md5
-      md5: 77cbb33cf41510ba88f1fab2663d5ebe
-      size: 11133
+      md5: 3beb7fc48a4dc0cd521b2986d08a9b32
+      size: 11316
     - path: data/raw/runs.jsonl
       hash: md5
-      md5: 8df649bdb5e94e8b762d528b8b534f9c
-      size: 10707640
+      md5: 0d7aa8717a346d1b4f57bda29372fbf6
+      size: 15008064
+    - path: data/raw/runs.jsonl
+      hash: md5
+      md5: 0d7aa8717a346d1b4f57bda29372fbf6
+      size: 15008064
     - path: data/wrangled/bootstrap/ga_rebench.csv
       hash: md5
-      md5: 24ef3c87335c4cdafd1db47a4023da12
-      size: 295655
+      md5: 5419f29113af063d750edbe097ae3dcb
+      size: 387038
     params:
       fig_params/figs.yaml:
         figs.wrangle_logistic.ga_rebench:
           runs_file: data/raw/runs.jsonl
+          additional_runs_dep: data/raw/runs.jsonl
           weighting: invsqrt_task_weight
           categories: ftr
-          regularization: 0.1
+          regularization: 1e-05
           exclude:
           - SWAA
           success_percents:
@@ -639,12 +829,12 @@ stages:
     outs:
     - path: data/wrangled/logistic_fits/ga_rebench.csv
       hash: md5
-      md5: 2f4d4eb2d9e6d9144595e96954d91bf6
-      size: 2491
+      md5: 7defc9457350f4efc517fd0ef383d3ff
+      size: 3272
     - path: metrics/logistic_fits/ga_rebench.yaml
       hash: md5
-      md5: 2f38b95e355b490de3ae8595ed94ece0
-      size: 3764
+      md5: 7c48acaa55c2f69bf749fcb7ff304a5e
+      size: 4961
   compute_trendline_ci@ga_rebench_from_2024:
     cmd: python -m horizon.compute_trendline_ci --input-file 
       data/wrangled/bootstrap/ga_rebench.csv --agent-summaries-file 
@@ -1070,36 +1260,36 @@ stages:
     deps:
     - path: ../../data/external/release_dates.yaml
       hash: md5
-      md5: 4fe0fadb5914a33c457f78f6bbc024e9
-      size: 2310
+      md5: ab22e7d1436da09901b454e60a77335e
+      size: 2442
     - path: ../../src/horizon/compute_trendline_ci.py
       hash: md5
-      md5: c97681ce20f893d1380d8c34effb1693
-      size: 5745
+      md5: e62be19ab0acadb621192b04855c9bea
+      size: 3002
     - path: ../../src/horizon/plot/bootstrap_ci.py
       hash: md5
-      md5: fc9af9ea2befa8ce4e0d8444c1ad4610
-      size: 27855
+      md5: 2fabeaf75cc924d4365108fe9097c7c2
+      size: 33873
     - path: ../../src/horizon/plot/logistic.py
       hash: md5
-      md5: ea59a86b905d807439c509f9b18cc9a8
-      size: 23052
+      md5: ef1ab4210b2eb452311a3337d1372198
+      size: 24388
     - path: data/wrangled/bootstrap/headline.csv
       hash: md5
-      md5: bd56fc5c39c62806bb0f6c7fdf696cc5
-      size: 592981
+      md5: 36f71641cff00d67da81d6fef5014c3b
+      size: 774825
     - path: data/wrangled/logistic_fits/headline.csv
       hash: md5
-      md5: d333b474f68bbac9e8034d23374f85ce
-      size: 2971
+      md5: b5c921dee08314b6bf61d0b9cd00a1ca
+      size: 3895
     params:
       params.yaml:
         log_level: INFO
     outs:
     - path: metrics/trendline_ci/original_overtime_from_2024.yaml
       hash: md5
-      md5: cf134834036566bd50f781809436b3c3
-      size: 420
+      md5: 40e225a273d3c9650287bd3ada07e912
+      size: 421
   plot_bootstrap_ci@headline-linear:
     cmd: python -m horizon.plot.bootstrap_ci --fig-name headline --input-file 
       data/wrangled/bootstrap/headline.csv --agent-summaries-file 
@@ -1463,36 +1653,36 @@ stages:
     deps:
     - path: ../../data/external/release_dates.yaml
       hash: md5
-      md5: 4fe0fadb5914a33c457f78f6bbc024e9
-      size: 2310
+      md5: ab22e7d1436da09901b454e60a77335e
+      size: 2442
     - path: ../../src/horizon/compute_trendline_ci.py
       hash: md5
-      md5: c97681ce20f893d1380d8c34effb1693
-      size: 5745
+      md5: e62be19ab0acadb621192b04855c9bea
+      size: 3002
     - path: ../../src/horizon/plot/bootstrap_ci.py
       hash: md5
-      md5: fc9af9ea2befa8ce4e0d8444c1ad4610
-      size: 27855
+      md5: 2fabeaf75cc924d4365108fe9097c7c2
+      size: 33873
     - path: ../../src/horizon/plot/logistic.py
       hash: md5
-      md5: ea59a86b905d807439c509f9b18cc9a8
-      size: 23052
+      md5: ef1ab4210b2eb452311a3337d1372198
+      size: 24388
     - path: data/wrangled/bootstrap/headline.csv
       hash: md5
-      md5: bd56fc5c39c62806bb0f6c7fdf696cc5
-      size: 592981
+      md5: 36f71641cff00d67da81d6fef5014c3b
+      size: 774825
     - path: data/wrangled/logistic_fits/headline.csv
       hash: md5
-      md5: d333b474f68bbac9e8034d23374f85ce
-      size: 2971
+      md5: b5c921dee08314b6bf61d0b9cd00a1ca
+      size: 3895
     params:
       params.yaml:
         log_level: INFO
     outs:
     - path: metrics/trendline_ci/headline_from_2023.yaml
       hash: md5
-      md5: 5fc32bc6b7bb89aacdac037f943e1392
-      size: 509
+      md5: 0943baf0e513b6601036232af1fec3d7
+      size: 548
   plot_bootstrap_ci@headline-log:
     cmd: python -m horizon.plot.bootstrap_ci --fig-name headline --input-file 
       data/wrangled/bootstrap/headline.csv --agent-summaries-file 
@@ -1759,35 +1949,35 @@ stages:
     deps:
     - path: ../../data/external/release_dates.yaml
       hash: md5
-      md5: 4fe0fadb5914a33c457f78f6bbc024e9
-      size: 2310
+      md5: ab22e7d1436da09901b454e60a77335e
+      size: 2442
     - path: ../../src/horizon/compute_trendline_ci.py
       hash: md5
-      md5: c97681ce20f893d1380d8c34effb1693
-      size: 5745
+      md5: e62be19ab0acadb621192b04855c9bea
+      size: 3002
     - path: ../../src/horizon/plot/bootstrap_ci.py
       hash: md5
-      md5: fc9af9ea2befa8ce4e0d8444c1ad4610
-      size: 27855
+      md5: 2fabeaf75cc924d4365108fe9097c7c2
+      size: 33873
     - path: ../../src/horizon/plot/logistic.py
       hash: md5
-      md5: ea59a86b905d807439c509f9b18cc9a8
-      size: 23052
+      md5: ef1ab4210b2eb452311a3337d1372198
+      size: 24388
     - path: data/wrangled/bootstrap/headline.csv
       hash: md5
-      md5: bd56fc5c39c62806bb0f6c7fdf696cc5
-      size: 592981
+      md5: 36f71641cff00d67da81d6fef5014c3b
+      size: 774825
     - path: data/wrangled/logistic_fits/headline.csv
       hash: md5
-      md5: d333b474f68bbac9e8034d23374f85ce
-      size: 2971
+      md5: b5c921dee08314b6bf61d0b9cd00a1ca
+      size: 3895
     params:
       params.yaml:
         log_level: INFO
     outs:
     - path: metrics/trendline_ci/original_overtime.yaml
       hash: md5
-      md5: 09b40a7847d5003693a49022fbc3965c
+      md5: a049d67ad21001d56b4a44232fb299e3
       size: 433
   generate_benchmark_results:
     cmd: python -m horizon.generate_benchmark_results --agent-summaries-file 
@@ -1797,36 +1987,42 @@ stages:
       --output-metrics-file metrics/benchmark_results.yaml --benchmark-name 
       METR-Horizon-v1.1 --benchmark-long-tasks-version 
       799cc9c4b4483a93fc3445623a49ea1bd74fdeb2 --benchmark-swaa-version 
-      f6cc84052e2a79dd540766c8a1b15ff399696371
+      f6cc84052e2a79dd540766c8a1b15ff399696371 --benchmark-results-to-stitch 
+      ../time-horizon-1-0/metrics/benchmark_results.yaml --model-names-to-stitch
+      gpt2,davinci_002,gpt_3_5_turbo_instruct
     deps:
     - path: ../../data/external/release_dates.yaml
       hash: md5
-      md5: 4fe0fadb5914a33c457f78f6bbc024e9
-      size: 2310
+      md5: ab22e7d1436da09901b454e60a77335e
+      size: 2442
     - path: ../../src/horizon/compute_trendline_ci.py
       hash: md5
-      md5: c97681ce20f893d1380d8c34effb1693
-      size: 5745
+      md5: e62be19ab0acadb621192b04855c9bea
+      size: 3002
     - path: ../../src/horizon/generate_benchmark_results.py
       hash: md5
-      md5: 565650ada586df1790e0b01c9fe23b4f
-      size: 10374
+      md5: 010fd1b4c9aad0476d47a9bb2fad5a3b
+      size: 13530
     - path: ../../src/horizon/plot/bootstrap_ci.py
       hash: md5
-      md5: fc9af9ea2befa8ce4e0d8444c1ad4610
-      size: 27855
+      md5: 2fabeaf75cc924d4365108fe9097c7c2
+      size: 33873
+    - path: ../time-horizon-1-0/metrics/benchmark_results.yaml
+      hash: md5
+      md5: d6e1b65df3fe7e9d11d80603248f2fd4
+      size: 14328
     - path: data/raw/runs.jsonl
       hash: md5
-      md5: 8df649bdb5e94e8b762d528b8b534f9c
-      size: 10707640
+      md5: 0d7aa8717a346d1b4f57bda29372fbf6
+      size: 15008064
     - path: data/wrangled/bootstrap/headline.csv
       hash: md5
-      md5: bd56fc5c39c62806bb0f6c7fdf696cc5
-      size: 592981
+      md5: 36f71641cff00d67da81d6fef5014c3b
+      size: 774825
     - path: data/wrangled/logistic_fits/headline.csv
       hash: md5
-      md5: d333b474f68bbac9e8034d23374f85ce
-      size: 2971
+      md5: b5c921dee08314b6bf61d0b9cd00a1ca
+      size: 3895
     params:
       params.yaml:
         benchmark:
@@ -1836,8 +2032,8 @@ stages:
     outs:
     - path: metrics/benchmark_results.yaml
       hash: md5
-      md5: b4d5a142374b43a602c78e8adf345127
-      size: 10145
+      md5: 2edc8479d0d0c1e45c2252782fac1273
+      size: 14210
   compare_trend:
     cmd: python -m horizon.compare_trend --bootstrap-results-file 
       data/wrangled/bootstrap/headline.csv --release-dates-file 
@@ -1848,31 +2044,36 @@ stages:
     deps:
     - path: ../../data/external/release_dates.yaml
       hash: md5
-      md5: 4fe0fadb5914a33c457f78f6bbc024e9
-      size: 2310
+      md5: ab22e7d1436da09901b454e60a77335e
+      size: 2442
     - path: ../../src/horizon/compare_trend.py
       hash: md5
       md5: cde18384eb4e1bffdda4ca9f2a95bc72
       size: 24087
     - path: data/wrangled/bootstrap/headline.csv
       hash: md5
-      md5: bd56fc5c39c62806bb0f6c7fdf696cc5
-      size: 592981
+      md5: 36f71641cff00d67da81d6fef5014c3b
+      size: 774825
     params:
       fig_params/figs.yaml:
         figs.compare_trend:
-          exclude_agents: []
-          exclude_agents_from_fit: []
+          exclude_agents:
+          - Claude 3 Opus (Inspect)
+          - GPT-4 Turbo (Inspect)
+          - Claude 4 Opus (Inspect)
+          - GPT-5.1-Codex-Max (Inspect)
+          - Claude 4.1 Opus (Inspect)
+          exclude_agents_from_all_fits: []
           confidence_level: 0.95
     outs:
     - path: metrics/compare_max_headline_latest_agent_test.yaml
       hash: md5
-      md5: 43b9aeb14e5dce379d8326a74f8c3867
-      size: 773
+      md5: ba648cba22d780c47342f7f07cf85208
+      size: 1465
     - path: metrics/compare_trend_headline_latest_agent_test.yaml
       hash: md5
-      md5: 6767c5acf9a3043907cdd01e974453a7
-      size: 850
+      md5: b211367a92a67460fa4fefa15c4d5d4a
+      size: 1649
   plot_logistic_regression@double_line_all_data_retrodict_excluding_swaa:
     cmd: python -m horizon.plot.logistic --input-file 
       data/wrangled/logistic_fits/headline.csv --runs-file data/raw/runs.jsonl 
@@ -1883,24 +2084,24 @@ stages:
     deps:
     - path: ../../data/external/release_dates.yaml
       hash: md5
-      md5: 4fe0fadb5914a33c457f78f6bbc024e9
-      size: 2310
+      md5: ab22e7d1436da09901b454e60a77335e
+      size: 2442
     - path: ../../src/horizon/plot/logistic.py
       hash: md5
-      md5: ea59a86b905d807439c509f9b18cc9a8
-      size: 23052
+      md5: ef1ab4210b2eb452311a3337d1372198
+      size: 24388
     - path: ../../src/horizon/utils/plots.py
       hash: md5
       md5: 00deb4fc0dfb155171937c382ea95f9e
       size: 11883
     - path: data/raw/runs.jsonl
       hash: md5
-      md5: 8df649bdb5e94e8b762d528b8b534f9c
-      size: 10707640
+      md5: 0d7aa8717a346d1b4f57bda29372fbf6
+      size: 15008064
     - path: data/wrangled/logistic_fits/headline.csv
       hash: md5
-      md5: d333b474f68bbac9e8034d23374f85ce
-      size: 2971
+      md5: b5c921dee08314b6bf61d0b9cd00a1ca
+      size: 3895
     - path: matplotlibrc
       hash: md5
       md5: a6268afa6b0de2d0f934ff95c60851e4
@@ -1910,7 +2111,7 @@ stages:
         log_level: INFO
         plot_format: png
         plots:
-          suptitle_fontsize: 14
+          suptitle_fontsize: 13
           xlabelpad: 10
           ylabelpad: 10
           ax_label_fontsize: 14
@@ -1955,10 +2156,18 @@ stages:
               lab_color: '#d97757'
               marker: '*'
               unique_color: '#9C5EDA'
+            Claude 4.1 Opus (Inspect):
+              lab_color: '#d97757'
+              marker: h
+              unique_color: '#A86ED9'
             Claude Opus 4.5 (Inspect):
               lab_color: '#d97757'
               marker: '>'
               unique_color: '#9C5EDA'
+            Claude Opus 4.6 (Inspect):
+              lab_color: '#d97757'
+              marker: <
+              unique_color: '#8A4ED0'
             Claude 3.7 Sonnet (Inspect):
               lab_color: '#d97757'
               marker: D
@@ -1983,6 +2192,18 @@ stages:
               lab_color: '#18a683'
               marker: p
               unique_color: '#5AB2FA'
+            GPT-5.1-Codex-Max (Inspect):
+              lab_color: '#18a683'
+              marker: '>'
+              unique_color: '#5AB2FA'
+            GPT-5.2:
+              lab_color: '#18a683'
+              marker: o
+              unique_color: '#4AA0E8'
+            GPT-5.3-Codex:
+              lab_color: '#18a683'
+              marker: H
+              unique_color: '#3A90D8'
             o1 (Inspect):
               lab_color: '#18a683'
               marker: P
@@ -2046,8 +2267,10 @@ stages:
                 alpha: 0.5
                 linewidth: 2
           legend_order:
+          - Claude Opus 4.6 (Inspect)
           - Claude Opus 4.5 (Inspect)
           - Claude 4 Opus (Inspect)
+          - Claude 4.1 Opus (Inspect)
           - Gemini 3 Pro
           - Claude 3.7 Sonnet (Inspect)
           - Claude 3.5 Sonnet (New) (Inspect)
@@ -2062,6 +2285,48 @@ stages:
           - o3 (Inspect)
           - o1 (Inspect)
           - GPT-5 (Inspect)
+          - GPT-5.1-Codex-Max (Inspect)
+          - GPT-5.2
+          - GPT-5.3-Codex
+          score_over_resource_line:
+            y_params:
+              equal_task_weight:
+                y_col_lims:
+                - 0
+                - 1
+                y_label: Weighted Success Rate
+                subtitle: Weighting Tasks Equally
+              invsqrt_task_weight:
+                y_col_lims:
+                - 0
+                - 1
+                y_label: Weighted Success Rate
+                subtitle: Weighted by Task Diversity
+              p50:
+                y_col_lims:
+                - 0.5
+                - 1920
+                y_label: 50% Time Horizon
+                subtitle: 50% Time Horizon
+            x_params:
+              generation_cost:
+                by_title: by Cost
+                x_label: Max Cost per Run ($)
+                x_col_lims:
+                - 0.001
+                - 10000
+              action_count:
+                by_title: by Actions
+                x_label: Max Actions per Run
+                x_col_lims:
+                - 0.001
+                - 10000
+              tokens_count:
+                by_title: by Token Count
+                x_label: Allowed Tokens per Run
+                x_col_lims:
+                - 1000
+                - 100000000
       fig_params/figs.yaml:
         figs.plot_logistic_regression.double_line_all_data_retrodict_excluding_swaa:
           runs_file: data/raw/runs.jsonl
@@ -2083,8 +2348,13 @@ stages:
               linewidth: 2
               alpha: 0.6
               linestyle: solid
-            exclude_agents: &id007 []
-            exclude_agents_from_fit: &id008 []
+            exclude_agents: &id007
+            - Claude 3 Opus (Inspect)
+            - GPT-4 Turbo (Inspect)
+            - Claude 4 Opus (Inspect)
+            - GPT-5.1-Codex-Max (Inspect)
+            - Claude 4.1 Opus (Inspect)
+            exclude_agents_from_all_fits: &id008 []
           - fit_type: exponential
             skip_annotation: false
             caption: Fit on non-SWAA tasks, 2023-2025 models
@@ -2100,17 +2370,17 @@ stages:
               linestyle: solid
           exclude: []
           exclude_agents: *id007
-          exclude_agents_from_fit: *id008
+          exclude_agents_from_all_fits: *id008
           lower_y_lim: 0.0083333
-          upper_y_lim: 960
+          upper_y_lim: 1920
           x_lim_start: '2018-09-03'
           x_lim_end: '2025-12-31'
           show_y_label: true
     outs:
     - path: plots/logistic/double_line_all_data_retrodict_excluding_swaa.png
       hash: md5
-      md5: 800aced32698e7d0d4e7a2e22166f75e
-      size: 220019
+      md5: 4401268e397468cb3fe4155f96523011
+      size: 174699
   compute_trendline_ci@original_overtime_from_2023:
     cmd: python -m horizon.compute_trendline_ci --input-file 
       data/wrangled/bootstrap/headline.csv --agent-summaries-file 
@@ -2121,35 +2391,35 @@ stages:
     deps:
     - path: ../../data/external/release_dates.yaml
       hash: md5
-      md5: 4fe0fadb5914a33c457f78f6bbc024e9
-      size: 2310
+      md5: ab22e7d1436da09901b454e60a77335e
+      size: 2442
     - path: ../../src/horizon/compute_trendline_ci.py
       hash: md5
-      md5: c97681ce20f893d1380d8c34effb1693
-      size: 5745
+      md5: e62be19ab0acadb621192b04855c9bea
+      size: 3002
     - path: ../../src/horizon/plot/bootstrap_ci.py
       hash: md5
-      md5: fc9af9ea2befa8ce4e0d8444c1ad4610
-      size: 27855
+      md5: 2fabeaf75cc924d4365108fe9097c7c2
+      size: 33873
     - path: ../../src/horizon/plot/logistic.py
       hash: md5
-      md5: ea59a86b905d807439c509f9b18cc9a8
-      size: 23052
+      md5: ef1ab4210b2eb452311a3337d1372198
+      size: 24388
     - path: data/wrangled/bootstrap/headline.csv
       hash: md5
-      md5: bd56fc5c39c62806bb0f6c7fdf696cc5
-      size: 592981
+      md5: 36f71641cff00d67da81d6fef5014c3b
+      size: 774825
     - path: data/wrangled/logistic_fits/headline.csv
       hash: md5
-      md5: d333b474f68bbac9e8034d23374f85ce
-      size: 2971
+      md5: b5c921dee08314b6bf61d0b9cd00a1ca
+      size: 3895
     params:
       params.yaml:
         log_level: INFO
     outs:
     - path: metrics/trendline_ci/original_overtime_from_2023.yaml
       hash: md5
-      md5: 61a1bc638f75968d187b4b173dd04e83
+      md5: 91af0020b9e8a63dfb626737a124d577
       size: 433
   plot_bootstrap_ci@twitter_headline-linear:
     cmd: python -m horizon.plot.bootstrap_ci --fig-name twitter_headline 
@@ -2857,38 +3127,44 @@ stages:
       size: 3614
     - path: data/raw/runs.jsonl
       hash: md5
-      md5: 8df649bdb5e94e8b762d528b8b534f9c
-      size: 10707640
+      md5: 0d7aa8717a346d1b4f57bda29372fbf6
+      size: 15008064
     params:
       params.yaml:
         agent_summary.agents:
+        - GPT-5.2
+        - Gemini 3 Pro
         - Claude 3 Opus (Inspect)
         - Claude 3.5 Sonnet (Old) (Inspect)
         - Claude 3.5 Sonnet (New) (Inspect)
         - Claude 3.7 Sonnet (Inspect)
         - Claude 4 Opus (Inspect)
+        - Claude 4.1 Opus (Inspect)
         - Claude Opus 4.5 (Inspect)
+        - Claude Opus 4.6 (Inspect)
         - GPT-4 1106 (Inspect)
         - GPT-4o (Inspect)
         - GPT-4 Turbo (Inspect)
         - o3 (Inspect)
         - o1 (Inspect)
         - GPT-5 (Inspect)
+        - GPT-5.1-Codex-Max (Inspect)
+        - GPT-5.3-Codex
         - o1-preview
         - GPT-4 0314
     outs:
     - path: metrics/agent_summary.csv
       hash: md5
-      md5: e3ffb610b89f16094a87f4c70aede8cc
-      size: 13753
+      md5: b511bbc718c543b69d86d196c3fbfedf
+      size: 16714
     - path: metrics/agent_summary_averages.csv
       hash: md5
-      md5: aa5aeaaec06f15d6883a1c1dc0e301ca
-      size: 19822
+      md5: e73e897cb38ca87f77c75503df6f44fe
+      size: 25606
     - path: metrics/agent_summary_nonzero.csv
       hash: md5
-      md5: 43301853d0ff9a677aff049c5d0a02ce
-      size: 12112
+      md5: 589fff4a7fe565524fd29a5a6bfec597
+      size: 15478
   compare_doubling_times_vs_th_1_0:
     cmd: python -m horizon.plot.compare_doubling_times --bootstrap-file-1 
       data/wrangled/bootstrap/headline.csv --agent-summaries-file-1 
@@ -2956,24 +3232,24 @@ stages:
     deps:
     - path: ../../data/external/release_dates.yaml
       hash: md5
-      md5: 4fe0fadb5914a33c457f78f6bbc024e9
-      size: 2310
+      md5: ab22e7d1436da09901b454e60a77335e
+      size: 2442
     - path: ../../src/horizon/plot/logistic.py
       hash: md5
-      md5: ea59a86b905d807439c509f9b18cc9a8
-      size: 23052
+      md5: ef1ab4210b2eb452311a3337d1372198
+      size: 24388
     - path: ../../src/horizon/utils/plots.py
       hash: md5
       md5: 00deb4fc0dfb155171937c382ea95f9e
       size: 11883
     - path: data/raw/runs.jsonl
       hash: md5
-      md5: 8df649bdb5e94e8b762d528b8b534f9c
-      size: 10707640
+      md5: 0d7aa8717a346d1b4f57bda29372fbf6
+      size: 15008064
     - path: data/wrangled/logistic_fits/headline.csv
       hash: md5
-      md5: d333b474f68bbac9e8034d23374f85ce
-      size: 2971
+      md5: b5c921dee08314b6bf61d0b9cd00a1ca
+      size: 3895
     - path: matplotlibrc
       hash: md5
       md5: a6268afa6b0de2d0f934ff95c60851e4
@@ -2983,7 +3259,7 @@ stages:
         log_level: INFO
         plot_format: png
         plots:
-          suptitle_fontsize: 14
+          suptitle_fontsize: 13
           xlabelpad: 10
           ylabelpad: 10
           ax_label_fontsize: 14
@@ -3028,10 +3304,18 @@ stages:
               lab_color: '#d97757'
               marker: '*'
               unique_color: '#9C5EDA'
+            Claude 4.1 Opus (Inspect):
+              lab_color: '#d97757'
+              marker: h
+              unique_color: '#A86ED9'
             Claude Opus 4.5 (Inspect):
               lab_color: '#d97757'
               marker: '>'
               unique_color: '#9C5EDA'
+            Claude Opus 4.6 (Inspect):
+              lab_color: '#d97757'
+              marker: <
+              unique_color: '#8A4ED0'
             Claude 3.7 Sonnet (Inspect):
               lab_color: '#d97757'
               marker: D
@@ -3056,6 +3340,18 @@ stages:
               lab_color: '#18a683'
               marker: p
               unique_color: '#5AB2FA'
+            GPT-5.1-Codex-Max (Inspect):
+              lab_color: '#18a683'
+              marker: '>'
+              unique_color: '#5AB2FA'
+            GPT-5.2:
+              lab_color: '#18a683'
+              marker: o
+              unique_color: '#4AA0E8'
+            GPT-5.3-Codex:
+              lab_color: '#18a683'
+              marker: H
+              unique_color: '#3A90D8'
             o1 (Inspect):
               lab_color: '#18a683'
               marker: P
@@ -3119,8 +3415,10 @@ stages:
                 alpha: 0.5
                 linewidth: 2
           legend_order:
+          - Claude Opus 4.6 (Inspect)
           - Claude Opus 4.5 (Inspect)
           - Claude 4 Opus (Inspect)
+          - Claude 4.1 Opus (Inspect)
           - Gemini 3 Pro
           - Claude 3.7 Sonnet (Inspect)
           - Claude 3.5 Sonnet (New) (Inspect)
@@ -3135,17 +3433,61 @@ stages:
           - o3 (Inspect)
           - o1 (Inspect)
           - GPT-5 (Inspect)
+          - GPT-5.1-Codex-Max (Inspect)
+          - GPT-5.2
+          - GPT-5.3-Codex
+          score_over_resource_line:
+            y_params:
+              equal_task_weight:
+                y_col_lims:
+                - 0
+                - 1
+                y_label: Weighted Success Rate
+                subtitle: Weighting Tasks Equally
+              invsqrt_task_weight:
+                y_col_lims:
+                - 0
+                - 1
+                y_label: Weighted Success Rate
+                subtitle: Weighted by Task Diversity
+              p50:
+                y_col_lims:
+                - 0.5
+                - 1920
+                y_label: 50% Time Horizon
+                subtitle: 50% Time Horizon
+            x_params:
+              generation_cost:
+                by_title: by Cost
+                x_label: Max Cost per Run ($)
+                x_col_lims:
+                - 0.001
+                - 10000
+              action_count:
+                by_title: by Actions
+                x_label: Max Actions per Run
+                x_col_lims:
+                - 0.001
+                - 10000
+              tokens_count:
+                by_title: by Token Count
+                x_label: Allowed Tokens per Run
+                x_col_lims:
+                - 1000
+                - 100000000
       fig_params/figs.yaml:
         figs.plot_logistic_regression.p80:
           runs_file: data/raw/runs.jsonl
+          additional_runs_dep: data/raw/runs.jsonl
           weighting: invsqrt_task_weight
           categories: ftr
-          regularization: 0.1
+          regularization: 1e-05
           exclude: []
           success_percents:
           - 50
           - 80
           confidence_level: 0.95
+          logistic_file: headline
           trendlines:
           - fit_type: exponential
             caption:
@@ -3171,10 +3513,10 @@ stages:
               linestyle: dashed
           include_task_distribution: none
           individual_labels: true
-          x_lim_start: '2018-09-03'
-          x_lim_end: '2027-01-01'
+          x_lim_start: '2022-11-01'
+          x_lim_end: '2026-07-01'
           lower_y_lim: 0.0083333
-          upper_y_lim: 960
+          upper_y_lim: 1920
           linear_overrides:
             show_minor_xticks: false
             lower_y_lim: 0
@@ -3183,8 +3525,13 @@ stages:
                 error_bar:
                   alpha: 0.5
                   capsize: 0
-          exclude_agents: []
-          exclude_agents_from_fit: []
+          exclude_agents:
+          - Claude 3 Opus (Inspect)
+          - GPT-4 Turbo (Inspect)
+          - Claude 4 Opus (Inspect)
+          - GPT-5.1-Codex-Max (Inspect)
+          - Claude 4.1 Opus (Inspect)
+          exclude_agents_from_all_fits: []
           title: Length of tasks AI agents have been able to complete 
             autonomously
           subtitle: 80% success rate
@@ -3195,6 +3542,8 @@ stages:
             GPT-4 0314: GPT-4
             o1-preview: o1-preview
             Claude 4 Opus (Inspect): Opus 4 (Inspect)
+            Claude 4.1 Opus (Inspect): Opus 4.1 (Inspect)
+            Claude Opus 4.6 (Inspect): Opus 4.6 (Inspect)
             Claude 3.7 Sonnet (Inspect): Sonnet 3.7 (Inspect)
             Claude 3.5 Sonnet (New) (Inspect): Sonnet 3.6 (Inspect)
             Claude 3.5 Sonnet (Old) (Inspect): Sonnet 3.5 (Inspect)
@@ -3206,11 +3555,2386 @@ stages:
             GPT-4 Turbo (Inspect): GPT 4 Turbo
             GPT-4 1106 (Inspect): GPT 4 Nov '23
             GPT-2 (Inspect): GPT 2
+            GPT-5.1-Codex-Max (Inspect): GPT-5.1-Codex-Max
+            Claude Opus 4.5 (Inspect): Claude Opus 4.5
+            GPT-5.2: GPT-5.2 (high)
           show_y_label: true
-          logistic_file: headline
           success_percent: 80
     outs:
     - path: plots/logistic/p80.png
       hash: md5
-      md5: 01fbd977a0b4e73adbc6faa6cd16ed09
-      size: 213715
+      md5: 9a3db974689678ba608fa3aeab0d1eb7
+      size: 165949
+  wrangle_score_over_resource_horizon@tokens_count:
+    cmd: python -m horizon.wrangle.score_over_resource_horizon --runs-file 
+      data/raw/runs.jsonl --output-file 
+      data/wrangled/score_over_resource_horizon/ga_rebench_tokens.jsonl --x 
+      tokens_count --score-column score_binarized  --wrangle-params ga_rebench 
+      --include-best-model --fig-name tokens_count
+    deps:
+    - path: ../../src/horizon/wrangle/logistic.py
+      hash: md5
+      md5: 3beb7fc48a4dc0cd521b2986d08a9b32
+      size: 11316
+    - path: ../../src/horizon/wrangle/score_over_resource.py
+      hash: md5
+      md5: 10289ed646bbe9af2f9ad572a77b7dc8
+      size: 11855
+    - path: ../../src/horizon/wrangle/score_over_resource_horizon.py
+      hash: md5
+      md5: 78c5bda4a7458fdb7d2abbfe5b9451d4
+      size: 6379
+    - path: data/raw/runs.jsonl
+      hash: md5
+      md5: 0d7aa8717a346d1b4f57bda29372fbf6
+      size: 15008064
+    params:
+      fig_params/figs.yaml:
+        figs.wrangle_logistic.ga_rebench:
+          runs_file: data/raw/runs.jsonl
+          additional_runs_dep: data/raw/runs.jsonl
+          weighting: invsqrt_task_weight
+          categories: ftr
+          regularization: 1e-05
+          exclude:
+          - SWAA
+          success_percents:
+          - 50
+          confidence_level: 0.95
+        figs.wrangle_score_over_resource_horizon.tokens_count.exclude_agents:
+        - GPT-4 0125
+        - DeepSeek-R1-0528
+        - DeepSeek-V3-0324
+        - DeepSeek-R1
+        - DeepSeek-V3
+        - Qwen2.5-72B
+        - Qwen2-72B
+        - o4-mini
+        - Claude Sonnet 4.5
+        - Claude 4.1 Opus
+        - Claude 4 Opus
+        - Claude 4 Sonnet
+        - Claude 3 Opus
+        - GPT-4 Turbo
+        - Claude 3.5 Sonnet (Old)
+        - GPT-2
+        - davinci-002 (GPT-3)
+        - GPT-4 1106
+        - gpt-3.5-turbo-instruct
+        - GPT-4 0314
+        - human
+        - o3 (Inspect)
+        - Claude 4 Opus (Inspect)
+        - Claude 4.1 Opus (Inspect)
+        - Claude 3.7 Sonnet (Inspect)
+        - o1 (Inspect)
+        - o1-preview
+        - Claude 3.5 Sonnet (New) (Inspect)
+        - Claude 3.5 Sonnet (Old) (Inspect)
+        - GPT-4o (Inspect)
+        - GPT-4 1106 (Inspect)
+        - GPT-4 Turbo (Inspect)
+        - Claude 3 Opus (Inspect)
+        - human
+    outs:
+    - path: data/wrangled/score_over_resource_horizon/ga_rebench_tokens.jsonl
+      hash: md5
+      md5: e06a37a16da0001e9291846001c438c2
+      size: 2272834
+  plot_score_over_resource_horizon@log_tokens:
+    cmd: python -m horizon.plot.score_over_resource_line 
+      --wrangled-resource-file 
+      data/wrangled/score_over_resource_horizon/ga_rebench_tokens.jsonl 
+      --output-file 
+      plots/success_over_resource_horizon/ga_rebench_tokens_log.png 
+      --params-file params.yaml --x tokens_count --score-column p50 
+      --weighting-column p50 --fig-name log_tokens --y-scale log --y-lim-lower 
+      0.7 --y-lim-upper 1920
+    deps:
+    - path: ../../src/horizon/plot/score_over_resource_line.py
+      hash: md5
+      md5: 397c62d64b04dc1c579feb765620a65b
+      size: 6300
+    - path: ../../src/horizon/utils/plots.py
+      hash: md5
+      md5: 00deb4fc0dfb155171937c382ea95f9e
+      size: 11883
+    - path: data/wrangled/score_over_resource_horizon/ga_rebench_tokens.jsonl
+      hash: md5
+      md5: e06a37a16da0001e9291846001c438c2
+      size: 2272834
+    params:
+      params.yaml:
+        plot_format: png
+        plots:
+          suptitle_fontsize: 13
+          xlabelpad: 10
+          ylabelpad: 10
+          ax_label_fontsize: 14
+          title_fontsize: 16
+          annotation_fontsize: 14
+          xtick_labelsize: 14
+          ytick_labelsize: 14
+          legend_fontsize: 14
+          task_distribution_styling:
+            hist:
+              edgecolor: '#a6a6a6'
+              color: '#d4d4d4'
+              alpha: 1
+              linewidth: 1
+              zorder: 50
+            grid: &id012
+              which: major
+              linestyle: '-'
+              alpha: 0.2
+              color: grey
+          scatter_styling:
+            error_bar:
+              color: grey
+              fmt: none
+              capsize: 2
+              alpha: 1
+              zorder: 9
+              linewidth: 1.5
+              capthick: 1.5
+            grid: *id012
+            scatter:
+              s: 150
+              edgecolor: black
+              linewidth: 0.5
+              zorder: 10
+          agent_styling:
+            Gemini 3 Pro:
+              lab_color: '#4285F4'
+              marker: p
+              unique_color: '#4285F4'
+            Claude 4 Opus (Inspect):
+              lab_color: '#d97757'
+              marker: '*'
+              unique_color: '#9C5EDA'
+            Claude 4.1 Opus (Inspect):
+              lab_color: '#d97757'
+              marker: h
+              unique_color: '#A86ED9'
+            Claude Opus 4.5 (Inspect):
+              lab_color: '#d97757'
+              marker: '>'
+              unique_color: '#9C5EDA'
+            Claude Opus 4.6 (Inspect):
+              lab_color: '#d97757'
+              marker: <
+              unique_color: '#8A4ED0'
+            Claude 3.7 Sonnet (Inspect):
+              lab_color: '#d97757'
+              marker: D
+              unique_color: '#9C5EDA'
+            Claude 3.5 Sonnet (New) (Inspect):
+              lab_color: '#d97757'
+              marker: s
+              unique_color: '#8B4DC9'
+            Claude 3.5 Sonnet (Old) (Inspect):
+              lab_color: '#d97757'
+              marker: ^
+              unique_color: '#9B6BE0'
+            Claude 3 Opus (Inspect):
+              lab_color: '#d97757'
+              marker: o
+              unique_color: '#B594E8'
+            o3 (Inspect):
+              lab_color: '#18a683'
+              marker: '*'
+              unique_color: '#42AB42'
+            GPT-5 (Inspect):
+              lab_color: '#18a683'
+              marker: p
+              unique_color: '#5AB2FA'
+            GPT-5.1-Codex-Max (Inspect):
+              lab_color: '#18a683'
+              marker: '>'
+              unique_color: '#5AB2FA'
+            GPT-5.2:
+              lab_color: '#18a683'
+              marker: o
+              unique_color: '#4AA0E8'
+            GPT-5.3-Codex:
+              lab_color: '#18a683'
+              marker: H
+              unique_color: '#3A90D8'
+            o1 (Inspect):
+              lab_color: '#18a683'
+              marker: P
+              unique_color: '#228B22'
+            o1-preview (Inspect):
+              lab_color: '#18a683'
+              marker: X
+              unique_color: '#3CB371'
+            GPT-4o (Inspect):
+              lab_color: '#18a683'
+              marker: d
+              unique_color: '#2B8FB0'
+            GPT-4 Turbo (Inspect):
+              lab_color: '#18a683'
+              marker: v
+              unique_color: '#4A9CBD'
+            GPT-4 1106 (Inspect):
+              lab_color: '#18a683'
+              marker: D
+              unique_color: '#87CEEB'
+            gpt-3.5-turbo-instruct (Inspect):
+              lab_color: '#18a683'
+              marker: ^
+              unique_color: '#CCE6FF'
+            davinci-002 (GPT-3) (Inspect):
+              lab_color: '#18a683'
+              marker: o
+              unique_color: '#B3E0FF'
+            GPT-2 (Inspect):
+              lab_color: '#18a683'
+              marker: '*'
+              unique_color: '#CCE6FF'
+            GPT-2:
+              lab_color: '#18a683'
+              marker: '*'
+              unique_color: '#CCE6FF'
+            o1-preview:
+              lab_color: '#18a683'
+              marker: D
+              unique_color: '#42AB42'
+            GPT-4 0314:
+              lab_color: '#18a683'
+              marker: '*'
+              unique_color: '#2B8FB0'
+            human:
+              lab_color: grey
+              marker: o
+              unique_color: '#858585'
+            best human for each task:
+              lab_color: gold
+              marker: o
+              unique_color: '#FFD700'
+            default:
+              lab_color: black
+              marker: o
+              unique_color: black
+          performance_over_time_trendline_styling:
+            exponential:
+              line:
+                color: blue
+                alpha: 0.5
+                linewidth: 2
+          legend_order:
+          - Claude Opus 4.6 (Inspect)
+          - Claude Opus 4.5 (Inspect)
+          - Claude 4 Opus (Inspect)
+          - Claude 4.1 Opus (Inspect)
+          - Gemini 3 Pro
+          - Claude 3.7 Sonnet (Inspect)
+          - Claude 3.5 Sonnet (New) (Inspect)
+          - Claude 3.5 Sonnet (Old) (Inspect)
+          - Claude 3 Opus (Inspect)
+          - GPT-4 1106 (Inspect)
+          - GPT-4o (Inspect)
+          - o1-preview
+          - GPT-4 0314
+          - GPT-4 Turbo (Inspect)
+          - GPT-2
+          - o3 (Inspect)
+          - o1 (Inspect)
+          - GPT-5 (Inspect)
+          - GPT-5.1-Codex-Max (Inspect)
+          - GPT-5.2
+          - GPT-5.3-Codex
+          score_over_resource_line:
+            y_params:
+              equal_task_weight:
+                y_col_lims:
+                - 0
+                - 1
+                y_label: Weighted Success Rate
+                subtitle: Weighting Tasks Equally
+              invsqrt_task_weight:
+                y_col_lims:
+                - 0
+                - 1
+                y_label: Weighted Success Rate
+                subtitle: Weighted by Task Diversity
+              p50:
+                y_col_lims:
+                - 0.5
+                - 1920
+                y_label: 50% Time Horizon
+                subtitle: 50% Time Horizon
+            x_params:
+              generation_cost:
+                by_title: by Cost
+                x_label: Max Cost per Run ($)
+                x_col_lims:
+                - 0.001
+                - 10000
+              action_count:
+                by_title: by Actions
+                x_label: Max Actions per Run
+                x_col_lims:
+                - 0.001
+                - 10000
+              tokens_count:
+                by_title: by Token Count
+                x_label: Allowed Tokens per Run
+                x_col_lims:
+                - 1000
+                - 100000000
+      fig_params/figs.yaml:
+        figs.plot_score_over_resource_horizon.log_tokens.exclude_agents:
+        - GPT-4 0125
+        - DeepSeek-R1-0528
+        - DeepSeek-V3-0324
+        - DeepSeek-R1
+        - DeepSeek-V3
+        - Qwen2.5-72B
+        - Qwen2-72B
+        - o4-mini
+        - Claude Sonnet 4.5
+        - Claude 4.1 Opus
+        - Claude 4 Opus
+        - Claude 4 Sonnet
+        - Claude 3 Opus
+        - GPT-4 Turbo
+        - Claude 3.5 Sonnet (Old)
+        - GPT-2
+        - davinci-002 (GPT-3)
+        - GPT-4 1106
+        - gpt-3.5-turbo-instruct
+        - GPT-4 0314
+        - human
+        - o3 (Inspect)
+        - Claude 4 Opus (Inspect)
+        - Claude 4.1 Opus (Inspect)
+        - Claude 3.7 Sonnet (Inspect)
+        - o1 (Inspect)
+        - o1-preview
+        - Claude 3.5 Sonnet (New) (Inspect)
+        - Claude 3.5 Sonnet (Old) (Inspect)
+        - GPT-4o (Inspect)
+        - GPT-4 1106 (Inspect)
+        - GPT-4 Turbo (Inspect)
+        - Claude 3 Opus (Inspect)
+        - human
+    outs:
+    - path: plots/success_over_resource_horizon/ga_rebench_tokens_log.png
+      hash: md5
+      md5: ccb11733a6c0225d5e7a0053a5fd9941
+      size: 130173
+  wrangle_score_over_resource_horizon@generation_cost:
+    cmd: python -m horizon.wrangle.score_over_resource_horizon --runs-file 
+      data/raw/runs.jsonl --output-file 
+      data/wrangled/score_over_resource_horizon/ga_rebench.jsonl --x 
+      generation_cost --score-column score_binarized --include-human 
+      --wrangle-params ga_rebench --include-best-model --fig-name 
+      generation_cost
+    deps:
+    - path: ../../src/horizon/wrangle/logistic.py
+      hash: md5
+      md5: 3beb7fc48a4dc0cd521b2986d08a9b32
+      size: 11316
+    - path: ../../src/horizon/wrangle/score_over_resource.py
+      hash: md5
+      md5: 10289ed646bbe9af2f9ad572a77b7dc8
+      size: 11855
+    - path: ../../src/horizon/wrangle/score_over_resource_horizon.py
+      hash: md5
+      md5: 78c5bda4a7458fdb7d2abbfe5b9451d4
+      size: 6379
+    - path: data/raw/runs.jsonl
+      hash: md5
+      md5: 0d7aa8717a346d1b4f57bda29372fbf6
+      size: 15008064
+    params:
+      fig_params/figs.yaml:
+        figs.wrangle_logistic.ga_rebench:
+          runs_file: data/raw/runs.jsonl
+          additional_runs_dep: data/raw/runs.jsonl
+          weighting: invsqrt_task_weight
+          categories: ftr
+          regularization: 1e-05
+          exclude:
+          - SWAA
+          success_percents:
+          - 50
+          confidence_level: 0.95
+        figs.wrangle_score_over_resource_horizon.generation_cost.exclude_agents:
+        - GPT-4 0125
+        - DeepSeek-R1-0528
+        - DeepSeek-V3-0324
+        - DeepSeek-R1
+        - DeepSeek-V3
+        - Qwen2.5-72B
+        - Qwen2-72B
+        - o4-mini
+        - Claude Sonnet 4.5
+        - Claude 4.1 Opus
+        - Claude 4 Opus
+        - Claude 4 Sonnet
+        - Claude 3 Opus
+        - GPT-4 Turbo
+        - Claude 3.5 Sonnet (Old)
+        - GPT-2
+        - davinci-002 (GPT-3)
+        - GPT-4 1106
+        - gpt-3.5-turbo-instruct
+        - GPT-4 0314
+        - human
+        - o3 (Inspect)
+        - Claude 4 Opus (Inspect)
+        - Claude 4.1 Opus (Inspect)
+        - Claude 3.7 Sonnet (Inspect)
+        - o1 (Inspect)
+        - o1-preview
+        - Claude 3.5 Sonnet (New) (Inspect)
+        - Claude 3.5 Sonnet (Old) (Inspect)
+        - GPT-4o (Inspect)
+        - GPT-4 1106 (Inspect)
+        - GPT-4 Turbo (Inspect)
+        - Claude 3 Opus (Inspect)
+        - human
+    outs:
+    - path: data/wrangled/score_over_resource_horizon/ga_rebench.jsonl
+      hash: md5
+      md5: 85a7c3a08939eb74b1f5b01efc109534
+      size: 40016
+  plot_score_over_resource_horizon@linear_tokens:
+    cmd: python -m horizon.plot.score_over_resource_line 
+      --wrangled-resource-file 
+      data/wrangled/score_over_resource_horizon/ga_rebench_tokens.jsonl 
+      --output-file 
+      plots/success_over_resource_horizon/ga_rebench_tokens_linear.png 
+      --params-file params.yaml --x tokens_count --score-column p50 
+      --weighting-column p50 --fig-name linear_tokens --y-scale linear 
+      --y-lim-lower 0 --y-lim-upper 1920
+    deps:
+    - path: ../../src/horizon/plot/score_over_resource_line.py
+      hash: md5
+      md5: 397c62d64b04dc1c579feb765620a65b
+      size: 6300
+    - path: ../../src/horizon/utils/plots.py
+      hash: md5
+      md5: 00deb4fc0dfb155171937c382ea95f9e
+      size: 11883
+    - path: data/wrangled/score_over_resource_horizon/ga_rebench_tokens.jsonl
+      hash: md5
+      md5: e06a37a16da0001e9291846001c438c2
+      size: 2272834
+    params:
+      params.yaml:
+        plot_format: png
+        plots:
+          suptitle_fontsize: 13
+          xlabelpad: 10
+          ylabelpad: 10
+          ax_label_fontsize: 14
+          title_fontsize: 16
+          annotation_fontsize: 14
+          xtick_labelsize: 14
+          ytick_labelsize: 14
+          legend_fontsize: 14
+          task_distribution_styling:
+            hist:
+              edgecolor: '#a6a6a6'
+              color: '#d4d4d4'
+              alpha: 1
+              linewidth: 1
+              zorder: 50
+            grid: &id013
+              which: major
+              linestyle: '-'
+              alpha: 0.2
+              color: grey
+          scatter_styling:
+            error_bar:
+              color: grey
+              fmt: none
+              capsize: 2
+              alpha: 1
+              zorder: 9
+              linewidth: 1.5
+              capthick: 1.5
+            grid: *id013
+            scatter:
+              s: 150
+              edgecolor: black
+              linewidth: 0.5
+              zorder: 10
+          agent_styling:
+            Gemini 3 Pro:
+              lab_color: '#4285F4'
+              marker: p
+              unique_color: '#4285F4'
+            Claude 4 Opus (Inspect):
+              lab_color: '#d97757'
+              marker: '*'
+              unique_color: '#9C5EDA'
+            Claude 4.1 Opus (Inspect):
+              lab_color: '#d97757'
+              marker: h
+              unique_color: '#A86ED9'
+            Claude Opus 4.5 (Inspect):
+              lab_color: '#d97757'
+              marker: '>'
+              unique_color: '#9C5EDA'
+            Claude Opus 4.6 (Inspect):
+              lab_color: '#d97757'
+              marker: <
+              unique_color: '#8A4ED0'
+            Claude 3.7 Sonnet (Inspect):
+              lab_color: '#d97757'
+              marker: D
+              unique_color: '#9C5EDA'
+            Claude 3.5 Sonnet (New) (Inspect):
+              lab_color: '#d97757'
+              marker: s
+              unique_color: '#8B4DC9'
+            Claude 3.5 Sonnet (Old) (Inspect):
+              lab_color: '#d97757'
+              marker: ^
+              unique_color: '#9B6BE0'
+            Claude 3 Opus (Inspect):
+              lab_color: '#d97757'
+              marker: o
+              unique_color: '#B594E8'
+            o3 (Inspect):
+              lab_color: '#18a683'
+              marker: '*'
+              unique_color: '#42AB42'
+            GPT-5 (Inspect):
+              lab_color: '#18a683'
+              marker: p
+              unique_color: '#5AB2FA'
+            GPT-5.1-Codex-Max (Inspect):
+              lab_color: '#18a683'
+              marker: '>'
+              unique_color: '#5AB2FA'
+            GPT-5.2:
+              lab_color: '#18a683'
+              marker: o
+              unique_color: '#4AA0E8'
+            GPT-5.3-Codex:
+              lab_color: '#18a683'
+              marker: H
+              unique_color: '#3A90D8'
+            o1 (Inspect):
+              lab_color: '#18a683'
+              marker: P
+              unique_color: '#228B22'
+            o1-preview (Inspect):
+              lab_color: '#18a683'
+              marker: X
+              unique_color: '#3CB371'
+            GPT-4o (Inspect):
+              lab_color: '#18a683'
+              marker: d
+              unique_color: '#2B8FB0'
+            GPT-4 Turbo (Inspect):
+              lab_color: '#18a683'
+              marker: v
+              unique_color: '#4A9CBD'
+            GPT-4 1106 (Inspect):
+              lab_color: '#18a683'
+              marker: D
+              unique_color: '#87CEEB'
+            gpt-3.5-turbo-instruct (Inspect):
+              lab_color: '#18a683'
+              marker: ^
+              unique_color: '#CCE6FF'
+            davinci-002 (GPT-3) (Inspect):
+              lab_color: '#18a683'
+              marker: o
+              unique_color: '#B3E0FF'
+            GPT-2 (Inspect):
+              lab_color: '#18a683'
+              marker: '*'
+              unique_color: '#CCE6FF'
+            GPT-2:
+              lab_color: '#18a683'
+              marker: '*'
+              unique_color: '#CCE6FF'
+            o1-preview:
+              lab_color: '#18a683'
+              marker: D
+              unique_color: '#42AB42'
+            GPT-4 0314:
+              lab_color: '#18a683'
+              marker: '*'
+              unique_color: '#2B8FB0'
+            human:
+              lab_color: grey
+              marker: o
+              unique_color: '#858585'
+            best human for each task:
+              lab_color: gold
+              marker: o
+              unique_color: '#FFD700'
+            default:
+              lab_color: black
+              marker: o
+              unique_color: black
+          performance_over_time_trendline_styling:
+            exponential:
+              line:
+                color: blue
+                alpha: 0.5
+                linewidth: 2
+          legend_order:
+          - Claude Opus 4.6 (Inspect)
+          - Claude Opus 4.5 (Inspect)
+          - Claude 4 Opus (Inspect)
+          - Claude 4.1 Opus (Inspect)
+          - Gemini 3 Pro
+          - Claude 3.7 Sonnet (Inspect)
+          - Claude 3.5 Sonnet (New) (Inspect)
+          - Claude 3.5 Sonnet (Old) (Inspect)
+          - Claude 3 Opus (Inspect)
+          - GPT-4 1106 (Inspect)
+          - GPT-4o (Inspect)
+          - o1-preview
+          - GPT-4 0314
+          - GPT-4 Turbo (Inspect)
+          - GPT-2
+          - o3 (Inspect)
+          - o1 (Inspect)
+          - GPT-5 (Inspect)
+          - GPT-5.1-Codex-Max (Inspect)
+          - GPT-5.2
+          - GPT-5.3-Codex
+          score_over_resource_line:
+            y_params:
+              equal_task_weight:
+                y_col_lims:
+                - 0
+                - 1
+                y_label: Weighted Success Rate
+                subtitle: Weighting Tasks Equally
+              invsqrt_task_weight:
+                y_col_lims:
+                - 0
+                - 1
+                y_label: Weighted Success Rate
+                subtitle: Weighted by Task Diversity
+              p50:
+                y_col_lims:
+                - 0.5
+                - 1920
+                y_label: 50% Time Horizon
+                subtitle: 50% Time Horizon
+            x_params:
+              generation_cost:
+                by_title: by Cost
+                x_label: Max Cost per Run ($)
+                x_col_lims:
+                - 0.001
+                - 10000
+              action_count:
+                by_title: by Actions
+                x_label: Max Actions per Run
+                x_col_lims:
+                - 0.001
+                - 10000
+              tokens_count:
+                by_title: by Token Count
+                x_label: Allowed Tokens per Run
+                x_col_lims:
+                - 1000
+                - 100000000
+      fig_params/figs.yaml:
+        figs.plot_score_over_resource_horizon.linear_tokens.exclude_agents:
+        - GPT-4 0125
+        - DeepSeek-R1-0528
+        - DeepSeek-V3-0324
+        - DeepSeek-R1
+        - DeepSeek-V3
+        - Qwen2.5-72B
+        - Qwen2-72B
+        - o4-mini
+        - Claude Sonnet 4.5
+        - Claude 4.1 Opus
+        - Claude 4 Opus
+        - Claude 4 Sonnet
+        - Claude 3 Opus
+        - GPT-4 Turbo
+        - Claude 3.5 Sonnet (Old)
+        - GPT-2
+        - davinci-002 (GPT-3)
+        - GPT-4 1106
+        - gpt-3.5-turbo-instruct
+        - GPT-4 0314
+        - human
+        - o3 (Inspect)
+        - Claude 4 Opus (Inspect)
+        - Claude 4.1 Opus (Inspect)
+        - Claude 3.7 Sonnet (Inspect)
+        - o1 (Inspect)
+        - o1-preview
+        - Claude 3.5 Sonnet (New) (Inspect)
+        - Claude 3.5 Sonnet (Old) (Inspect)
+        - GPT-4o (Inspect)
+        - GPT-4 1106 (Inspect)
+        - GPT-4 Turbo (Inspect)
+        - Claude 3 Opus (Inspect)
+        - human
+    outs:
+    - path: plots/success_over_resource_horizon/ga_rebench_tokens_linear.png
+      hash: md5
+      md5: 786ddcd7b4150476a29474a37e6e3887
+      size: 96137
+  plot_score_over_resource_horizon@log_cost:
+    cmd: python -m horizon.plot.score_over_resource_line 
+      --wrangled-resource-file 
+      data/wrangled/score_over_resource_horizon/ga_rebench.jsonl --output-file 
+      plots/success_over_resource_horizon/ga_rebench_log.png --params-file 
+      params.yaml --x generation_cost --score-column p50 --weighting-column p50 
+      --fig-name log_cost --y-scale log --y-lim-lower 0.7 --y-lim-upper none
+    deps:
+    - path: ../../src/horizon/plot/score_over_resource_line.py
+      hash: md5
+      md5: 397c62d64b04dc1c579feb765620a65b
+      size: 6300
+    - path: ../../src/horizon/utils/plots.py
+      hash: md5
+      md5: 00deb4fc0dfb155171937c382ea95f9e
+      size: 11883
+    - path: data/wrangled/score_over_resource_horizon/ga_rebench.jsonl
+      hash: md5
+      md5: 85a7c3a08939eb74b1f5b01efc109534
+      size: 40016
+    params:
+      params.yaml:
+        plot_format: png
+        plots:
+          suptitle_fontsize: 13
+          xlabelpad: 10
+          ylabelpad: 10
+          ax_label_fontsize: 14
+          title_fontsize: 16
+          annotation_fontsize: 14
+          xtick_labelsize: 14
+          ytick_labelsize: 14
+          legend_fontsize: 14
+          task_distribution_styling:
+            hist:
+              edgecolor: '#a6a6a6'
+              color: '#d4d4d4'
+              alpha: 1
+              linewidth: 1
+              zorder: 50
+            grid: &id014
+              which: major
+              linestyle: '-'
+              alpha: 0.2
+              color: grey
+          scatter_styling:
+            error_bar:
+              color: grey
+              fmt: none
+              capsize: 2
+              alpha: 1
+              zorder: 9
+              linewidth: 1.5
+              capthick: 1.5
+            grid: *id014
+            scatter:
+              s: 150
+              edgecolor: black
+              linewidth: 0.5
+              zorder: 10
+          agent_styling:
+            Gemini 3 Pro:
+              lab_color: '#4285F4'
+              marker: p
+              unique_color: '#4285F4'
+            Claude 4 Opus (Inspect):
+              lab_color: '#d97757'
+              marker: '*'
+              unique_color: '#9C5EDA'
+            Claude 4.1 Opus (Inspect):
+              lab_color: '#d97757'
+              marker: h
+              unique_color: '#A86ED9'
+            Claude Opus 4.5 (Inspect):
+              lab_color: '#d97757'
+              marker: '>'
+              unique_color: '#9C5EDA'
+            Claude Opus 4.6 (Inspect):
+              lab_color: '#d97757'
+              marker: <
+              unique_color: '#8A4ED0'
+            Claude 3.7 Sonnet (Inspect):
+              lab_color: '#d97757'
+              marker: D
+              unique_color: '#9C5EDA'
+            Claude 3.5 Sonnet (New) (Inspect):
+              lab_color: '#d97757'
+              marker: s
+              unique_color: '#8B4DC9'
+            Claude 3.5 Sonnet (Old) (Inspect):
+              lab_color: '#d97757'
+              marker: ^
+              unique_color: '#9B6BE0'
+            Claude 3 Opus (Inspect):
+              lab_color: '#d97757'
+              marker: o
+              unique_color: '#B594E8'
+            o3 (Inspect):
+              lab_color: '#18a683'
+              marker: '*'
+              unique_color: '#42AB42'
+            GPT-5 (Inspect):
+              lab_color: '#18a683'
+              marker: p
+              unique_color: '#5AB2FA'
+            GPT-5.1-Codex-Max (Inspect):
+              lab_color: '#18a683'
+              marker: '>'
+              unique_color: '#5AB2FA'
+            GPT-5.2:
+              lab_color: '#18a683'
+              marker: o
+              unique_color: '#4AA0E8'
+            GPT-5.3-Codex:
+              lab_color: '#18a683'
+              marker: H
+              unique_color: '#3A90D8'
+            o1 (Inspect):
+              lab_color: '#18a683'
+              marker: P
+              unique_color: '#228B22'
+            o1-preview (Inspect):
+              lab_color: '#18a683'
+              marker: X
+              unique_color: '#3CB371'
+            GPT-4o (Inspect):
+              lab_color: '#18a683'
+              marker: d
+              unique_color: '#2B8FB0'
+            GPT-4 Turbo (Inspect):
+              lab_color: '#18a683'
+              marker: v
+              unique_color: '#4A9CBD'
+            GPT-4 1106 (Inspect):
+              lab_color: '#18a683'
+              marker: D
+              unique_color: '#87CEEB'
+            gpt-3.5-turbo-instruct (Inspect):
+              lab_color: '#18a683'
+              marker: ^
+              unique_color: '#CCE6FF'
+            davinci-002 (GPT-3) (Inspect):
+              lab_color: '#18a683'
+              marker: o
+              unique_color: '#B3E0FF'
+            GPT-2 (Inspect):
+              lab_color: '#18a683'
+              marker: '*'
+              unique_color: '#CCE6FF'
+            GPT-2:
+              lab_color: '#18a683'
+              marker: '*'
+              unique_color: '#CCE6FF'
+            o1-preview:
+              lab_color: '#18a683'
+              marker: D
+              unique_color: '#42AB42'
+            GPT-4 0314:
+              lab_color: '#18a683'
+              marker: '*'
+              unique_color: '#2B8FB0'
+            human:
+              lab_color: grey
+              marker: o
+              unique_color: '#858585'
+            best human for each task:
+              lab_color: gold
+              marker: o
+              unique_color: '#FFD700'
+            default:
+              lab_color: black
+              marker: o
+              unique_color: black
+          performance_over_time_trendline_styling:
+            exponential:
+              line:
+                color: blue
+                alpha: 0.5
+                linewidth: 2
+          legend_order:
+          - Claude Opus 4.6 (Inspect)
+          - Claude Opus 4.5 (Inspect)
+          - Claude 4 Opus (Inspect)
+          - Claude 4.1 Opus (Inspect)
+          - Gemini 3 Pro
+          - Claude 3.7 Sonnet (Inspect)
+          - Claude 3.5 Sonnet (New) (Inspect)
+          - Claude 3.5 Sonnet (Old) (Inspect)
+          - Claude 3 Opus (Inspect)
+          - GPT-4 1106 (Inspect)
+          - GPT-4o (Inspect)
+          - o1-preview
+          - GPT-4 0314
+          - GPT-4 Turbo (Inspect)
+          - GPT-2
+          - o3 (Inspect)
+          - o1 (Inspect)
+          - GPT-5 (Inspect)
+          - GPT-5.1-Codex-Max (Inspect)
+          - GPT-5.2
+          - GPT-5.3-Codex
+          score_over_resource_line:
+            y_params:
+              equal_task_weight:
+                y_col_lims:
+                - 0
+                - 1
+                y_label: Weighted Success Rate
+                subtitle: Weighting Tasks Equally
+              invsqrt_task_weight:
+                y_col_lims:
+                - 0
+                - 1
+                y_label: Weighted Success Rate
+                subtitle: Weighted by Task Diversity
+              p50:
+                y_col_lims:
+                - 0.5
+                - 1920
+                y_label: 50% Time Horizon
+                subtitle: 50% Time Horizon
+            x_params:
+              generation_cost:
+                by_title: by Cost
+                x_label: Max Cost per Run ($)
+                x_col_lims:
+                - 0.001
+                - 10000
+              action_count:
+                by_title: by Actions
+                x_label: Max Actions per Run
+                x_col_lims:
+                - 0.001
+                - 10000
+              tokens_count:
+                by_title: by Token Count
+                x_label: Allowed Tokens per Run
+                x_col_lims:
+                - 1000
+                - 100000000
+      fig_params/figs.yaml:
+        figs.plot_score_over_resource_horizon.log_cost.exclude_agents:
+        - GPT-4 0125
+        - DeepSeek-R1-0528
+        - DeepSeek-V3-0324
+        - DeepSeek-R1
+        - DeepSeek-V3
+        - Qwen2.5-72B
+        - Qwen2-72B
+        - o4-mini
+        - Claude Sonnet 4.5
+        - Claude 4.1 Opus
+        - Claude 4 Opus
+        - Claude 4 Sonnet
+        - Claude 3 Opus
+        - GPT-4 Turbo
+        - Claude 3.5 Sonnet (Old)
+        - GPT-2
+        - davinci-002 (GPT-3)
+        - GPT-4 1106
+        - gpt-3.5-turbo-instruct
+        - GPT-4 0314
+        - human
+        - o3 (Inspect)
+        - Claude 4 Opus (Inspect)
+        - Claude 4.1 Opus (Inspect)
+        - Claude 3.7 Sonnet (Inspect)
+        - o1 (Inspect)
+        - o1-preview
+        - Claude 3.5 Sonnet (New) (Inspect)
+        - Claude 3.5 Sonnet (Old) (Inspect)
+        - GPT-4o (Inspect)
+        - GPT-4 1106 (Inspect)
+        - GPT-4 Turbo (Inspect)
+        - Claude 3 Opus (Inspect)
+        - human
+    outs:
+    - path: plots/success_over_resource_horizon/ga_rebench_log.png
+      hash: md5
+      md5: 2045e35c56c8b73680dca5057f52bee0
+      size: 90623
+  plot_score_over_resource_horizon@linear_cost:
+    cmd: python -m horizon.plot.score_over_resource_line 
+      --wrangled-resource-file 
+      data/wrangled/score_over_resource_horizon/ga_rebench.jsonl --output-file 
+      plots/success_over_resource_horizon/ga_rebench_linear.png --params-file 
+      params.yaml --x generation_cost --score-column p50 --weighting-column p50 
+      --fig-name linear_cost --y-scale linear --y-lim-lower 0 --y-lim-upper 145
+    deps:
+    - path: ../../src/horizon/plot/score_over_resource_line.py
+      hash: md5
+      md5: 397c62d64b04dc1c579feb765620a65b
+      size: 6300
+    - path: ../../src/horizon/utils/plots.py
+      hash: md5
+      md5: 00deb4fc0dfb155171937c382ea95f9e
+      size: 11883
+    - path: data/wrangled/score_over_resource_horizon/ga_rebench.jsonl
+      hash: md5
+      md5: 85a7c3a08939eb74b1f5b01efc109534
+      size: 40016
+    params:
+      params.yaml:
+        plot_format: png
+        plots:
+          suptitle_fontsize: 13
+          xlabelpad: 10
+          ylabelpad: 10
+          ax_label_fontsize: 14
+          title_fontsize: 16
+          annotation_fontsize: 14
+          xtick_labelsize: 14
+          ytick_labelsize: 14
+          legend_fontsize: 14
+          task_distribution_styling:
+            hist:
+              edgecolor: '#a6a6a6'
+              color: '#d4d4d4'
+              alpha: 1
+              linewidth: 1
+              zorder: 50
+            grid: &id015
+              which: major
+              linestyle: '-'
+              alpha: 0.2
+              color: grey
+          scatter_styling:
+            error_bar:
+              color: grey
+              fmt: none
+              capsize: 2
+              alpha: 1
+              zorder: 9
+              linewidth: 1.5
+              capthick: 1.5
+            grid: *id015
+            scatter:
+              s: 150
+              edgecolor: black
+              linewidth: 0.5
+              zorder: 10
+          agent_styling:
+            Gemini 3 Pro:
+              lab_color: '#4285F4'
+              marker: p
+              unique_color: '#4285F4'
+            Claude 4 Opus (Inspect):
+              lab_color: '#d97757'
+              marker: '*'
+              unique_color: '#9C5EDA'
+            Claude 4.1 Opus (Inspect):
+              lab_color: '#d97757'
+              marker: h
+              unique_color: '#A86ED9'
+            Claude Opus 4.5 (Inspect):
+              lab_color: '#d97757'
+              marker: '>'
+              unique_color: '#9C5EDA'
+            Claude Opus 4.6 (Inspect):
+              lab_color: '#d97757'
+              marker: <
+              unique_color: '#8A4ED0'
+            Claude 3.7 Sonnet (Inspect):
+              lab_color: '#d97757'
+              marker: D
+              unique_color: '#9C5EDA'
+            Claude 3.5 Sonnet (New) (Inspect):
+              lab_color: '#d97757'
+              marker: s
+              unique_color: '#8B4DC9'
+            Claude 3.5 Sonnet (Old) (Inspect):
+              lab_color: '#d97757'
+              marker: ^
+              unique_color: '#9B6BE0'
+            Claude 3 Opus (Inspect):
+              lab_color: '#d97757'
+              marker: o
+              unique_color: '#B594E8'
+            o3 (Inspect):
+              lab_color: '#18a683'
+              marker: '*'
+              unique_color: '#42AB42'
+            GPT-5 (Inspect):
+              lab_color: '#18a683'
+              marker: p
+              unique_color: '#5AB2FA'
+            GPT-5.1-Codex-Max (Inspect):
+              lab_color: '#18a683'
+              marker: '>'
+              unique_color: '#5AB2FA'
+            GPT-5.2:
+              lab_color: '#18a683'
+              marker: o
+              unique_color: '#4AA0E8'
+            GPT-5.3-Codex:
+              lab_color: '#18a683'
+              marker: H
+              unique_color: '#3A90D8'
+            o1 (Inspect):
+              lab_color: '#18a683'
+              marker: P
+              unique_color: '#228B22'
+            o1-preview (Inspect):
+              lab_color: '#18a683'
+              marker: X
+              unique_color: '#3CB371'
+            GPT-4o (Inspect):
+              lab_color: '#18a683'
+              marker: d
+              unique_color: '#2B8FB0'
+            GPT-4 Turbo (Inspect):
+              lab_color: '#18a683'
+              marker: v
+              unique_color: '#4A9CBD'
+            GPT-4 1106 (Inspect):
+              lab_color: '#18a683'
+              marker: D
+              unique_color: '#87CEEB'
+            gpt-3.5-turbo-instruct (Inspect):
+              lab_color: '#18a683'
+              marker: ^
+              unique_color: '#CCE6FF'
+            davinci-002 (GPT-3) (Inspect):
+              lab_color: '#18a683'
+              marker: o
+              unique_color: '#B3E0FF'
+            GPT-2 (Inspect):
+              lab_color: '#18a683'
+              marker: '*'
+              unique_color: '#CCE6FF'
+            GPT-2:
+              lab_color: '#18a683'
+              marker: '*'
+              unique_color: '#CCE6FF'
+            o1-preview:
+              lab_color: '#18a683'
+              marker: D
+              unique_color: '#42AB42'
+            GPT-4 0314:
+              lab_color: '#18a683'
+              marker: '*'
+              unique_color: '#2B8FB0'
+            human:
+              lab_color: grey
+              marker: o
+              unique_color: '#858585'
+            best human for each task:
+              lab_color: gold
+              marker: o
+              unique_color: '#FFD700'
+            default:
+              lab_color: black
+              marker: o
+              unique_color: black
+          performance_over_time_trendline_styling:
+            exponential:
+              line:
+                color: blue
+                alpha: 0.5
+                linewidth: 2
+          legend_order:
+          - Claude Opus 4.6 (Inspect)
+          - Claude Opus 4.5 (Inspect)
+          - Claude 4 Opus (Inspect)
+          - Claude 4.1 Opus (Inspect)
+          - Gemini 3 Pro
+          - Claude 3.7 Sonnet (Inspect)
+          - Claude 3.5 Sonnet (New) (Inspect)
+          - Claude 3.5 Sonnet (Old) (Inspect)
+          - Claude 3 Opus (Inspect)
+          - GPT-4 1106 (Inspect)
+          - GPT-4o (Inspect)
+          - o1-preview
+          - GPT-4 0314
+          - GPT-4 Turbo (Inspect)
+          - GPT-2
+          - o3 (Inspect)
+          - o1 (Inspect)
+          - GPT-5 (Inspect)
+          - GPT-5.1-Codex-Max (Inspect)
+          - GPT-5.2
+          - GPT-5.3-Codex
+          score_over_resource_line:
+            y_params:
+              equal_task_weight:
+                y_col_lims:
+                - 0
+                - 1
+                y_label: Weighted Success Rate
+                subtitle: Weighting Tasks Equally
+              invsqrt_task_weight:
+                y_col_lims:
+                - 0
+                - 1
+                y_label: Weighted Success Rate
+                subtitle: Weighted by Task Diversity
+              p50:
+                y_col_lims:
+                - 0.5
+                - 1920
+                y_label: 50% Time Horizon
+                subtitle: 50% Time Horizon
+            x_params:
+              generation_cost:
+                by_title: by Cost
+                x_label: Max Cost per Run ($)
+                x_col_lims:
+                - 0.001
+                - 10000
+              action_count:
+                by_title: by Actions
+                x_label: Max Actions per Run
+                x_col_lims:
+                - 0.001
+                - 10000
+              tokens_count:
+                by_title: by Token Count
+                x_label: Allowed Tokens per Run
+                x_col_lims:
+                - 1000
+                - 100000000
+      fig_params/figs.yaml:
+        figs.plot_score_over_resource_horizon.linear_cost.exclude_agents:
+        - GPT-4 0125
+        - DeepSeek-R1-0528
+        - DeepSeek-V3-0324
+        - DeepSeek-R1
+        - DeepSeek-V3
+        - Qwen2.5-72B
+        - Qwen2-72B
+        - o4-mini
+        - Claude Sonnet 4.5
+        - Claude 4.1 Opus
+        - Claude 4 Opus
+        - Claude 4 Sonnet
+        - Claude 3 Opus
+        - GPT-4 Turbo
+        - Claude 3.5 Sonnet (Old)
+        - GPT-2
+        - davinci-002 (GPT-3)
+        - GPT-4 1106
+        - gpt-3.5-turbo-instruct
+        - GPT-4 0314
+        - human
+        - o3 (Inspect)
+        - Claude 4 Opus (Inspect)
+        - Claude 4.1 Opus (Inspect)
+        - Claude 3.7 Sonnet (Inspect)
+        - o1 (Inspect)
+        - o1-preview
+        - Claude 3.5 Sonnet (New) (Inspect)
+        - Claude 3.5 Sonnet (Old) (Inspect)
+        - GPT-4o (Inspect)
+        - GPT-4 1106 (Inspect)
+        - GPT-4 Turbo (Inspect)
+        - Claude 3 Opus (Inspect)
+        - human
+    outs:
+    - path: plots/success_over_resource_horizon/ga_rebench_linear.png
+      hash: md5
+      md5: 4ed342ebaab3eaced80e75bfd7ed31d1
+      size: 86815
+  plot_bootstrap_ci@twitter_headline:
+    cmd: python -m horizon.plot.bootstrap_ci --fig-name twitter_headline 
+      --input-file data/wrangled/bootstrap/headline.csv --agent-summaries-file 
+      data/wrangled/logistic_fits/headline.csv --release-dates 
+      ../../data/external/release_dates.yaml --output-file 
+      plots/bootstrap/twitter_headline.png --log-level INFO --y-scale log
+    deps:
+    - path: ../../data/external/release_dates.yaml
+      hash: md5
+      md5: ab22e7d1436da09901b454e60a77335e
+      size: 2442
+    - path: ../../src/horizon/plot/bootstrap_ci.py
+      hash: md5
+      md5: 2fabeaf75cc924d4365108fe9097c7c2
+      size: 33873
+    - path: ../../src/horizon/plot/logistic.py
+      hash: md5
+      md5: ef1ab4210b2eb452311a3337d1372198
+      size: 24388
+    - path: data/wrangled/bootstrap/headline.csv
+      hash: md5
+      md5: 36f71641cff00d67da81d6fef5014c3b
+      size: 774825
+    - path: data/wrangled/logistic_fits/headline.csv
+      hash: md5
+      md5: b5c921dee08314b6bf61d0b9cd00a1ca
+      size: 3895
+    - path: matplotlibrc
+      hash: md5
+      md5: a6268afa6b0de2d0f934ff95c60851e4
+      size: 553
+    params:
+      params.yaml:
+        log_level: INFO
+        plot_format: png
+        plots:
+          suptitle_fontsize: 13
+          xlabelpad: 10
+          ylabelpad: 10
+          ax_label_fontsize: 14
+          title_fontsize: 16
+          annotation_fontsize: 14
+          xtick_labelsize: 14
+          ytick_labelsize: 14
+          legend_fontsize: 14
+          task_distribution_styling:
+            hist:
+              edgecolor: '#a6a6a6'
+              color: '#d4d4d4'
+              alpha: 1
+              linewidth: 1
+              zorder: 50
+            grid: &id016
+              which: major
+              linestyle: '-'
+              alpha: 0.2
+              color: grey
+          scatter_styling:
+            error_bar:
+              color: grey
+              fmt: none
+              capsize: 2
+              alpha: 1
+              zorder: 9
+              linewidth: 1.5
+              capthick: 1.5
+            grid: *id016
+            scatter:
+              s: 150
+              edgecolor: black
+              linewidth: 0.5
+              zorder: 10
+          agent_styling:
+            Gemini 3 Pro:
+              lab_color: '#4285F4'
+              marker: p
+              unique_color: '#4285F4'
+            Claude 4 Opus (Inspect):
+              lab_color: '#d97757'
+              marker: '*'
+              unique_color: '#9C5EDA'
+            Claude 4.1 Opus (Inspect):
+              lab_color: '#d97757'
+              marker: h
+              unique_color: '#A86ED9'
+            Claude Opus 4.5 (Inspect):
+              lab_color: '#d97757'
+              marker: '>'
+              unique_color: '#9C5EDA'
+            Claude Opus 4.6 (Inspect):
+              lab_color: '#d97757'
+              marker: <
+              unique_color: '#8A4ED0'
+            Claude 3.7 Sonnet (Inspect):
+              lab_color: '#d97757'
+              marker: D
+              unique_color: '#9C5EDA'
+            Claude 3.5 Sonnet (New) (Inspect):
+              lab_color: '#d97757'
+              marker: s
+              unique_color: '#8B4DC9'
+            Claude 3.5 Sonnet (Old) (Inspect):
+              lab_color: '#d97757'
+              marker: ^
+              unique_color: '#9B6BE0'
+            Claude 3 Opus (Inspect):
+              lab_color: '#d97757'
+              marker: o
+              unique_color: '#B594E8'
+            o3 (Inspect):
+              lab_color: '#18a683'
+              marker: '*'
+              unique_color: '#42AB42'
+            GPT-5 (Inspect):
+              lab_color: '#18a683'
+              marker: p
+              unique_color: '#5AB2FA'
+            GPT-5.1-Codex-Max (Inspect):
+              lab_color: '#18a683'
+              marker: '>'
+              unique_color: '#5AB2FA'
+            GPT-5.2:
+              lab_color: '#18a683'
+              marker: o
+              unique_color: '#4AA0E8'
+            GPT-5.3-Codex:
+              lab_color: '#18a683'
+              marker: H
+              unique_color: '#3A90D8'
+            o1 (Inspect):
+              lab_color: '#18a683'
+              marker: P
+              unique_color: '#228B22'
+            o1-preview (Inspect):
+              lab_color: '#18a683'
+              marker: X
+              unique_color: '#3CB371'
+            GPT-4o (Inspect):
+              lab_color: '#18a683'
+              marker: d
+              unique_color: '#2B8FB0'
+            GPT-4 Turbo (Inspect):
+              lab_color: '#18a683'
+              marker: v
+              unique_color: '#4A9CBD'
+            GPT-4 1106 (Inspect):
+              lab_color: '#18a683'
+              marker: D
+              unique_color: '#87CEEB'
+            gpt-3.5-turbo-instruct (Inspect):
+              lab_color: '#18a683'
+              marker: ^
+              unique_color: '#CCE6FF'
+            davinci-002 (GPT-3) (Inspect):
+              lab_color: '#18a683'
+              marker: o
+              unique_color: '#B3E0FF'
+            GPT-2 (Inspect):
+              lab_color: '#18a683'
+              marker: '*'
+              unique_color: '#CCE6FF'
+            GPT-2:
+              lab_color: '#18a683'
+              marker: '*'
+              unique_color: '#CCE6FF'
+            o1-preview:
+              lab_color: '#18a683'
+              marker: D
+              unique_color: '#42AB42'
+            GPT-4 0314:
+              lab_color: '#18a683'
+              marker: '*'
+              unique_color: '#2B8FB0'
+            human:
+              lab_color: grey
+              marker: o
+              unique_color: '#858585'
+            best human for each task:
+              lab_color: gold
+              marker: o
+              unique_color: '#FFD700'
+            default:
+              lab_color: black
+              marker: o
+              unique_color: black
+          performance_over_time_trendline_styling:
+            exponential:
+              line:
+                color: blue
+                alpha: 0.5
+                linewidth: 2
+          legend_order:
+          - Claude Opus 4.6 (Inspect)
+          - Claude Opus 4.5 (Inspect)
+          - Claude 4 Opus (Inspect)
+          - Claude 4.1 Opus (Inspect)
+          - Gemini 3 Pro
+          - Claude 3.7 Sonnet (Inspect)
+          - Claude 3.5 Sonnet (New) (Inspect)
+          - Claude 3.5 Sonnet (Old) (Inspect)
+          - Claude 3 Opus (Inspect)
+          - GPT-4 1106 (Inspect)
+          - GPT-4o (Inspect)
+          - o1-preview
+          - GPT-4 0314
+          - GPT-4 Turbo (Inspect)
+          - GPT-2
+          - o3 (Inspect)
+          - o1 (Inspect)
+          - GPT-5 (Inspect)
+          - GPT-5.1-Codex-Max (Inspect)
+          - GPT-5.2
+          - GPT-5.3-Codex
+          score_over_resource_line:
+            y_params:
+              equal_task_weight:
+                y_col_lims:
+                - 0
+                - 1
+                y_label: Weighted Success Rate
+                subtitle: Weighting Tasks Equally
+              invsqrt_task_weight:
+                y_col_lims:
+                - 0
+                - 1
+                y_label: Weighted Success Rate
+                subtitle: Weighted by Task Diversity
+              p50:
+                y_col_lims:
+                - 0.5
+                - 1920
+                y_label: 50% Time Horizon
+                subtitle: 50% Time Horizon
+            x_params:
+              generation_cost:
+                by_title: by Cost
+                x_label: Max Cost per Run ($)
+                x_col_lims:
+                - 0.001
+                - 10000
+              action_count:
+                by_title: by Actions
+                x_label: Max Actions per Run
+                x_col_lims:
+                - 0.001
+                - 10000
+              tokens_count:
+                by_title: by Token Count
+                x_label: Allowed Tokens per Run
+                x_col_lims:
+                - 1000
+                - 100000000
+      fig_params/figs.yaml:
+        comparison_color_1: '#56B4E9'
+        comparison_color_2: '#E69F00'
+        figs.plot_logistic_regression.twitter_headline:
+          runs_file: data/raw/runs.jsonl
+          additional_runs_dep: data/raw/runs.jsonl
+          weighting: invsqrt_task_weight
+          categories: ftr
+          regularization: 1e-05
+          exclude: []
+          success_percents:
+          - 50
+          - 80
+          confidence_level: 0.95
+          logistic_file: headline
+          trendlines:
+          - fit_type: exponential
+            caption: TH 1.1, 2023-01-01+ data
+            after_date: '2023-01-01'
+            color: blue
+            line_start_date: '2022-01-01'
+            line_end_date: '2027-06-01'
+            display_r_squared: true
+            styling:
+            data_file:
+            skip_annotation: false
+          - fit_type: exponential
+            after_date: '2019-01-01'
+            before_date: '2025-02-25'
+            color: '#505050'
+            line_start_date: '2019-01-01'
+            line_end_date: '2027-06-01'
+            display_r_squared: false
+            skip_annotation: false
+            caption: Trend from Kwa, West, et al. 2025
+            display_after_date: false
+            data_file: 
+              ../time-horizon-1-0/data/wrangled/logistic_fits/headline.csv
+            exclude_agents:
+            - Claude 3 Opus
+            - GPT-4 0125
+            - GPT-4 Turbo
+            - Qwen2-72B
+            - Qwen2.5-72B
+            - DeepSeek-V3
+            - DeepSeek-R1
+            styling:
+              linewidth: 2.0
+          include_task_distribution: none
+          individual_labels: true
+          x_lim_start: '2024-03-29'
+          x_lim_end: '2026-07-01'
+          lower_y_lim: 3
+          upper_y_lim: 1440
+          linear_overrides:
+            show_minor_xticks: false
+            hide_error_bars: false
+            hide_trendline: true
+            show_example_tasks: false
+            lower_y_lim: 0
+            y_ticks_skip: 1
+            plot_style_overrides:
+              scatter_styling:
+                error_bar:
+                  alpha: 0.5
+                  capsize: 0
+          exclude_agents:
+          - Claude 3 Opus (Inspect)
+          - GPT-4 Turbo (Inspect)
+          - Claude 4 Opus (Inspect)
+          - GPT-5.1-Codex-Max (Inspect)
+          - Claude 4.1 Opus (Inspect)
+          exclude_agents_from_all_fits: []
+          title: 'Claude Opus 4.6 has a 50%-time-horizon of about 12 hours (95% CI:
+            5 hrs to 66 hrs)'
+          subtitle: Task length (at 50% success rate)
+          rename_legend_labels:
+            GPT-4o (Inspect): GPT 4o
+            Claude Opus 4.6 (Inspect): Claude Opus 4.6
+            Claude 3.7 Sonnet (Inspect): Sonnet 3.7
+            GPT-5.2: GPT-5.2 (high)
+          show_y_label: false
+          title_location: left
+          suptitle_location: left
+          legend_fontsize: 14
+          ax_label_fontsize: 14
+          title_fontsize: 14
+          xlabel: Model release date
+          ylabel: ''
+          show_grid: true
+          y_ticks_skip: 2
+          hide_regression_info: false
+          annotation_fontsize: 20
+          legend_frameon: false
+          xticks_skip: 1
+          show_watermark: true
+          show_example_tasks: true
+          show_minor_xticks: true
+          plot_style_overrides:
+            scatter_styling:
+              scatter:
+                s: 75
+            agent_styling:
+              Claude Opus 4.6 (Inspect):
+                lab_color: '#c86592'
+                marker: o
+              Claude Opus 4.5 (Inspect):
+                lab_color: '#2c7c58'
+                marker: o
+              Claude 4.1 Opus (Inspect):
+                lab_color: '#A0A0A0'
+                marker: o
+              Claude 4 Opus (Inspect):
+                lab_color: '#A0A0A0'
+                marker: o
+              o3 (Inspect):
+                lab_color: '#2c7c58'
+                marker: o
+              Claude 3.7 Sonnet (Inspect):
+                lab_color: '#2c7c58'
+                marker: o
+              Claude 3.5 Sonnet (New) (Inspect):
+                lab_color: '#2c7c58'
+                marker: o
+              Claude 3.5 Sonnet (Old) (Inspect):
+                lab_color: '#2c7c58'
+                marker: o
+              Claude 3 Opus (Inspect):
+                lab_color: '#A0A0A0'
+                marker: o
+              o1 (Inspect):
+                lab_color: '#2c7c58'
+                marker: o
+              o1-preview (Inspect):
+                lab_color: '#2c7c58'
+                marker: o
+              GPT-5 (Inspect):
+                lab_color: '#2c7c58'
+                marker: o
+              GPT-5.1-Codex-Max (Inspect):
+                lab_color: '#2c7c58'
+                marker: o
+              GPT-4o (Inspect):
+                lab_color: '#2c7c58'
+                marker: o
+              GPT-4 Turbo (Inspect):
+                lab_color: '#A0A0A0'
+                marker: o
+              GPT-4 1106 (Inspect):
+                lab_color: '#2c7c58'
+                marker: o
+              gpt-3.5-turbo-instruct (Inspect):
+                lab_color: '#2c7c58'
+                marker: o
+              davinci-002 (GPT-3) (Inspect):
+                lab_color: '#2c7c58'
+                marker: o
+              GPT-2 (Inspect):
+                lab_color: '#2c7c58'
+                marker: o
+              GPT-2:
+                lab_color: '#2c7c58'
+                marker: o
+              GPT-4 0314:
+                lab_color: '#2c7c58'
+                marker: o
+              o1-preview:
+                lab_color: '#2c7c58'
+                marker: o
+              human:
+                lab_color: grey
+                marker: o
+                unique_color: '#858585'
+              Gemini 3 Pro:
+                lab_color: '#2c7c58'
+                marker: p
+                unique_color: '#4285F4'
+              GPT-5.2:
+                lab_color: '#2c7c58'
+                marker: o
+              default:
+                lab_color: black
+                marker: o
+                unique_color: black
+          label_positions:
+            GPT 4o:
+            - 7
+            - -24
+            Sonnet 3.7:
+            - -8
+            - 24
+            GPT-5.2 (high):
+            - 7
+            - -28
+            Claude Opus 4.6:
+            - 7
+            - -40
+    outs:
+    - path: plots/bootstrap/twitter_headline.png
+      hash: md5
+      md5: 7c37e55ecf75d574fa3a2e4018889904
+      size: 165939
+  plot_individual_histograms@scatter_default:
+    cmd: python -m horizon.plot.individual_histograms --all-runs-file 
+      data/raw/runs.jsonl --output-file 
+      plots/individual_histograms/scatter_default/histograms.png --plot-format 
+      png --log-level INFO --script-parameter-group scatter_default 
+      --params-file "params.yaml"
+    deps:
+    - path: ../../src/horizon/load_runs.py
+      hash: md5
+      md5: dc1060094a827042e16ddc4c336f5936
+      size: 1998
+    - path: ../../src/horizon/plot/individual_histograms.py
+      hash: md5
+      md5: 3619422402ea3add986ed87babf4e82f
+      size: 17959
+    - path: ../../src/horizon/utils/plots.py
+      hash: md5
+      md5: 00deb4fc0dfb155171937c382ea95f9e
+      size: 11883
+    - path: data/raw/runs.jsonl
+      hash: md5
+      md5: 0d7aa8717a346d1b4f57bda29372fbf6
+      size: 15008064
+    - path: data/raw/runs.jsonl
+      hash: md5
+      md5: 0d7aa8717a346d1b4f57bda29372fbf6
+      size: 15008064
+    - path: data/wrangled/logistic_fits/headline.csv
+      hash: md5
+      md5: b5c921dee08314b6bf61d0b9cd00a1ca
+      size: 3895
+    - path: matplotlibrc
+      hash: md5
+      md5: a6268afa6b0de2d0f934ff95c60851e4
+      size: 553
+    params:
+      params.yaml:
+        log_level: INFO
+        plot_format: png
+        plots:
+          suptitle_fontsize: 13
+          xlabelpad: 10
+          ylabelpad: 10
+          ax_label_fontsize: 14
+          title_fontsize: 16
+          annotation_fontsize: 14
+          xtick_labelsize: 14
+          ytick_labelsize: 14
+          legend_fontsize: 14
+          task_distribution_styling:
+            hist:
+              edgecolor: '#a6a6a6'
+              color: '#d4d4d4'
+              alpha: 1
+              linewidth: 1
+              zorder: 50
+            grid: &id017
+              which: major
+              linestyle: '-'
+              alpha: 0.2
+              color: grey
+          scatter_styling:
+            error_bar:
+              color: grey
+              fmt: none
+              capsize: 2
+              alpha: 1
+              zorder: 9
+              linewidth: 1.5
+              capthick: 1.5
+            grid: *id017
+            scatter:
+              s: 150
+              edgecolor: black
+              linewidth: 0.5
+              zorder: 10
+          agent_styling:
+            Gemini 3 Pro:
+              lab_color: '#4285F4'
+              marker: p
+              unique_color: '#4285F4'
+            Claude 4 Opus (Inspect):
+              lab_color: '#d97757'
+              marker: '*'
+              unique_color: '#9C5EDA'
+            Claude 4.1 Opus (Inspect):
+              lab_color: '#d97757'
+              marker: h
+              unique_color: '#A86ED9'
+            Claude Opus 4.5 (Inspect):
+              lab_color: '#d97757'
+              marker: '>'
+              unique_color: '#9C5EDA'
+            Claude Opus 4.6 (Inspect):
+              lab_color: '#d97757'
+              marker: <
+              unique_color: '#8A4ED0'
+            Claude 3.7 Sonnet (Inspect):
+              lab_color: '#d97757'
+              marker: D
+              unique_color: '#9C5EDA'
+            Claude 3.5 Sonnet (New) (Inspect):
+              lab_color: '#d97757'
+              marker: s
+              unique_color: '#8B4DC9'
+            Claude 3.5 Sonnet (Old) (Inspect):
+              lab_color: '#d97757'
+              marker: ^
+              unique_color: '#9B6BE0'
+            Claude 3 Opus (Inspect):
+              lab_color: '#d97757'
+              marker: o
+              unique_color: '#B594E8'
+            o3 (Inspect):
+              lab_color: '#18a683'
+              marker: '*'
+              unique_color: '#42AB42'
+            GPT-5 (Inspect):
+              lab_color: '#18a683'
+              marker: p
+              unique_color: '#5AB2FA'
+            GPT-5.1-Codex-Max (Inspect):
+              lab_color: '#18a683'
+              marker: '>'
+              unique_color: '#5AB2FA'
+            GPT-5.2:
+              lab_color: '#18a683'
+              marker: o
+              unique_color: '#4AA0E8'
+            GPT-5.3-Codex:
+              lab_color: '#18a683'
+              marker: H
+              unique_color: '#3A90D8'
+            o1 (Inspect):
+              lab_color: '#18a683'
+              marker: P
+              unique_color: '#228B22'
+            o1-preview (Inspect):
+              lab_color: '#18a683'
+              marker: X
+              unique_color: '#3CB371'
+            GPT-4o (Inspect):
+              lab_color: '#18a683'
+              marker: d
+              unique_color: '#2B8FB0'
+            GPT-4 Turbo (Inspect):
+              lab_color: '#18a683'
+              marker: v
+              unique_color: '#4A9CBD'
+            GPT-4 1106 (Inspect):
+              lab_color: '#18a683'
+              marker: D
+              unique_color: '#87CEEB'
+            gpt-3.5-turbo-instruct (Inspect):
+              lab_color: '#18a683'
+              marker: ^
+              unique_color: '#CCE6FF'
+            davinci-002 (GPT-3) (Inspect):
+              lab_color: '#18a683'
+              marker: o
+              unique_color: '#B3E0FF'
+            GPT-2 (Inspect):
+              lab_color: '#18a683'
+              marker: '*'
+              unique_color: '#CCE6FF'
+            GPT-2:
+              lab_color: '#18a683'
+              marker: '*'
+              unique_color: '#CCE6FF'
+            o1-preview:
+              lab_color: '#18a683'
+              marker: D
+              unique_color: '#42AB42'
+            GPT-4 0314:
+              lab_color: '#18a683'
+              marker: '*'
+              unique_color: '#2B8FB0'
+            human:
+              lab_color: grey
+              marker: o
+              unique_color: '#858585'
+            best human for each task:
+              lab_color: gold
+              marker: o
+              unique_color: '#FFD700'
+            default:
+              lab_color: black
+              marker: o
+              unique_color: black
+          performance_over_time_trendline_styling:
+            exponential:
+              line:
+                color: blue
+                alpha: 0.5
+                linewidth: 2
+          legend_order:
+          - Claude Opus 4.6 (Inspect)
+          - Claude Opus 4.5 (Inspect)
+          - Claude 4 Opus (Inspect)
+          - Claude 4.1 Opus (Inspect)
+          - Gemini 3 Pro
+          - Claude 3.7 Sonnet (Inspect)
+          - Claude 3.5 Sonnet (New) (Inspect)
+          - Claude 3.5 Sonnet (Old) (Inspect)
+          - Claude 3 Opus (Inspect)
+          - GPT-4 1106 (Inspect)
+          - GPT-4o (Inspect)
+          - o1-preview
+          - GPT-4 0314
+          - GPT-4 Turbo (Inspect)
+          - GPT-2
+          - o3 (Inspect)
+          - o1 (Inspect)
+          - GPT-5 (Inspect)
+          - GPT-5.1-Codex-Max (Inspect)
+          - GPT-5.2
+          - GPT-5.3-Codex
+          score_over_resource_line:
+            y_params:
+              equal_task_weight:
+                y_col_lims:
+                - 0
+                - 1
+                y_label: Weighted Success Rate
+                subtitle: Weighting Tasks Equally
+              invsqrt_task_weight:
+                y_col_lims:
+                - 0
+                - 1
+                y_label: Weighted Success Rate
+                subtitle: Weighted by Task Diversity
+              p50:
+                y_col_lims:
+                - 0.5
+                - 1920
+                y_label: 50% Time Horizon
+                subtitle: 50% Time Horizon
+            x_params:
+              generation_cost:
+                by_title: by Cost
+                x_label: Max Cost per Run ($)
+                x_col_lims:
+                - 0.001
+                - 10000
+              action_count:
+                by_title: by Actions
+                x_label: Max Actions per Run
+                x_col_lims:
+                - 0.001
+                - 10000
+              tokens_count:
+                by_title: by Token Count
+                x_label: Allowed Tokens per Run
+                x_col_lims:
+                - 1000
+                - 100000000
+      fig_params/figs.yaml:
+        figs.plot_individual_histograms.scatter_default:
+          annotate_p50: true
+          logistic_file: data/wrangled/logistic_fits/headline.csv
+          runs_file: data/raw/runs.jsonl
+          additional_runs_dep: data/raw/runs.jsonl
+          weighting: invsqrt_task_weight
+          title: Task-level success rates vs task length
+          n_subplot_cols: 3
+          horizontal_lines:
+          - p_success: 0.5
+            styling:
+              color: firebrick
+              linestyle: dashed
+              linewidth: 1.8
+              alpha: 0.7
+          x_lim_start: '2022-12-01'
+          x_lim_end: '2025-04-01'
+          lower_y_lim: 0
+          upper_y_lim: 1
+          exclude: []
+          include_agents:
+          - o3 (Inspect)
+          - o1 (Inspect)
+          - GPT-5 (Inspect)
+          - Gemini 3 Pro
+          - GPT-5.1-Codex-Max (Inspect)
+          - Claude Opus 4.6 (Inspect)
+          - Claude Opus 4.5 (Inspect)
+          - GPT-5.2
+          - Claude 4 Opus (Inspect)
+          - Claude 4.1 Opus (Inspect)
+          - Claude 3.7 Sonnet (Inspect)
+          - Claude 3.5 Sonnet (New) (Inspect)
+          - Claude 3.5 Sonnet (Old) (Inspect)
+          - Claude 3 Opus (Inspect)
+          - GPT-4o (Inspect)
+          - GPT-4 Turbo (Inspect)
+          - GPT-4 1106 (Inspect)
+          - o1-preview
+          - GPT-4 0314
+          - Gemini 3 Pro
+          display_mode: scatter
+          point_size_scale: 100
+          alpha: 0.5
+    outs:
+    - path: plots/individual_histograms/scatter_default/histograms.png
+      hash: md5
+      md5: d0db69c135b48233ed0be04c561ffc1d
+      size: 1234615
+  plot_bootstrap_ci@headline:
+    cmd: python -m horizon.plot.bootstrap_ci --fig-name headline --input-file 
+      data/wrangled/bootstrap/headline.csv --agent-summaries-file 
+      data/wrangled/logistic_fits/headline.csv --release-dates 
+      ../../data/external/release_dates.yaml --output-file 
+      plots/bootstrap/headline.png --log-level INFO --y-scale log
+    deps:
+    - path: ../../data/external/release_dates.yaml
+      hash: md5
+      md5: ab22e7d1436da09901b454e60a77335e
+      size: 2442
+    - path: ../../src/horizon/plot/bootstrap_ci.py
+      hash: md5
+      md5: 2fabeaf75cc924d4365108fe9097c7c2
+      size: 33873
+    - path: ../../src/horizon/plot/logistic.py
+      hash: md5
+      md5: ef1ab4210b2eb452311a3337d1372198
+      size: 24388
+    - path: data/wrangled/bootstrap/headline.csv
+      hash: md5
+      md5: 36f71641cff00d67da81d6fef5014c3b
+      size: 774825
+    - path: data/wrangled/logistic_fits/headline.csv
+      hash: md5
+      md5: b5c921dee08314b6bf61d0b9cd00a1ca
+      size: 3895
+    - path: matplotlibrc
+      hash: md5
+      md5: a6268afa6b0de2d0f934ff95c60851e4
+      size: 553
+    params:
+      params.yaml:
+        log_level: INFO
+        plot_format: png
+        plots:
+          suptitle_fontsize: 13
+          xlabelpad: 10
+          ylabelpad: 10
+          ax_label_fontsize: 14
+          title_fontsize: 16
+          annotation_fontsize: 14
+          xtick_labelsize: 14
+          ytick_labelsize: 14
+          legend_fontsize: 14
+          task_distribution_styling:
+            hist:
+              edgecolor: '#a6a6a6'
+              color: '#d4d4d4'
+              alpha: 1
+              linewidth: 1
+              zorder: 50
+            grid: &id018
+              which: major
+              linestyle: '-'
+              alpha: 0.2
+              color: grey
+          scatter_styling:
+            error_bar:
+              color: grey
+              fmt: none
+              capsize: 2
+              alpha: 1
+              zorder: 9
+              linewidth: 1.5
+              capthick: 1.5
+            grid: *id018
+            scatter:
+              s: 150
+              edgecolor: black
+              linewidth: 0.5
+              zorder: 10
+          agent_styling:
+            Gemini 3 Pro:
+              lab_color: '#4285F4'
+              marker: p
+              unique_color: '#4285F4'
+            Claude 4 Opus (Inspect):
+              lab_color: '#d97757'
+              marker: '*'
+              unique_color: '#9C5EDA'
+            Claude 4.1 Opus (Inspect):
+              lab_color: '#d97757'
+              marker: h
+              unique_color: '#A86ED9'
+            Claude Opus 4.5 (Inspect):
+              lab_color: '#d97757'
+              marker: '>'
+              unique_color: '#9C5EDA'
+            Claude Opus 4.6 (Inspect):
+              lab_color: '#d97757'
+              marker: <
+              unique_color: '#8A4ED0'
+            Claude 3.7 Sonnet (Inspect):
+              lab_color: '#d97757'
+              marker: D
+              unique_color: '#9C5EDA'
+            Claude 3.5 Sonnet (New) (Inspect):
+              lab_color: '#d97757'
+              marker: s
+              unique_color: '#8B4DC9'
+            Claude 3.5 Sonnet (Old) (Inspect):
+              lab_color: '#d97757'
+              marker: ^
+              unique_color: '#9B6BE0'
+            Claude 3 Opus (Inspect):
+              lab_color: '#d97757'
+              marker: o
+              unique_color: '#B594E8'
+            o3 (Inspect):
+              lab_color: '#18a683'
+              marker: '*'
+              unique_color: '#42AB42'
+            GPT-5 (Inspect):
+              lab_color: '#18a683'
+              marker: p
+              unique_color: '#5AB2FA'
+            GPT-5.1-Codex-Max (Inspect):
+              lab_color: '#18a683'
+              marker: '>'
+              unique_color: '#5AB2FA'
+            GPT-5.2:
+              lab_color: '#18a683'
+              marker: o
+              unique_color: '#4AA0E8'
+            GPT-5.3-Codex:
+              lab_color: '#18a683'
+              marker: H
+              unique_color: '#3A90D8'
+            o1 (Inspect):
+              lab_color: '#18a683'
+              marker: P
+              unique_color: '#228B22'
+            o1-preview (Inspect):
+              lab_color: '#18a683'
+              marker: X
+              unique_color: '#3CB371'
+            GPT-4o (Inspect):
+              lab_color: '#18a683'
+              marker: d
+              unique_color: '#2B8FB0'
+            GPT-4 Turbo (Inspect):
+              lab_color: '#18a683'
+              marker: v
+              unique_color: '#4A9CBD'
+            GPT-4 1106 (Inspect):
+              lab_color: '#18a683'
+              marker: D
+              unique_color: '#87CEEB'
+            gpt-3.5-turbo-instruct (Inspect):
+              lab_color: '#18a683'
+              marker: ^
+              unique_color: '#CCE6FF'
+            davinci-002 (GPT-3) (Inspect):
+              lab_color: '#18a683'
+              marker: o
+              unique_color: '#B3E0FF'
+            GPT-2 (Inspect):
+              lab_color: '#18a683'
+              marker: '*'
+              unique_color: '#CCE6FF'
+            GPT-2:
+              lab_color: '#18a683'
+              marker: '*'
+              unique_color: '#CCE6FF'
+            o1-preview:
+              lab_color: '#18a683'
+              marker: D
+              unique_color: '#42AB42'
+            GPT-4 0314:
+              lab_color: '#18a683'
+              marker: '*'
+              unique_color: '#2B8FB0'
+            human:
+              lab_color: grey
+              marker: o
+              unique_color: '#858585'
+            best human for each task:
+              lab_color: gold
+              marker: o
+              unique_color: '#FFD700'
+            default:
+              lab_color: black
+              marker: o
+              unique_color: black
+          performance_over_time_trendline_styling:
+            exponential:
+              line:
+                color: blue
+                alpha: 0.5
+                linewidth: 2
+          legend_order:
+          - Claude Opus 4.6 (Inspect)
+          - Claude Opus 4.5 (Inspect)
+          - Claude 4 Opus (Inspect)
+          - Claude 4.1 Opus (Inspect)
+          - Gemini 3 Pro
+          - Claude 3.7 Sonnet (Inspect)
+          - Claude 3.5 Sonnet (New) (Inspect)
+          - Claude 3.5 Sonnet (Old) (Inspect)
+          - Claude 3 Opus (Inspect)
+          - GPT-4 1106 (Inspect)
+          - GPT-4o (Inspect)
+          - o1-preview
+          - GPT-4 0314
+          - GPT-4 Turbo (Inspect)
+          - GPT-2
+          - o3 (Inspect)
+          - o1 (Inspect)
+          - GPT-5 (Inspect)
+          - GPT-5.1-Codex-Max (Inspect)
+          - GPT-5.2
+          - GPT-5.3-Codex
+          score_over_resource_line:
+            y_params:
+              equal_task_weight:
+                y_col_lims:
+                - 0
+                - 1
+                y_label: Weighted Success Rate
+                subtitle: Weighting Tasks Equally
+              invsqrt_task_weight:
+                y_col_lims:
+                - 0
+                - 1
+                y_label: Weighted Success Rate
+                subtitle: Weighted by Task Diversity
+              p50:
+                y_col_lims:
+                - 0.5
+                - 1920
+                y_label: 50% Time Horizon
+                subtitle: 50% Time Horizon
+            x_params:
+              generation_cost:
+                by_title: by Cost
+                x_label: Max Cost per Run ($)
+                x_col_lims:
+                - 0.001
+                - 10000
+              action_count:
+                by_title: by Actions
+                x_label: Max Actions per Run
+                x_col_lims:
+                - 0.001
+                - 10000
+              tokens_count:
+                by_title: by Token Count
+                x_label: Allowed Tokens per Run
+                x_col_lims:
+                - 1000
+                - 100000000
+      fig_params/figs.yaml:
+        comparison_color_1: '#56B4E9'
+        comparison_color_2: '#E69F00'
+        figs.plot_logistic_regression.headline:
+          runs_file: data/raw/runs.jsonl
+          additional_runs_dep: data/raw/runs.jsonl
+          weighting: invsqrt_task_weight
+          categories: ftr
+          regularization: 1e-05
+          exclude: []
+          success_percents:
+          - 50
+          - 80
+          confidence_level: 0.95
+          logistic_file: headline
+          trendlines:
+          - fit_type: exponential
+            caption:
+            after_date: '2023-01-01'
+            color: blue
+            line_start_date: '2022-01-01'
+            line_end_date: '2027-06-01'
+            display_r_squared: true
+            styling:
+            data_file:
+            skip_annotation: false
+          include_task_distribution: none
+          individual_labels: true
+          x_lim_start: '2022-11-01'
+          x_lim_end: '2026-07-01'
+          lower_y_lim: 0.0083333
+          upper_y_lim: 1920
+          linear_overrides:
+            show_minor_xticks: false
+            lower_y_lim: 0
+            plot_style_overrides:
+              scatter_styling:
+                error_bar:
+                  alpha: 0.5
+                  capsize: 0
+          exclude_agents:
+          - Claude 3 Opus (Inspect)
+          - GPT-4 Turbo (Inspect)
+          - Claude 4 Opus (Inspect)
+          - GPT-5.1-Codex-Max (Inspect)
+          - Claude 4.1 Opus (Inspect)
+          exclude_agents_from_all_fits: []
+          title: Length of tasks AI agents have been able to complete 
+            autonomously
+          subtitle: for 228 software engineering, cybersecurity, general 
+            reasoning, and ML tasks
+          rename_legend_labels:
+            davinci-002 (GPT-3) (Inspect): GPT 3
+            gpt-3.5-turbo-instruct (Inspect): GPT 3.5
+            GPT-4o (Inspect): GPT 4o
+            GPT-4 0314: GPT-4
+            o1-preview: o1-preview
+            Claude 4 Opus (Inspect): Opus 4 (Inspect)
+            Claude 4.1 Opus (Inspect): Opus 4.1 (Inspect)
+            Claude Opus 4.6 (Inspect): Opus 4.6 (Inspect)
+            Claude 3.7 Sonnet (Inspect): Sonnet 3.7 (Inspect)
+            Claude 3.5 Sonnet (New) (Inspect): Sonnet 3.6 (Inspect)
+            Claude 3.5 Sonnet (Old) (Inspect): Sonnet 3.5 (Inspect)
+            Claude 3 Opus (Inspect): Opus 3 (Inspect)
+            o3 (Inspect): o3
+            o1 (Inspect): o1
+            o1-preview (Inspect): o1 preview
+            GPT-5 (Inspect): GPT 5
+            GPT-4 Turbo (Inspect): GPT 4 Turbo
+            GPT-4 1106 (Inspect): GPT 4 Nov '23
+            GPT-2 (Inspect): GPT 2
+            GPT-5.1-Codex-Max (Inspect): GPT-5.1-Codex-Max
+            Claude Opus 4.5 (Inspect): Claude Opus 4.5
+            GPT-5.2: GPT-5.2 (high)
+          show_y_label: true
+    outs:
+    - path: plots/bootstrap/headline.png
+      hash: md5
+      md5: d256efe2b2368a9a176cf46985a12516
+      size: 175698

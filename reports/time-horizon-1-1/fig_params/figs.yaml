@@ -217,7 +217,7 @@ figs:
         "Claude Opus 4.6 (Inspect)": "Claude Opus 4.6"
         "Claude 3.7 Sonnet (Inspect)": "Sonnet 3.7"
         "GPT-5.2": "GPT-5.2 (high)"
-      title: "Claude Opus 4.6 has a 50%-time-horizon of about 14.5 hours (95% CI: 6 hrs to 98 hrs)"
+      title: "Claude Opus 4.6 has a 50%-time-horizon of about 12 hours (95% CI: 5 hrs to 66 hrs)"
       subtitle: "Task length (at 50% success rate)"
       # Override trendlines to add grey historical reference lines
       # Comment out trendlines 2 or 3 to disable them

@@ -9,18 +9,22 @@ stages:
       hash: md5
       md5: 4b59099376fb2e57ca58422fa398ef07
       size: 4768
+    - path: ../../src/horizon/load_runs.py
+      hash: md5
+      md5: dc1060094a827042e16ddc4c336f5936
+      size: 1998
     - path: ../../src/horizon/utils/logistic.py
       hash: md5
       md5: ae23e24e9ab314fc28cd59d958f85165
       size: 2485
     - path: ../../src/horizon/wrangle/bootstrap.py
       hash: md5
-      md5: f9395d50909ea3d225eb8c0e7efaf213
-      size: 12018
+      md5: e47348c68043c4334fb46b44e8611999
+      size: 12152
     - path: data/raw/runs.jsonl
       hash: md5
-      md5: 19085f84231e4e8e010f87c3370b2fa6
-      size: 23466094
+      md5: 50ae5e0bdc42280f363572d6cded9f88
+      size: 24022538
     params:
       params.yaml:
         n_bootstrap: 1000
@@ -29,7 +33,7 @@ stages:
           runs_file: data/raw/runs.jsonl
           weighting: invsqrt_task_weight
           categories: ftr
-          regularization: 0.1
+          regularization: 1e-05
           exclude: []
           success_percents:
           - 50
@@ -38,8 +42,8 @@ stages:
     outs:
     - path: data/wrangled/bootstrap/headline.csv
       hash: md5
-      md5: 9427d0fe5c110d28902036c8ae43ad5c
-      size: 1263161
+      md5: 70b8248c140b932febea95f05e941216
+      size: 1259825
   wrangle_logistic_regression@headline:
     cmd: python -m horizon.wrangle.logistic --fig-name headline --runs-file 
       data/raw/runs.jsonl --output-logistic-fits-file 
@@ -50,35 +54,39 @@ stages:
     deps:
     - path: ../../data/external/release_dates.yaml
       hash: md5
-      md5: 4fe0fadb5914a33c457f78f6bbc024e9
-      size: 2310
+      md5: ab22e7d1436da09901b454e60a77335e
+      size: 2442
     - path: ../../src/horizon/compute_task_weights.py
       hash: md5
       md5: 4b59099376fb2e57ca58422fa398ef07
       size: 4768
+    - path: ../../src/horizon/load_runs.py
+      hash: md5
+      md5: dc1060094a827042e16ddc4c336f5936
+      size: 1998
     - path: ../../src/horizon/utils/logistic.py
       hash: md5
       md5: ae23e24e9ab314fc28cd59d958f85165
       size: 2485
     - path: ../../src/horizon/wrangle/logistic.py
       hash: md5
-      md5: 77cbb33cf41510ba88f1fab2663d5ebe
-      size: 11133
+      md5: 3beb7fc48a4dc0cd521b2986d08a9b32
+      size: 11316
     - path: data/raw/runs.jsonl
       hash: md5
-      md5: 19085f84231e4e8e010f87c3370b2fa6
-      size: 23466094
+      md5: 50ae5e0bdc42280f363572d6cded9f88
+      size: 24022538
     - path: data/wrangled/bootstrap/headline.csv
       hash: md5
-      md5: 9427d0fe5c110d28902036c8ae43ad5c
-      size: 1263161
+      md5: 70b8248c140b932febea95f05e941216
+      size: 1259825
     params:
       fig_params/figs.yaml:
         figs.wrangle_logistic.headline:
           runs_file: data/raw/runs.jsonl
           weighting: invsqrt_task_weight
           categories: ftr
-          regularization: 0.1
+          regularization: 1e-05
           exclude: []
           success_percents:
           - 50
@@ -87,12 +95,12 @@ stages:
     outs:
     - path: data/wrangled/logistic_fits/headline.csv
       hash: md5
-      md5: 06f2e55e82d0fba5dfc9904a2c10534b
-      size: 5773
+      md5: 68b91bde90c961395b04534a33a8a4cd
+      size: 5786
     - path: metrics/logistic_fits/headline.yaml
       hash: md5
-      md5: d9f07f18df9cd0b26a08fbe8a7bf2d1a
-      size: 7754
+      md5: fbd5e325c780ca1d37d973492158b97e
+      size: 7757
   generate_agent_summary:
     cmd: python ../../src/horizon/agent_summary.py --input-file 
       data/raw/runs.jsonl --output-file-prefix metrics/agent_summary.csv 
@@ -104,8 +112,8 @@ stages:
       size: 3614
     - path: data/raw/runs.jsonl
       hash: md5
-      md5: 19085f84231e4e8e010f87c3370b2fa6
-      size: 23466094
+      md5: 50ae5e0bdc42280f363572d6cded9f88
+      size: 24022538
     params:
       params.yaml:
         agent_summary.agents:
@@ -149,16 +157,16 @@ stages:
       size: 17407
     - path: metrics/agent_summary_averages.csv
       hash: md5
-      md5: 26a6071ca6ad2457f1794fd4750ab68f
-      size: 29051
+      md5: d396dd11588bcd5c4fc08d5548a178db
+      size: 29049
     - path: metrics/agent_summary_nonzero.csv
       hash: md5
-      md5: f59b6ce4dfbd107d663814ca3f068af2
+      md5: f1a65a06dbda67c71ea18d19e82f3a57
       size: 15606
     - path: metrics/scores_by_agent_and_task.yaml
       hash: md5
-      md5: d738ec11a87d591676298dcf112b5898
-      size: 174603
+      md5: 682e1bd8417a6d3cde89227bc4c1f013
+      size: 174591
   wrangle_bootstrap_logistic@ga_rebench:
     cmd: python -m horizon.wrangle.bootstrap --fig-name ga_rebench --runs-file 
       data/raw/runs.jsonl --output-bootstrap-horizons-file 
@@ -168,18 +176,22 @@ stages:
       hash: md5
       md5: 4b59099376fb2e57ca58422fa398ef07
       size: 4768
+    - path: ../../src/horizon/load_runs.py
+      hash: md5
+      md5: dc1060094a827042e16ddc4c336f5936
+      size: 1998
     - path: ../../src/horizon/utils/logistic.py
       hash: md5
       md5: ae23e24e9ab314fc28cd59d958f85165
       size: 2485
     - path: ../../src/horizon/wrangle/bootstrap.py
       hash: md5
-      md5: f9395d50909ea3d225eb8c0e7efaf213
-      size: 12018
+      md5: e47348c68043c4334fb46b44e8611999
+      size: 12152
     - path: data/raw/runs.jsonl
       hash: md5
-      md5: 19085f84231e4e8e010f87c3370b2fa6
-      size: 23466094
+      md5: 50ae5e0bdc42280f363572d6cded9f88
+      size: 24022538
     params:
       params.yaml:
         n_bootstrap: 1000
@@ -188,7 +200,7 @@ stages:
           runs_file: data/raw/runs.jsonl
           weighting: invsqrt_task_weight
           categories: ftr
-          regularization: 0.1
+          regularization: 1e-05
           exclude:
           - SWAA
           success_percents:
@@ -197,8 +209,8 @@ stages:
     outs:
     - path: data/wrangled/bootstrap/ga_rebench.csv
       hash: md5
-      md5: 41b6a90349a3a5a8a5f9a746a95960d7
-      size: 591256
+      md5: ea6bf761d8f4475770b48efe985d4388
+      size: 588737
   wrangle_bootstrap_logistic@partial_scoring:
     cmd: python -m horizon.wrangle.bootstrap --fig-name partial_scoring 
       --runs-file data/raw/runs.jsonl --output-bootstrap-horizons-file 
@@ -208,18 +220,22 @@ stages:
       hash: md5
       md5: 4b59099376fb2e57ca58422fa398ef07
       size: 4768
+    - path: ../../src/horizon/load_runs.py
+      hash: md5
+      md5: dc1060094a827042e16ddc4c336f5936
+      size: 1998
     - path: ../../src/horizon/utils/logistic.py
       hash: md5
       md5: ae23e24e9ab314fc28cd59d958f85165
       size: 2485
     - path: ../../src/horizon/wrangle/bootstrap.py
       hash: md5
-      md5: f9395d50909ea3d225eb8c0e7efaf213
-      size: 12018
+      md5: e47348c68043c4334fb46b44e8611999
+      size: 12152
     - path: data/raw/runs.jsonl
       hash: md5
-      md5: 19085f84231e4e8e010f87c3370b2fa6
-      size: 23466094
+      md5: 50ae5e0bdc42280f363572d6cded9f88
+      size: 24022538
     params:
       params.yaml:
         n_bootstrap: 1000
@@ -228,7 +244,7 @@ stages:
           runs_file: data/raw/runs.jsonl
           weighting: invsqrt_task_weight
           categories: ftr
-          regularization: 0.1
+          regularization: 1e-05
           exclude: []
           success_percents:
           - 50
@@ -238,8 +254,8 @@ stages:
     outs:
     - path: data/wrangled/bootstrap/partial_scoring.csv
       hash: md5
-      md5: 2449cfb43fd24a4307c66ec6823be445
-      size: 1263840
+      md5: 9364cb2838ccb14ccea1ec868cf45d0f
+      size: 1261519
   wrangle_logistic_regression@ga_rebench:
     cmd: python -m horizon.wrangle.logistic --fig-name ga_rebench --runs-file 
       data/raw/runs.jsonl --output-logistic-fits-file 
@@ -250,35 +266,39 @@ stages:
     deps:
     - path: ../../data/external/release_dates.yaml
       hash: md5
-      md5: 4fe0fadb5914a33c457f78f6bbc024e9
-      size: 2310
+      md5: ab22e7d1436da09901b454e60a77335e
+      size: 2442
     - path: ../../src/horizon/compute_task_weights.py
       hash: md5
       md5: 4b59099376fb2e57ca58422fa398ef07
       size: 4768
+    - path: ../../src/horizon/load_runs.py
+      hash: md5
+      md5: dc1060094a827042e16ddc4c336f5936
+      size: 1998
     - path: ../../src/horizon/utils/logistic.py
       hash: md5
       md5: ae23e24e9ab314fc28cd59d958f85165
       size: 2485
     - path: ../../src/horizon/wrangle/logistic.py
       hash: md5
-      md5: 77cbb33cf41510ba88f1fab2663d5ebe
-      size: 11133
+      md5: 3beb7fc48a4dc0cd521b2986d08a9b32
+      size: 11316
     - path: data/raw/runs.jsonl
       hash: md5
-      md5: 19085f84231e4e8e010f87c3370b2fa6
-      size: 23466094
+      md5: 50ae5e0bdc42280f363572d6cded9f88
+      size: 24022538
     - path: data/wrangled/bootstrap/ga_rebench.csv
       hash: md5
-      md5: 41b6a90349a3a5a8a5f9a746a95960d7
-      size: 591256
+      md5: ea6bf761d8f4475770b48efe985d4388
+      size: 588737
     params:
       fig_params/figs.yaml:
         figs.wrangle_logistic.ga_rebench:
           runs_file: data/raw/runs.jsonl
           weighting: invsqrt_task_weight
           categories: ftr
-          regularization: 0.1
+          regularization: 1e-05
           exclude:
           - SWAA
           success_percents:
@@ -287,12 +307,12 @@ stages:
     outs:
     - path: data/wrangled/logistic_fits/ga_rebench.csv
       hash: md5
-      md5: 72e9d28c806cf75c857c44e481426ab6
-      size: 4727
+      md5: 7185b1e9cd9347d42d9bde19092192be
+      size: 4744
     - path: metrics/logistic_fits/ga_rebench.yaml
       hash: md5
-      md5: cd06f13e2067aad3674d30b8c7abcbd1
-      size: 7743
+      md5: c625c3daa537e743b9ff5b9aae87aa7a
+      size: 7744
   wrangle_logistic_regression@partial_scoring:
     cmd: python -m horizon.wrangle.logistic --fig-name partial_scoring 
       --runs-file data/raw/runs.jsonl --output-logistic-fits-file 
@@ -303,35 +323,39 @@ stages:
     deps:
     - path: ../../data/external/release_dates.yaml
       hash: md5
-      md5: 4fe0fadb5914a33c457f78f6bbc024e9
-      size: 2310
+      md5: ab22e7d1436da09901b454e60a77335e
+      size: 2442
     - path: ../../src/horizon/compute_task_weights.py
       hash: md5
       md5: 4b59099376fb2e57ca58422fa398ef07
       size: 4768
+    - path: ../../src/horizon/load_runs.py
+      hash: md5
+      md5: dc1060094a827042e16ddc4c336f5936
+      size: 1998
     - path: ../../src/horizon/utils/logistic.py
       hash: md5
       md5: ae23e24e9ab314fc28cd59d958f85165
       size: 2485
     - path: ../../src/horizon/wrangle/logistic.py
       hash: md5
-      md5: 77cbb33cf41510ba88f1fab2663d5ebe
-      size: 11133
+      md5: 3beb7fc48a4dc0cd521b2986d08a9b32
+      size: 11316
     - path: data/raw/runs.jsonl
       hash: md5
-      md5: 19085f84231e4e8e010f87c3370b2fa6
-      size: 23466094
+      md5: 50ae5e0bdc42280f363572d6cded9f88
+      size: 24022538
     - path: data/wrangled/bootstrap/partial_scoring.csv
       hash: md5
-      md5: 2449cfb43fd24a4307c66ec6823be445
-      size: 1263840
+      md5: 9364cb2838ccb14ccea1ec868cf45d0f
+      size: 1261519
     params:
       fig_params/figs.yaml:
         figs.wrangle_logistic.partial_scoring:
           runs_file: data/raw/runs.jsonl
           weighting: invsqrt_task_weight
           categories: ftr
-          regularization: 0.1
+          regularization: 1e-05
           exclude: []
           success_percents:
           - 50
@@ -341,12 +365,12 @@ stages:
     outs:
     - path: data/wrangled/logistic_fits/partial_scoring.csv
       hash: md5
-      md5: 738bc383f06882e5f3dccb3b9c8903e7
-      size: 6016
+      md5: 2fb12076218e767b2042db05958b7629
+      size: 6012
     - path: metrics/logistic_fits/partial_scoring.yaml
       hash: md5
-      md5: f5f54d3e1a0587bec2cc3ba9aab4d799
-      size: 7833
+      md5: d8b8117c9477515411c5df90afd73b27
+      size: 7836
   plot_bar_chart_weighted_scores:
     cmd: python -m horizon.plot.bar_chart_weighted_scores --fig-name headline 
       --metrics-file data/wrangled/logistic_fits/headline.csv --release-dates 
@@ -355,8 +379,8 @@ stages:
     deps:
     - path: ../../data/external/release_dates.yaml
       hash: md5
-      md5: 4fe0fadb5914a33c457f78f6bbc024e9
-      size: 2310
+      md5: ab22e7d1436da09901b454e60a77335e
+      size: 2442
     - path: ../../src/horizon/plot/bar_chart_weighted_scores.py
       hash: md5
       md5: b95635e523ae8ac90cf8741a3df3713f
@@ -367,8 +391,8 @@ stages:
       size: 11883
     - path: data/wrangled/logistic_fits/headline.csv
       hash: md5
-      md5: 06f2e55e82d0fba5dfc9904a2c10534b
-      size: 5773
+      md5: 68b91bde90c961395b04534a33a8a4cd
+      size: 5786
     params:
       params.yaml:
         log_level: INFO
@@ -677,8 +701,8 @@ stages:
     outs:
     - path: plots/bar_chart_weighted_scores/headline.png
       hash: md5
-      md5: 66f927b6870e1637ce3adc3178e7ed7d
-      size: 134598
+      md5: 7d12a8f32afebe159a080cf40c020c0c
+      size: 112348
   plot_bar_chart:
     cmd: python -m horizon.plot.bar_chart_p50 --input-file 
       data/wrangled/logistic_fits/ga_rebench.csv --output-file 
@@ -690,8 +714,8 @@ stages:
       size: 5370
     - path: data/wrangled/logistic_fits/ga_rebench.csv
       hash: md5
-      md5: 72e9d28c806cf75c857c44e481426ab6
-      size: 4727
+      md5: 7185b1e9cd9347d42d9bde19092192be
+      size: 4744
     params:
       params.yaml:
         log_level: INFO
@@ -711,8 +735,8 @@ stages:
     outs:
     - path: plots/bar_chart.png
       hash: md5
-      md5: 2f75cfb506dd9d90038cb0995f916585
-      size: 67265
+      md5: 9a5676fd8005f2dbf91610d6b063e3f0
+      size: 59034
   plot_individual_histograms@default:
     cmd: python -m horizon.plot.individual_histograms --all-runs-file 
       data/raw/runs.jsonl --output-file 
@@ -720,22 +744,26 @@ stages:
       --log-level INFO --script-parameter-group default --params-file 
       "params.yaml"
     deps:
+    - path: ../../src/horizon/load_runs.py
+      hash: md5
+      md5: dc1060094a827042e16ddc4c336f5936
+      size: 1998
     - path: ../../src/horizon/plot/individual_histograms.py
       hash: md5
-      md5: cf46f7360675d770c5daccb9622cdf29
-      size: 15468
+      md5: 3619422402ea3add986ed87babf4e82f
+      size: 17959
     - path: ../../src/horizon/utils/plots.py
       hash: md5
       md5: 00deb4fc0dfb155171937c382ea95f9e
       size: 11883
     - path: data/raw/runs.jsonl
       hash: md5
-      md5: 19085f84231e4e8e010f87c3370b2fa6
-      size: 23466094
+      md5: 50ae5e0bdc42280f363572d6cded9f88
+      size: 24022538
     - path: data/wrangled/logistic_fits/headline.csv
       hash: md5
-      md5: 06f2e55e82d0fba5dfc9904a2c10534b
-      size: 5773
+      md5: 68b91bde90c961395b04534a33a8a4cd
+      size: 5786
     - path: matplotlibrc
       hash: md5
       md5: a6268afa6b0de2d0f934ff95c60851e4
@@ -1056,8 +1084,8 @@ stages:
     outs:
     - path: plots/individual_histograms/default/histograms.png
       hash: md5
-      md5: ea98eca315aac1c2e6a3fd7a68d44699
-      size: 768353
+      md5: d105c09eb167d3a71036f76c180fcfa3
+      size: 709659
   plot_individual_histograms@overlaid:
     cmd: python -m horizon.plot.individual_histograms --all-runs-file 
       data/raw/runs.jsonl --output-file 
@@ -1065,22 +1093,26 @@ stages:
       --log-level INFO --script-parameter-group overlaid --params-file 
       "params.yaml"
     deps:
+    - path: ../../src/horizon/load_runs.py
+      hash: md5
+      md5: dc1060094a827042e16ddc4c336f5936
+      size: 1998
     - path: ../../src/horizon/plot/individual_histograms.py
       hash: md5
-      md5: cf46f7360675d770c5daccb9622cdf29
-      size: 15468
+      md5: 3619422402ea3add986ed87babf4e82f
+      size: 17959
     - path: ../../src/horizon/utils/plots.py
       hash: md5
       md5: 00deb4fc0dfb155171937c382ea95f9e
       size: 11883
     - path: data/raw/runs.jsonl
       hash: md5
-      md5: 19085f84231e4e8e010f87c3370b2fa6
-      size: 23466094
+      md5: 50ae5e0bdc42280f363572d6cded9f88
+      size: 24022538
     - path: data/wrangled/logistic_fits/headline.csv
       hash: md5
-      md5: 06f2e55e82d0fba5dfc9904a2c10534b
-      size: 5773
+      md5: 68b91bde90c961395b04534a33a8a4cd
+      size: 5786
     - path: matplotlibrc
       hash: md5
       md5: a6268afa6b0de2d0f934ff95c60851e4
@@ -1388,8 +1420,8 @@ stages:
     outs:
     - path: plots/individual_histograms/overlaid/histograms.png
       hash: md5
-      md5: 6cfccdf5be6291728f4405b34e45b8ab
-      size: 147822
+      md5: 9d097b8cc18e8d1155da2c3f31f63ae1
+      size: 133706
   plot_logistic_regression@double_line_all_data_retrodict_excluding_swaa:
     cmd: python -m horizon.plot.logistic --input-file 
       data/wrangled/logistic_fits/headline.csv --runs-file data/raw/runs.jsonl 
@@ -1400,24 +1432,24 @@ stages:
     deps:
     - path: ../../data/external/release_dates.yaml
       hash: md5
-      md5: 4fe0fadb5914a33c457f78f6bbc024e9
-      size: 2310
+      md5: ab22e7d1436da09901b454e60a77335e
+      size: 2442
     - path: ../../src/horizon/plot/logistic.py
       hash: md5
-      md5: ea59a86b905d807439c509f9b18cc9a8
-      size: 23052
+      md5: ef1ab4210b2eb452311a3337d1372198
+      size: 24388
     - path: ../../src/horizon/utils/plots.py
       hash: md5
       md5: 00deb4fc0dfb155171937c382ea95f9e
       size: 11883
     - path: data/raw/runs.jsonl
       hash: md5
-      md5: 19085f84231e4e8e010f87c3370b2fa6
-      size: 23466094
+      md5: 50ae5e0bdc42280f363572d6cded9f88
+      size: 24022538
     - path: data/wrangled/logistic_fits/headline.csv
       hash: md5
-      md5: 06f2e55e82d0fba5dfc9904a2c10534b
-      size: 5773
+      md5: 68b91bde90c961395b04534a33a8a4cd
+      size: 5786
     - path: matplotlibrc
       hash: md5
       md5: a6268afa6b0de2d0f934ff95c60851e4
@@ -1771,8 +1803,8 @@ stages:
     outs:
     - path: plots/logistic/double_line_all_data_retrodict_excluding_swaa.png
       hash: md5
-      md5: 57158539532b05ff06e4c83baaa218eb
-      size: 201907
+      md5: 52f4a60a5bdacee1362939a33421878a
+      size: 163510
   plot_logistic_regression@p80:
     cmd: python -m horizon.plot.logistic --input-file 
       data/wrangled/logistic_fits/headline.csv --runs-file data/raw/runs.jsonl 
@@ -1781,24 +1813,24 @@ stages:
     deps:
     - path: ../../data/external/release_dates.yaml
       hash: md5
-      md5: 4fe0fadb5914a33c457f78f6bbc024e9
-      size: 2310
+      md5: ab22e7d1436da09901b454e60a77335e
+      size: 2442
     - path: ../../src/horizon/plot/logistic.py
       hash: md5
-      md5: ea59a86b905d807439c509f9b18cc9a8
-      size: 23052
+      md5: ef1ab4210b2eb452311a3337d1372198
+      size: 24388
     - path: ../../src/horizon/utils/plots.py
       hash: md5
       md5: 00deb4fc0dfb155171937c382ea95f9e
       size: 11883
     - path: data/raw/runs.jsonl
       hash: md5
-      md5: 19085f84231e4e8e010f87c3370b2fa6
-      size: 23466094
+      md5: 50ae5e0bdc42280f363572d6cded9f88
+      size: 24022538
     - path: data/wrangled/logistic_fits/headline.csv
       hash: md5
-      md5: 06f2e55e82d0fba5dfc9904a2c10534b
-      size: 5773
+      md5: 68b91bde90c961395b04534a33a8a4cd
+      size: 5786
     - path: matplotlibrc
       hash: md5
       md5: a6268afa6b0de2d0f934ff95c60851e4
@@ -2081,7 +2113,7 @@ stages:
           runs_file: data/raw/runs.jsonl
           weighting: invsqrt_task_weight
           categories: ftr
-          regularization: 0.1
+          regularization: 1e-05
           exclude: []
           success_percents:
           - 50
@@ -2194,8 +2226,8 @@ stages:
     outs:
     - path: plots/logistic/p80.png
       hash: md5
-      md5: 856f6d359b7b2206d5b74c37d82956ef
-      size: 192220
+      md5: 98968d982c2c69c2faf9846a04af05ee
+      size: 165274
   plot_logistic_regression@single_line_2023_ga_rebench:
     cmd: python -m horizon.plot.logistic --input-file 
       data/wrangled/logistic_fits/ga_rebench.csv --runs-file data/raw/runs.jsonl
@@ -2205,24 +2237,24 @@ stages:
     deps:
     - path: ../../data/external/release_dates.yaml
       hash: md5
-      md5: 4fe0fadb5914a33c457f78f6bbc024e9
-      size: 2310
+      md5: ab22e7d1436da09901b454e60a77335e
+      size: 2442
     - path: ../../src/horizon/plot/logistic.py
       hash: md5
-      md5: ea59a86b905d807439c509f9b18cc9a8
-      size: 23052
+      md5: ef1ab4210b2eb452311a3337d1372198
+      size: 24388
     - path: ../../src/horizon/utils/plots.py
       hash: md5
       md5: 00deb4fc0dfb155171937c382ea95f9e
       size: 11883
     - path: data/raw/runs.jsonl
       hash: md5
-      md5: 19085f84231e4e8e010f87c3370b2fa6
-      size: 23466094
+      md5: 50ae5e0bdc42280f363572d6cded9f88
+      size: 24022538
     - path: data/wrangled/logistic_fits/ga_rebench.csv
       hash: md5
-      md5: 72e9d28c806cf75c857c44e481426ab6
-      size: 4727
+      md5: 7185b1e9cd9347d42d9bde19092192be
+      size: 4744
     - path: matplotlibrc
       hash: md5
       md5: a6268afa6b0de2d0f934ff95c60851e4
@@ -2563,8 +2595,8 @@ stages:
     outs:
     - path: plots/logistic/single_line_2023_ga_rebench.png
       hash: md5
-      md5: fb75c3b3015d328fd04fb090a8ec4978
-      size: 120814
+      md5: 1ee3fabc3e520d37b934d0e9968e1bd4
+      size: 103256
   plot_logistic_regression@partial_scoring:
     cmd: python -m horizon.plot.logistic --input-file 
       data/wrangled/logistic_fits/partial_scoring.csv --runs-file 
@@ -2574,24 +2606,24 @@ stages:
     deps:
     - path: ../../data/external/release_dates.yaml
       hash: md5
-      md5: 4fe0fadb5914a33c457f78f6bbc024e9
-      size: 2310
+      md5: ab22e7d1436da09901b454e60a77335e
+      size: 2442
     - path: ../../src/horizon/plot/logistic.py
       hash: md5
-      md5: ea59a86b905d807439c509f9b18cc9a8
-      size: 23052
+      md5: ef1ab4210b2eb452311a3337d1372198
+      size: 24388
     - path: ../../src/horizon/utils/plots.py
       hash: md5
       md5: 00deb4fc0dfb155171937c382ea95f9e
       size: 11883
     - path: data/raw/runs.jsonl
       hash: md5
-      md5: 19085f84231e4e8e010f87c3370b2fa6
-      size: 23466094
+      md5: 50ae5e0bdc42280f363572d6cded9f88
+      size: 24022538
     - path: data/wrangled/logistic_fits/partial_scoring.csv
       hash: md5
-      md5: 738bc383f06882e5f3dccb3b9c8903e7
-      size: 6016
+      md5: 2fb12076218e767b2042db05958b7629
+      size: 6012
     - path: matplotlibrc
       hash: md5
       md5: a6268afa6b0de2d0f934ff95c60851e4
@@ -2874,7 +2906,7 @@ stages:
           runs_file: data/raw/runs.jsonl
           weighting: invsqrt_task_weight
           categories: ftr
-          regularization: 0.1
+          regularization: 1e-05
           exclude: []
           success_percents:
           - 50
@@ -2973,8 +3005,8 @@ stages:
     outs:
     - path: plots/logistic/partial_scoring.png
       hash: md5
-      md5: bc230ac17df208079abb8f6f51b6a7e4
-      size: 170025
+      md5: f30339f8fc09010e0cf11553714fa7c0
+      size: 150048
   plot_logistic_regression@all_models:
     cmd: python -m horizon.plot.logistic --input-file 
       data/wrangled/logistic_fits/headline.csv --runs-file data/raw/runs.jsonl 
@@ -2984,24 +3016,24 @@ stages:
     deps:
     - path: ../../data/external/release_dates.yaml
       hash: md5
-      md5: 4fe0fadb5914a33c457f78f6bbc024e9
-      size: 2310
+      md5: ab22e7d1436da09901b454e60a77335e
+      size: 2442
     - path: ../../src/horizon/plot/logistic.py
       hash: md5
-      md5: ea59a86b905d807439c509f9b18cc9a8
-      size: 23052
+      md5: ef1ab4210b2eb452311a3337d1372198
+      size: 24388
     - path: ../../src/horizon/utils/plots.py
       hash: md5
       md5: 00deb4fc0dfb155171937c382ea95f9e
       size: 11883
     - path: data/raw/runs.jsonl
       hash: md5
-      md5: 19085f84231e4e8e010f87c3370b2fa6
-      size: 23466094
+      md5: 50ae5e0bdc42280f363572d6cded9f88
+      size: 24022538
     - path: data/wrangled/logistic_fits/headline.csv
       hash: md5
-      md5: 06f2e55e82d0fba5dfc9904a2c10534b
-      size: 5773
+      md5: 68b91bde90c961395b04534a33a8a4cd
+      size: 5786
     - path: matplotlibrc
       hash: md5
       md5: a6268afa6b0de2d0f934ff95c60851e4
@@ -3284,7 +3316,7 @@ stages:
           runs_file: data/raw/runs.jsonl
           weighting: invsqrt_task_weight
           categories: ftr
-          regularization: 0.1
+          regularization: 1e-05
           exclude: []
           success_percents:
           - 50
@@ -3368,8 +3400,8 @@ stages:
     outs:
     - path: plots/logistic/all_models.png
       hash: md5
-      md5: d77cc6e83cef008e2c6fe665f534be0e
-      size: 271783
+      md5: 38861b0546f887cfbeef49edc0223b6a
+      size: 228873
   plot_logistic_regression@double_line_2024_trendline:
     cmd: python -m horizon.plot.logistic --input-file 
       data/wrangled/logistic_fits/headline.csv --runs-file data/raw/runs.jsonl 
@@ -3790,28 +3822,28 @@ stages:
     deps:
     - path: ../../data/external/release_dates.yaml
       hash: md5
-      md5: 4fe0fadb5914a33c457f78f6bbc024e9
-      size: 2310
+      md5: ab22e7d1436da09901b454e60a77335e
+      size: 2442
     - path: ../../src/horizon/plot/bootstrap_ci.py
       hash: md5
-      md5: fc9af9ea2befa8ce4e0d8444c1ad4610
-      size: 27855
+      md5: 2fabeaf75cc924d4365108fe9097c7c2
+      size: 33873
     - path: ../../src/horizon/plot/logistic.py
       hash: md5
-      md5: ea59a86b905d807439c509f9b18cc9a8
-      size: 23052
+      md5: ef1ab4210b2eb452311a3337d1372198
+      size: 24388
     - path: ../time-horizon-1-1/metrics/benchmark_results.yaml
       hash: md5
-      md5: b4d5a142374b43a602c78e8adf345127
-      size: 10145
+      md5: 2edc8479d0d0c1e45c2252782fac1273
+      size: 14210
     - path: data/wrangled/bootstrap/headline.csv
       hash: md5
-      md5: 9427d0fe5c110d28902036c8ae43ad5c
-      size: 1263161
+      md5: 70b8248c140b932febea95f05e941216
+      size: 1259825
     - path: data/wrangled/logistic_fits/headline.csv
       hash: md5
-      md5: 06f2e55e82d0fba5dfc9904a2c10534b
-      size: 5773
+      md5: 68b91bde90c961395b04534a33a8a4cd
+      size: 5786
     - path: matplotlibrc
       hash: md5
       md5: a6268afa6b0de2d0f934ff95c60851e4
@@ -4096,7 +4128,7 @@ stages:
           runs_file: data/raw/runs.jsonl
           weighting: invsqrt_task_weight
           categories: ftr
-          regularization: 0.1
+          regularization: 1e-05
           exclude: []
           success_percents:
           - 50
@@ -4195,8 +4227,8 @@ stages:
     outs:
     - path: plots/bootstrap/headline-log.png
       hash: md5
-      md5: a85b985041b47e7920d813da67667356
-      size: 194669
+      md5: 1a816268a668875e53dc967ccb265ca0
+      size: 177132
   plot_bootstrap_ci@headline-linear:
     cmd: python -m horizon.plot.bootstrap_ci --fig-name headline --input-file 
       data/wrangled/bootstrap/headline.csv --agent-summaries-file 
@@ -4206,28 +4238,28 @@ stages:
     deps:
     - path: ../../data/external/release_dates.yaml
       hash: md5
-      md5: 4fe0fadb5914a33c457f78f6bbc024e9
-      size: 2310
+      md5: ab22e7d1436da09901b454e60a77335e
+      size: 2442
     - path: ../../src/horizon/plot/bootstrap_ci.py
       hash: md5
-      md5: fc9af9ea2befa8ce4e0d8444c1ad4610
-      size: 27855
+      md5: 2fabeaf75cc924d4365108fe9097c7c2
+      size: 33873
     - path: ../../src/horizon/plot/logistic.py
       hash: md5
-      md5: ea59a86b905d807439c509f9b18cc9a8
-      size: 23052
+      md5: ef1ab4210b2eb452311a3337d1372198
+      size: 24388
     - path: ../time-horizon-1-1/metrics/benchmark_results.yaml
       hash: md5
-      md5: b4d5a142374b43a602c78e8adf345127
-      size: 10145
+      md5: 2edc8479d0d0c1e45c2252782fac1273
+      size: 14210
     - path: data/wrangled/bootstrap/headline.csv
       hash: md5
-      md5: 9427d0fe5c110d28902036c8ae43ad5c
-      size: 1263161
+      md5: 70b8248c140b932febea95f05e941216
+      size: 1259825
     - path: data/wrangled/logistic_fits/headline.csv
       hash: md5
-      md5: 06f2e55e82d0fba5dfc9904a2c10534b
-      size: 5773
+      md5: 68b91bde90c961395b04534a33a8a4cd
+      size: 5786
     - path: matplotlibrc
       hash: md5
       md5: a6268afa6b0de2d0f934ff95c60851e4
@@ -4512,7 +4544,7 @@ stages:
           runs_file: data/raw/runs.jsonl
           weighting: invsqrt_task_weight
           categories: ftr
-          regularization: 0.1
+          regularization: 1e-05
           exclude: []
           success_percents:
           - 50
@@ -4611,8 +4643,8 @@ stages:
     outs:
     - path: plots/bootstrap/headline-linear.png
       hash: md5
-      md5: 30267561f0644defff8e401b2ce271fe
-      size: 158585
+      md5: a1b1bba6ca929cc78360033596b7ffd3
+      size: 139224
   plot_bootstrap_ci@twitter_headline-log:
     cmd: python -m horizon.plot.bootstrap_ci --fig-name twitter_headline 
       --input-file data/wrangled/bootstrap/headline.csv --agent-summaries-file 
@@ -4622,28 +4654,28 @@ stages:
     deps:
     - path: ../../data/external/release_dates.yaml
       hash: md5
-      md5: 4fe0fadb5914a33c457f78f6bbc024e9
-      size: 2310
+      md5: ab22e7d1436da09901b454e60a77335e
+      size: 2442
     - path: ../../src/horizon/plot/bootstrap_ci.py
       hash: md5
-      md5: fc9af9ea2befa8ce4e0d8444c1ad4610
-      size: 27855
+      md5: 2fabeaf75cc924d4365108fe9097c7c2
+      size: 33873
     - path: ../../src/horizon/plot/logistic.py
       hash: md5
-      md5: ea59a86b905d807439c509f9b18cc9a8
-      size: 23052
+      md5: ef1ab4210b2eb452311a3337d1372198
+      size: 24388
     - path: ../time-horizon-1-1/metrics/benchmark_results.yaml
       hash: md5
-      md5: b4d5a142374b43a602c78e8adf345127
-      size: 10145
+      md5: 2edc8479d0d0c1e45c2252782fac1273
+      size: 14210
     - path: data/wrangled/bootstrap/headline.csv
       hash: md5
-      md5: 9427d0fe5c110d28902036c8ae43ad5c
-      size: 1263161
+      md5: 70b8248c140b932febea95f05e941216
+      size: 1259825
     - path: data/wrangled/logistic_fits/headline.csv
       hash: md5
-      md5: 06f2e55e82d0fba5dfc9904a2c10534b
-      size: 5773
+      md5: 68b91bde90c961395b04534a33a8a4cd
+      size: 5786
     - path: matplotlibrc
       hash: md5
       md5: a6268afa6b0de2d0f934ff95c60851e4
@@ -4928,7 +4960,7 @@ stages:
           runs_file: data/raw/runs.jsonl
           weighting: invsqrt_task_weight
           categories: ftr
-          regularization: 0.1
+          regularization: 1e-05
           exclude: []
           success_percents:
           - 50
@@ -5158,8 +5190,8 @@ stages:
     outs:
     - path: plots/bootstrap/twitter_headline-log.png
       hash: md5
-      md5: a0326b358775e5da1226d710a35ccdd2
-      size: 195761
+      md5: 19f5372dee33647cba1f18d8029c266e
+      size: 173185
   plot_bootstrap_ci@twitter_headline-linear:
     cmd: python -m horizon.plot.bootstrap_ci --fig-name twitter_headline 
       --input-file data/wrangled/bootstrap/headline.csv --agent-summaries-file 
@@ -5170,28 +5202,28 @@ stages:
     deps:
     - path: ../../data/external/release_dates.yaml
       hash: md5
-      md5: 4fe0fadb5914a33c457f78f6bbc024e9
-      size: 2310
+      md5: ab22e7d1436da09901b454e60a77335e
+      size: 2442
     - path: ../../src/horizon/plot/bootstrap_ci.py
       hash: md5
-      md5: fc9af9ea2befa8ce4e0d8444c1ad4610
-      size: 27855
+      md5: 2fabeaf75cc924d4365108fe9097c7c2
+      size: 33873
     - path: ../../src/horizon/plot/logistic.py
       hash: md5
-      md5: ea59a86b905d807439c509f9b18cc9a8
-      size: 23052
+      md5: ef1ab4210b2eb452311a3337d1372198
+      size: 24388
     - path: ../time-horizon-1-1/metrics/benchmark_results.yaml
       hash: md5
-      md5: b4d5a142374b43a602c78e8adf345127
-      size: 10145
+      md5: 2edc8479d0d0c1e45c2252782fac1273
+      size: 14210
     - path: data/wrangled/bootstrap/headline.csv
       hash: md5
-      md5: 9427d0fe5c110d28902036c8ae43ad5c
-      size: 1263161
+      md5: 70b8248c140b932febea95f05e941216
+      size: 1259825
     - path: data/wrangled/logistic_fits/headline.csv
       hash: md5
-      md5: 06f2e55e82d0fba5dfc9904a2c10534b
-      size: 5773
+      md5: 68b91bde90c961395b04534a33a8a4cd
+      size: 5786
     - path: matplotlibrc
       hash: md5
       md5: a6268afa6b0de2d0f934ff95c60851e4
@@ -5476,7 +5508,7 @@ stages:
           runs_file: data/raw/runs.jsonl
           weighting: invsqrt_task_weight
           categories: ftr
-          regularization: 0.1
+          regularization: 1e-05
           exclude: []
           success_percents:
           - 50
@@ -5706,8 +5738,8 @@ stages:
     outs:
     - path: plots/bootstrap/twitter_headline-linear.png
       hash: md5
-      md5: 764e1b9093fea0da96a269bfbfaa1fb8
-      size: 103900
+      md5: 6e3de5b7dbdede01e5f790c250d37fd4
+      size: 89380
   compute_trendline_ci@headline_from_2019:
     cmd: python -m horizon.compute_trendline_ci --input-file 
       data/wrangled/bootstrap/headline.csv --agent-summaries-file 
@@ -5718,35 +5750,35 @@ stages:
     deps:
     - path: ../../data/external/release_dates.yaml
       hash: md5
-      md5: 4fe0fadb5914a33c457f78f6bbc024e9
-      size: 2310
+      md5: ab22e7d1436da09901b454e60a77335e
+      size: 2442
     - path: ../../src/horizon/compute_trendline_ci.py
       hash: md5
-      md5: c97681ce20f893d1380d8c34effb1693
-      size: 5745
+      md5: e62be19ab0acadb621192b04855c9bea
+      size: 3002
     - path: ../../src/horizon/plot/bootstrap_ci.py
       hash: md5
-      md5: fc9af9ea2befa8ce4e0d8444c1ad4610
-      size: 27855
+      md5: 2fabeaf75cc924d4365108fe9097c7c2
+      size: 33873
     - path: ../../src/horizon/plot/logistic.py
       hash: md5
-      md5: ea59a86b905d807439c509f9b18cc9a8
-      size: 23052
+      md5: ef1ab4210b2eb452311a3337d1372198
+      size: 24388
     - path: data/wrangled/bootstrap/headline.csv
       hash: md5
-      md5: 9427d0fe5c110d28902036c8ae43ad5c
-      size: 1263161
+      md5: 70b8248c140b932febea95f05e941216
+      size: 1259825
     - path: data/wrangled/logistic_fits/headline.csv
       hash: md5
-      md5: 06f2e55e82d0fba5dfc9904a2c10534b
-      size: 5773
+      md5: 68b91bde90c961395b04534a33a8a4cd
+      size: 5786
     params:
       params.yaml:
         log_level: INFO
     outs:
     - path: metrics/trendline_ci/headline_from_2019.yaml
       hash: md5
-      md5: 6202d47d1d0edb86cacf9ea2dd1ea68e
+      md5: 482fabe728c70b708635341e0bd017b4
       size: 507
   compute_trendline_ci@headline_from_2023:
     cmd: python -m horizon.compute_trendline_ci --input-file 
@@ -5758,35 +5790,35 @@ stages:
     deps:
     - path: ../../data/external/release_dates.yaml
       hash: md5
-      md5: 4fe0fadb5914a33c457f78f6bbc024e9
-      size: 2310
+      md5: ab22e7d1436da09901b454e60a77335e
+      size: 2442
     - path: ../../src/horizon/compute_trendline_ci.py
       hash: md5
-      md5: c97681ce20f893d1380d8c34effb1693
-      size: 5745
+      md5: e62be19ab0acadb621192b04855c9bea
+      size: 3002
     - path: ../../src/horizon/plot/bootstrap_ci.py
       hash: md5
-      md5: fc9af9ea2befa8ce4e0d8444c1ad4610
-      size: 27855
+      md5: 2fabeaf75cc924d4365108fe9097c7c2
+      size: 33873
     - path: ../../src/horizon/plot/logistic.py
       hash: md5
-      md5: ea59a86b905d807439c509f9b18cc9a8
-      size: 23052
+      md5: ef1ab4210b2eb452311a3337d1372198
+      size: 24388
     - path: data/wrangled/bootstrap/headline.csv
       hash: md5
-      md5: 9427d0fe5c110d28902036c8ae43ad5c
-      size: 1263161
+      md5: 70b8248c140b932febea95f05e941216
+      size: 1259825
     - path: data/wrangled/logistic_fits/headline.csv
       hash: md5
-      md5: 06f2e55e82d0fba5dfc9904a2c10534b
-      size: 5773
+      md5: 68b91bde90c961395b04534a33a8a4cd
+      size: 5786
     params:
       params.yaml:
         log_level: INFO
     outs:
     - path: metrics/trendline_ci/headline_from_2023.yaml
       hash: md5
-      md5: 6789e29422fdb2ac1ad3d8516559bff5
+      md5: 1f522f4519d208721681f1b436d20de0
       size: 451
   compute_trendline_ci@headline_from_2024:
     cmd: python -m horizon.compute_trendline_ci --input-file 
@@ -5918,35 +5950,35 @@ stages:
     deps:
     - path: ../../data/external/release_dates.yaml
       hash: md5
-      md5: 4fe0fadb5914a33c457f78f6bbc024e9
-      size: 2310
+      md5: ab22e7d1436da09901b454e60a77335e
+      size: 2442
     - path: ../../src/horizon/compute_trendline_ci.py
       hash: md5
-      md5: c97681ce20f893d1380d8c34effb1693
-      size: 5745
+      md5: e62be19ab0acadb621192b04855c9bea
+      size: 3002
     - path: ../../src/horizon/plot/bootstrap_ci.py
       hash: md5
-      md5: fc9af9ea2befa8ce4e0d8444c1ad4610
-      size: 27855
+      md5: 2fabeaf75cc924d4365108fe9097c7c2
+      size: 33873
     - path: ../../src/horizon/plot/logistic.py
       hash: md5
-      md5: ea59a86b905d807439c509f9b18cc9a8
-      size: 23052
+      md5: ef1ab4210b2eb452311a3337d1372198
+      size: 24388
     - path: data/wrangled/bootstrap/headline.csv
       hash: md5
-      md5: 9427d0fe5c110d28902036c8ae43ad5c
-      size: 1263161
+      md5: 70b8248c140b932febea95f05e941216
+      size: 1259825
     - path: data/wrangled/logistic_fits/headline.csv
       hash: md5
-      md5: 06f2e55e82d0fba5dfc9904a2c10534b
-      size: 5773
+      md5: 68b91bde90c961395b04534a33a8a4cd
+      size: 5786
     params:
       params.yaml:
         log_level: INFO
     outs:
     - path: metrics/trendline_ci/original_overtime.yaml
       hash: md5
-      md5: e29eedd13a2ab68cc924a5742bb830d8
+      md5: dcf6102a0ef58eb5cb9d2d7aacd3440a
       size: 429
   compute_trendline_ci@original_overtime_from_2023:
     cmd: python -m horizon.compute_trendline_ci --input-file 
@@ -5958,36 +5990,36 @@ stages:
     deps:
     - path: ../../data/external/release_dates.yaml
       hash: md5
-      md5: 4fe0fadb5914a33c457f78f6bbc024e9
-      size: 2310
+      md5: ab22e7d1436da09901b454e60a77335e
+      size: 2442
     - path: ../../src/horizon/compute_trendline_ci.py
       hash: md5
-      md5: c97681ce20f893d1380d8c34effb1693
-      size: 5745
+      md5: e62be19ab0acadb621192b04855c9bea
+      size: 3002
     - path: ../../src/horizon/plot/bootstrap_ci.py
       hash: md5
-      md5: fc9af9ea2befa8ce4e0d8444c1ad4610
-      size: 27855
+      md5: 2fabeaf75cc924d4365108fe9097c7c2
+      size: 33873
     - path: ../../src/horizon/plot/logistic.py
       hash: md5
-      md5: ea59a86b905d807439c509f9b18cc9a8
-      size: 23052
+      md5: ef1ab4210b2eb452311a3337d1372198
+      size: 24388
     - path: data/wrangled/bootstrap/headline.csv
       hash: md5
-      md5: 9427d0fe5c110d28902036c8ae43ad5c
-      size: 1263161
+      md5: 70b8248c140b932febea95f05e941216
+      size: 1259825
     - path: data/wrangled/logistic_fits/headline.csv
       hash: md5
-      md5: 06f2e55e82d0fba5dfc9904a2c10534b
-      size: 5773
+      md5: 68b91bde90c961395b04534a33a8a4cd
+      size: 5786
     params:
       params.yaml:
         log_level: INFO
     outs:
     - path: metrics/trendline_ci/original_overtime_from_2023.yaml
       hash: md5
-      md5: 51bd5b0e19f047e78aa76767915d372b
-      size: 374
+      md5: 228f721605dde9bfeb7cfaf6d3516d34
+      size: 373
   compute_trendline_ci@original_overtime_from_2024:
     cmd: python -m horizon.compute_trendline_ci --input-file 
       data/wrangled/bootstrap/headline.csv --agent-summaries-file 
@@ -5998,36 +6030,36 @@ stages:
     deps:
     - path: ../../data/external/release_dates.yaml
       hash: md5
-      md5: 4fe0fadb5914a33c457f78f6bbc024e9
-      size: 2310
+      md5: ab22e7d1436da09901b454e60a77335e
+      size: 2442
     - path: ../../src/horizon/compute_trendline_ci.py
       hash: md5
-      md5: c97681ce20f893d1380d8c34effb1693
-      size: 5745
+      md5: e62be19ab0acadb621192b04855c9bea
+      size: 3002
     - path: ../../src/horizon/plot/bootstrap_ci.py
       hash: md5
-      md5: fc9af9ea2befa8ce4e0d8444c1ad4610
-      size: 27855
+      md5: 2fabeaf75cc924d4365108fe9097c7c2
+      size: 33873
     - path: ../../src/horizon/plot/logistic.py
       hash: md5
-      md5: ea59a86b905d807439c509f9b18cc9a8
-      size: 23052
+      md5: ef1ab4210b2eb452311a3337d1372198
+      size: 24388
     - path: data/wrangled/bootstrap/headline.csv
       hash: md5
-      md5: 9427d0fe5c110d28902036c8ae43ad5c
-      size: 1263161
+      md5: 70b8248c140b932febea95f05e941216
+      size: 1259825
     - path: data/wrangled/logistic_fits/headline.csv
       hash: md5
-      md5: 06f2e55e82d0fba5dfc9904a2c10534b
-      size: 5773
+      md5: 68b91bde90c961395b04534a33a8a4cd
+      size: 5786
     params:
       params.yaml:
         log_level: INFO
     outs:
     - path: metrics/trendline_ci/original_overtime_from_2024.yaml
       hash: md5
-      md5: 27541bd5a72ed35641187e7e51115c2d
-      size: 389
+      md5: bca60f9d2cac18d4071e5be65188edbf
+      size: 390
   generate_benchmark_results:
     cmd: python -m horizon.generate_benchmark_results --agent-summaries-file 
       data/wrangled/logistic_fits/headline.csv --runs-file data/raw/runs.jsonl 
@@ -6040,32 +6072,32 @@ stages:
     deps:
     - path: ../../data/external/release_dates.yaml
       hash: md5
-      md5: 4fe0fadb5914a33c457f78f6bbc024e9
-      size: 2310
+      md5: ab22e7d1436da09901b454e60a77335e
+      size: 2442
     - path: ../../src/horizon/compute_trendline_ci.py
       hash: md5
-      md5: c97681ce20f893d1380d8c34effb1693
-      size: 5745
+      md5: e62be19ab0acadb621192b04855c9bea
+      size: 3002
     - path: ../../src/horizon/generate_benchmark_results.py
       hash: md5
-      md5: 565650ada586df1790e0b01c9fe23b4f
-      size: 10374
+      md5: 010fd1b4c9aad0476d47a9bb2fad5a3b
+      size: 13530
     - path: ../../src/horizon/plot/bootstrap_ci.py
       hash: md5
-      md5: fc9af9ea2befa8ce4e0d8444c1ad4610
-      size: 27855
+      md5: 2fabeaf75cc924d4365108fe9097c7c2
+      size: 33873
     - path: data/raw/runs.jsonl
       hash: md5
-      md5: 19085f84231e4e8e010f87c3370b2fa6
-      size: 23466094
+      md5: 50ae5e0bdc42280f363572d6cded9f88
+      size: 24022538
     - path: data/wrangled/bootstrap/headline.csv
       hash: md5
-      md5: 9427d0fe5c110d28902036c8ae43ad5c
-      size: 1263161
+      md5: 70b8248c140b932febea95f05e941216
+      size: 1259825
     - path: data/wrangled/logistic_fits/headline.csv
       hash: md5
-      md5: 06f2e55e82d0fba5dfc9904a2c10534b
-      size: 5773
+      md5: 68b91bde90c961395b04534a33a8a4cd
+      size: 5786
     params:
       params.yaml:
         benchmark:
@@ -6075,8 +6107,8 @@ stages:
     outs:
     - path: metrics/benchmark_results.yaml
       hash: md5
-      md5: 978499776b3c7588d746b064ee63d4f4
-      size: 15843
+      md5: d6e1b65df3fe7e9d11d80603248f2fd4
+      size: 14328
   compare_trend:
     cmd: python -m horizon.compare_trend --bootstrap-results-file 
       data/wrangled/bootstrap/headline.csv --release-dates-file 
@@ -6087,16 +6119,16 @@ stages:
     deps:
     - path: ../../data/external/release_dates.yaml
       hash: md5
-      md5: 4fe0fadb5914a33c457f78f6bbc024e9
-      size: 2310
+      md5: ab22e7d1436da09901b454e60a77335e
+      size: 2442
     - path: ../../src/horizon/compare_trend.py
       hash: md5
       md5: cde18384eb4e1bffdda4ca9f2a95bc72
       size: 24087
     - path: data/wrangled/bootstrap/headline.csv
       hash: md5
-      md5: 9427d0fe5c110d28902036c8ae43ad5c
-      size: 1263161
+      md5: 70b8248c140b932febea95f05e941216
+      size: 1259825
     params:
       fig_params/figs.yaml:
         figs.compare_trend:
@@ -6137,12 +6169,12 @@ stages:
     outs:
     - path: metrics/compare_max_headline_latest_agent_test.yaml
       hash: md5
-      md5: e16006534c4a24e825944c3af25c3280
-      size: 741
+      md5: 8e34ef99cb811e01675f6423ccf43cc4
+      size: 746
     - path: metrics/compare_trend_headline_latest_agent_test.yaml
       hash: md5
-      md5: 00363bc934cf06a384efd3bacfc161ba
-      size: 807
+      md5: a32817a1b7d99f1083070fda1a63db19
+      size: 811
   plot_token_usage_distribution:
     cmd: python ../../src/horizon/token_usage_distribution.py --input-file 
       data/raw/runs.jsonl --output-dir plots/token_usage_distribution 
@@ -6151,16 +6183,16 @@ stages:
     deps:
     - path: ../../data/external/release_dates.yaml
       hash: md5
-      md5: 4fe0fadb5914a33c457f78f6bbc024e9
-      size: 2310
+      md5: ab22e7d1436da09901b454e60a77335e
+      size: 2442
     - path: ../../src/horizon/token_usage_distribution.py
       hash: md5
       md5: 1bacb3c832aac6151f935289b24e2033
       size: 18746
     - path: data/raw/runs.jsonl
       hash: md5
-      md5: 19085f84231e4e8e010f87c3370b2fa6
-      size: 23466094
+      md5: 50ae5e0bdc42280f363572d6cded9f88
+      size: 24022538
     params:
       params.yaml:
         log_level: INFO
@@ -6194,20 +6226,20 @@ stages:
       size: 314
     - path: plots/token_usage_distribution/task_heatmap.png
       hash: md5
-      md5: ad6c8092780eea5014857dd530e87feb
-      size: 552162
+      md5: e6c1cfb043147c5f7d0cdddccf0309ab
+      size: 453683
     - path: plots/token_usage_distribution/time_bucket_heatmap.png
       hash: md5
-      md5: da0462f34a711854b7324f68bf78577c
-      size: 70397
+      md5: e4fe4ff6a19ea600ac6cf9a17f9ef8dd
+      size: 62549
     - path: plots/token_usage_distribution/token_histograms.png
       hash: md5
-      md5: f2cb8fc6663e9525c132291f021c16ec
-      size: 104896
+      md5: 7d3bde8564895d916e57c857b689550a
+      size: 92412
     - path: plots/token_usage_distribution/token_histograms_recent.png
       hash: md5
-      md5: b7d50822ad9b5eabb1086f02db7a2317
-      size: 116474
+      md5: 6867d2f5d7c57952342f6d190d49d939
+      size: 104538
   wrangle_score_over_resource_horizon@generation_cost:
     cmd: python -m horizon.wrangle.score_over_resource_horizon --runs-file 
       data/raw/runs.jsonl --output-file 
@@ -6218,8 +6250,8 @@ stages:
     deps:
     - path: ../../src/horizon/wrangle/logistic.py
       hash: md5
-      md5: 77cbb33cf41510ba88f1fab2663d5ebe
-      size: 11133
+      md5: 3beb7fc48a4dc0cd521b2986d08a9b32
+      size: 11316
     - path: ../../src/horizon/wrangle/score_over_resource.py
       hash: md5
       md5: 10289ed646bbe9af2f9ad572a77b7dc8
@@ -6230,15 +6262,15 @@ stages:
       size: 6379
     - path: data/raw/runs.jsonl
       hash: md5
-      md5: 19085f84231e4e8e010f87c3370b2fa6
-      size: 23466094
+      md5: 50ae5e0bdc42280f363572d6cded9f88
+      size: 24022538
     params:
       fig_params/figs.yaml:
         figs.wrangle_logistic.ga_rebench:
           runs_file: data/raw/runs.jsonl
           weighting: invsqrt_task_weight
           categories: ftr
-          regularization: 0.1
+          regularization: 1e-05
           exclude:
           - SWAA
           success_percents:
@@ -6263,8 +6295,8 @@ stages:
     outs:
     - path: data/wrangled/score_over_resource_horizon/ga_rebench.jsonl
       hash: md5
-      md5: de602629ccad32c45eb827d4470b4daf
-      size: 4100920
+      md5: 1447ed22b9ee1caef81fffb6978ebfac
+      size: 4100564
   wrangle_score_over_resource_horizon@tokens_count:
     cmd: python -m horizon.wrangle.score_over_resource_horizon --runs-file 
       data/raw/runs.jsonl --output-file 
@@ -6274,8 +6306,8 @@ stages:
     deps:
     - path: ../../src/horizon/wrangle/logistic.py
       hash: md5
-      md5: 77cbb33cf41510ba88f1fab2663d5ebe
-      size: 11133
+      md5: 3beb7fc48a4dc0cd521b2986d08a9b32
+      size: 11316
     - path: ../../src/horizon/wrangle/score_over_resource.py
       hash: md5
       md5: 10289ed646bbe9af2f9ad572a77b7dc8
@@ -6286,15 +6318,15 @@ stages:
       size: 6379
     - path: data/raw/runs.jsonl
       hash: md5
-      md5: 19085f84231e4e8e010f87c3370b2fa6
-      size: 23466094
+      md5: 50ae5e0bdc42280f363572d6cded9f88
+      size: 24022538
     params:
       fig_params/figs.yaml:
         figs.wrangle_logistic.ga_rebench:
           runs_file: data/raw/runs.jsonl
           weighting: invsqrt_task_weight
           categories: ftr
-          regularization: 0.1
+          regularization: 1e-05
           exclude:
           - SWAA
           success_percents:
@@ -6319,8 +6351,8 @@ stages:
     outs:
     - path: data/wrangled/score_over_resource_horizon/ga_rebench_tokens.jsonl
       hash: md5
-      md5: e8cb1c8d496ac6c4aa653d54f3f54bd0
-      size: 4612897
+      md5: e6386d760c4b2287747e148d07f8d4fc
+      size: 4611880
   plot_score_over_resource_horizon@linear_cost:
     cmd: python -m horizon.plot.score_over_resource_line 
       --wrangled-resource-file 
@@ -6339,8 +6371,8 @@ stages:
       size: 11883
     - path: data/wrangled/score_over_resource_horizon/ga_rebench.jsonl
       hash: md5
-      md5: de602629ccad32c45eb827d4470b4daf
-      size: 4100920
+      md5: 1447ed22b9ee1caef81fffb6978ebfac
+      size: 4100564
     params:
       params.yaml:
         plot_format: png
@@ -6633,8 +6665,8 @@ stages:
     outs:
     - path: plots/success_over_resource_horizon/ga_rebench_linear.png
       hash: md5
-      md5: 904a3b9bc94faec73e8db2d8479eedb6
-      size: 169295
+      md5: e514429a84d2d17de39b8134183a320c
+      size: 146854
   plot_score_over_resource_horizon@log_cost:
     cmd: python -m horizon.plot.score_over_resource_line 
       --wrangled-resource-file 
@@ -6653,8 +6685,8 @@ stages:
       size: 11883
     - path: data/wrangled/score_over_resource_horizon/ga_rebench.jsonl
       hash: md5
-      md5: de602629ccad32c45eb827d4470b4daf
-      size: 4100920
+      md5: 1447ed22b9ee1caef81fffb6978ebfac
+      size: 4100564
     params:
       params.yaml:
         plot_format: png
@@ -6947,8 +6979,8 @@ stages:
     outs:
     - path: plots/success_over_resource_horizon/ga_rebench_log.png
       hash: md5
-      md5: 7f1f02f6ccf3c87926c378ce265c4edd
-      size: 186309
+      md5: 0eea383e9594330814ed9ed8bb790a9e
+      size: 164108
   plot_score_over_resource_horizon@linear_tokens:
     cmd: python -m horizon.plot.score_over_resource_line 
       --wrangled-resource-file 
@@ -6969,8 +7001,8 @@ stages:
       size: 11883
     - path: data/wrangled/score_over_resource_horizon/ga_rebench_tokens.jsonl
       hash: md5
-      md5: e8cb1c8d496ac6c4aa653d54f3f54bd0
-      size: 4612897
+      md5: e6386d760c4b2287747e148d07f8d4fc
+      size: 4611880
     params:
       params.yaml:
         plot_format: png
@@ -7263,8 +7295,8 @@ stages:
     outs:
     - path: plots/success_over_resource_horizon/ga_rebench_tokens_linear.png
       hash: md5
-      md5: 3c7dcc54d363f9eaee55c9a8d7534606
-      size: 179813
+      md5: 08f47e81159bcb12d6f75bc14497fb1c
+      size: 160046
   plot_score_over_resource_horizon@log_tokens:
     cmd: python -m horizon.plot.score_over_resource_line 
       --wrangled-resource-file 
@@ -7285,8 +7317,8 @@ stages:
       size: 11883
     - path: data/wrangled/score_over_resource_horizon/ga_rebench_tokens.jsonl
       hash: md5
-      md5: e8cb1c8d496ac6c4aa653d54f3f54bd0
-      size: 4612897
+      md5: e6386d760c4b2287747e148d07f8d4fc
+      size: 4611880
     params:
       params.yaml:
         plot_format: png
@@ -7579,8 +7611,8 @@ stages:
     outs:
     - path: plots/success_over_resource_horizon/ga_rebench_tokens_log.png
       hash: md5
-      md5: 15b1bf299e279330d1f7d446933297a5
-      size: 194998
+      md5: d16f7db04a441176bd9a42332d73fdf6
+      size: 177178
   plot_bootstrap_ci@twitter_headline_inspect_overlay-log:
     cmd: python -m horizon.plot.bootstrap_ci --fig-name 
       twitter_headline_inspect_overlay --input-file 
@@ -7592,28 +7624,28 @@ stages:
     deps:
     - path: ../../data/external/release_dates.yaml
       hash: md5
-      md5: 4fe0fadb5914a33c457f78f6bbc024e9
-      size: 2310
+      md5: ab22e7d1436da09901b454e60a77335e
+      size: 2442
     - path: ../../src/horizon/plot/bootstrap_ci.py
       hash: md5
-      md5: fc9af9ea2befa8ce4e0d8444c1ad4610
-      size: 27855
+      md5: 2fabeaf75cc924d4365108fe9097c7c2
+      size: 33873
     - path: ../../src/horizon/plot/logistic.py
       hash: md5
-      md5: ea59a86b905d807439c509f9b18cc9a8
-      size: 23052
+      md5: ef1ab4210b2eb452311a3337d1372198
+      size: 24388
     - path: ../time-horizon-1-1/metrics/benchmark_results.yaml
       hash: md5
-      md5: b4d5a142374b43a602c78e8adf345127
-      size: 10145
+      md5: 2edc8479d0d0c1e45c2252782fac1273
+      size: 14210
     - path: data/wrangled/bootstrap/headline.csv
       hash: md5
-      md5: 9427d0fe5c110d28902036c8ae43ad5c
-      size: 1263161
+      md5: 70b8248c140b932febea95f05e941216
+      size: 1259825
     - path: data/wrangled/logistic_fits/headline.csv
       hash: md5
-      md5: 06f2e55e82d0fba5dfc9904a2c10534b
-      size: 5773
+      md5: 68b91bde90c961395b04534a33a8a4cd
+      size: 5786
     - path: matplotlibrc
       hash: md5
       md5: a6268afa6b0de2d0f934ff95c60851e4
@@ -7898,7 +7930,7 @@ stages:
           runs_file: data/raw/runs.jsonl
           weighting: invsqrt_task_weight
           categories: ftr
-          regularization: 0.1
+          regularization: 1e-05
           exclude: []
           success_percents:
           - 50
@@ -8128,8 +8160,8 @@ stages:
     outs:
     - path: plots/bootstrap/twitter_headline_inspect_overlay-log.png
       hash: md5
-      md5: 78aaed6ca74bfad691bd04f93f563a7f
-      size: 223446
+      md5: 72725c3c605e8387a687c3b55087af3b
+      size: 207690
   plot_bootstrap_ci@twitter_headline_inspect_overlay-linear:
     cmd: python -m horizon.plot.bootstrap_ci --fig-name 
       twitter_headline_inspect_overlay --input-file 
@@ -8141,28 +8173,28 @@ stages:
     deps:
     - path: ../../data/external/release_dates.yaml
       hash: md5
-      md5: 4fe0fadb5914a33c457f78f6bbc024e9
-      size: 2310
+      md5: ab22e7d1436da09901b454e60a77335e
+      size: 2442
     - path: ../../src/horizon/plot/bootstrap_ci.py
       hash: md5
-      md5: fc9af9ea2befa8ce4e0d8444c1ad4610
-      size: 27855
+      md5: 2fabeaf75cc924d4365108fe9097c7c2
+      size: 33873
     - path: ../../src/horizon/plot/logistic.py
       hash: md5
-      md5: ea59a86b905d807439c509f9b18cc9a8
-      size: 23052
+      md5: ef1ab4210b2eb452311a3337d1372198
+      size: 24388
     - path: ../time-horizon-1-1/metrics/benchmark_results.yaml
       hash: md5
-      md5: b4d5a142374b43a602c78e8adf345127
-      size: 10145
+      md5: 2edc8479d0d0c1e45c2252782fac1273
+      size: 14210
     - path: data/wrangled/bootstrap/headline.csv
       hash: md5
-      md5: 9427d0fe5c110d28902036c8ae43ad5c
-      size: 1263161
+      md5: 70b8248c140b932febea95f05e941216
+      size: 1259825
     - path: data/wrangled/logistic_fits/headline.csv
       hash: md5
-      md5: 06f2e55e82d0fba5dfc9904a2c10534b
-      size: 5773
+      md5: 68b91bde90c961395b04534a33a8a4cd
+      size: 5786
     - path: matplotlibrc
       hash: md5
       md5: a6268afa6b0de2d0f934ff95c60851e4
@@ -8447,7 +8479,7 @@ stages:
           runs_file: data/raw/runs.jsonl
           weighting: invsqrt_task_weight
           categories: ftr
-          regularization: 0.1
+          regularization: 1e-05
           exclude: []
           success_percents:
           - 50
@@ -8677,8 +8709,8 @@ stages:
     outs:
     - path: plots/bootstrap/twitter_headline_inspect_overlay-linear.png
       hash: md5
-      md5: 7a8a24ca29e6d6ae30f2b27da3a1aee9
-      size: 124506
+      md5: 334fac5c56534ee59854cd2d2bd2bf55
+      size: 114441
   plot_bootstrap_ci@twitter_headline_from_2023_inspect_overlay-log:
     cmd: python -m horizon.plot.bootstrap_ci --fig-name 
       twitter_headline_from_2023_inspect_overlay --input-file 
@@ -8690,28 +8722,28 @@ stages:
     deps:
     - path: ../../data/external/release_dates.yaml
       hash: md5
-      md5: 4fe0fadb5914a33c457f78f6bbc024e9
-      size: 2310
+      md5: ab22e7d1436da09901b454e60a77335e
+      size: 2442
     - path: ../../src/horizon/plot/bootstrap_ci.py
       hash: md5
-      md5: fc9af9ea2befa8ce4e0d8444c1ad4610
-      size: 27855
+      md5: 2fabeaf75cc924d4365108fe9097c7c2
+      size: 33873
     - path: ../../src/horizon/plot/logistic.py
       hash: md5
-      md5: ea59a86b905d807439c509f9b18cc9a8
-      size: 23052
+      md5: ef1ab4210b2eb452311a3337d1372198
+      size: 24388
     - path: ../time-horizon-1-1/metrics/benchmark_results.yaml
       hash: md5
-      md5: b4d5a142374b43a602c78e8adf345127
-      size: 10145
+      md5: 2edc8479d0d0c1e45c2252782fac1273
+      size: 14210
     - path: data/wrangled/bootstrap/headline.csv
       hash: md5
-      md5: 9427d0fe5c110d28902036c8ae43ad5c
-      size: 1263161
+      md5: 70b8248c140b932febea95f05e941216
+      size: 1259825
     - path: data/wrangled/logistic_fits/headline.csv
       hash: md5
-      md5: 06f2e55e82d0fba5dfc9904a2c10534b
-      size: 5773
+      md5: 68b91bde90c961395b04534a33a8a4cd
+      size: 5786
     - path: matplotlibrc
       hash: md5
       md5: a6268afa6b0de2d0f934ff95c60851e4
@@ -8996,7 +9028,7 @@ stages:
           runs_file: data/raw/runs.jsonl
           weighting: invsqrt_task_weight
           categories: ftr
-          regularization: 0.1
+          regularization: 1e-05
           exclude: []
           success_percents:
           - 50
@@ -9226,8 +9258,8 @@ stages:
     outs:
     - path: plots/bootstrap/twitter_headline_from_2023_inspect_overlay-log.png
       hash: md5
-      md5: f73720afb823acb8cf831e5f3b6e659f
-      size: 169227
+      md5: 5528868ea7c6289eb83caa908b505369
+      size: 155989
   plot_bootstrap_ci@twitter_headline_from_2023_inspect_overlay-linear:
     cmd: python -m horizon.plot.bootstrap_ci --fig-name 
       twitter_headline_from_2023_inspect_overlay --input-file 
@@ -9239,28 +9271,28 @@ stages:
     deps:
     - path: ../../data/external/release_dates.yaml
       hash: md5
-      md5: 4fe0fadb5914a33c457f78f6bbc024e9
-      size: 2310
+      md5: ab22e7d1436da09901b454e60a77335e
+      size: 2442
     - path: ../../src/horizon/plot/bootstrap_ci.py
       hash: md5
-      md5: fc9af9ea2befa8ce4e0d8444c1ad4610
-      size: 27855
+      md5: 2fabeaf75cc924d4365108fe9097c7c2
+      size: 33873
     - path: ../../src/horizon/plot/logistic.py
       hash: md5
-      md5: ea59a86b905d807439c509f9b18cc9a8
-      size: 23052
+      md5: ef1ab4210b2eb452311a3337d1372198
+      size: 24388
     - path: ../time-horizon-1-1/metrics/benchmark_results.yaml
       hash: md5
-      md5: b4d5a142374b43a602c78e8adf345127
-      size: 10145
+      md5: 2edc8479d0d0c1e45c2252782fac1273
+      size: 14210
     - path: data/wrangled/bootstrap/headline.csv
       hash: md5
-      md5: 9427d0fe5c110d28902036c8ae43ad5c
-      size: 1263161
+      md5: 70b8248c140b932febea95f05e941216
+      size: 1259825
     - path: data/wrangled/logistic_fits/headline.csv
       hash: md5
-      md5: 06f2e55e82d0fba5dfc9904a2c10534b
-      size: 5773
+      md5: 68b91bde90c961395b04534a33a8a4cd
+      size: 5786
     - path: matplotlibrc
       hash: md5
       md5: a6268afa6b0de2d0f934ff95c60851e4
@@ -9545,7 +9577,7 @@ stages:
           runs_file: data/raw/runs.jsonl
           weighting: invsqrt_task_weight
           categories: ftr
-          regularization: 0.1
+          regularization: 1e-05
           exclude: []
           success_percents:
           - 50
@@ -9776,8 +9808,8 @@ stages:
     - path: 
         plots/bootstrap/twitter_headline_from_2023_inspect_overlay-linear.png
       hash: md5
-      md5: be2a3e895d9caea05bc42c819c134c02
-      size: 123157
+      md5: 553e11b90b1d37b7b31a372583ede97c
+      size: 112886
   compare_doubling_times_vs_th_1_1:
     cmd: python -m horizon.plot.compare_doubling_times --bootstrap-file-1 
       data/wrangled/bootstrap/headline.csv --agent-summaries-file-1 
@@ -9793,40 +9825,40 @@ stages:
     deps:
     - path: ../../data/external/release_dates.yaml
       hash: md5
-      md5: 4fe0fadb5914a33c457f78f6bbc024e9
-      size: 2310
+      md5: ab22e7d1436da09901b454e60a77335e
+      size: 2442
     - path: ../../src/horizon/compute_trendline_ci.py
       hash: md5
-      md5: c97681ce20f893d1380d8c34effb1693
-      size: 5745
+      md5: e62be19ab0acadb621192b04855c9bea
+      size: 3002
     - path: ../../src/horizon/plot/bootstrap_ci.py
       hash: md5
-      md5: fc9af9ea2befa8ce4e0d8444c1ad4610
-      size: 27855
+      md5: 2fabeaf75cc924d4365108fe9097c7c2
+      size: 33873
     - path: ../../src/horizon/plot/compare_doubling_times.py
       hash: md5
-      md5: a50973f98f11353854139f9e9a6d026d
-      size: 9613
+      md5: 1ba8c02a9bcc088c85c0d4b8b1672fa5
+      size: 8714
     - path: ../../src/horizon/plot/logistic.py
       hash: md5
-      md5: ea59a86b905d807439c509f9b18cc9a8
-      size: 23052
+      md5: ef1ab4210b2eb452311a3337d1372198
+      size: 24388
     - path: ../time-horizon-1-1/data/wrangled/bootstrap/headline.csv
       hash: md5
-      md5: bd56fc5c39c62806bb0f6c7fdf696cc5
-      size: 592981
+      md5: 36f71641cff00d67da81d6fef5014c3b
+      size: 774825
     - path: ../time-horizon-1-1/data/wrangled/logistic_fits/headline.csv
       hash: md5
-      md5: d333b474f68bbac9e8034d23374f85ce
-      size: 2971
+      md5: b5c921dee08314b6bf61d0b9cd00a1ca
+      size: 3895
     - path: data/wrangled/bootstrap/headline.csv
       hash: md5
-      md5: 9427d0fe5c110d28902036c8ae43ad5c
-      size: 1263161
+      md5: 70b8248c140b932febea95f05e941216
+      size: 1259825
     - path: data/wrangled/logistic_fits/headline.csv
       hash: md5
-      md5: 06f2e55e82d0fba5dfc9904a2c10534b
-      size: 5773
+      md5: 68b91bde90c961395b04534a33a8a4cd
+      size: 5786
     params:
       params.yaml:
         log_level: INFO
@@ -9837,8 +9869,8 @@ stages:
     outs:
     - path: plots/compare_doubling_times_vs_th_1_1.png
       hash: md5
-      md5: 11f1a8581b07d91014be0da4533c3610
-      size: 76317
+      md5: abedeb8a127d25dc5aa7acb2334e26c1
+      size: 63950
   compare_task_distributions:
     cmd: python -m horizon.plot.compare_task_distributions data/raw/runs.jsonl 
       ../time-horizon-1-1/data/raw/runs.jsonl --label1 "Time Horizon 1.0" 
@@ -9847,20 +9879,20 @@ stages:
     deps:
     - path: ../../src/horizon/plot/compare_task_distributions.py
       hash: md5
-      md5: f8a47e4524d5fe2729ccd3b885b16c6c
-      size: 6884
+      md5: 581357e6cf3f80bde9084c304257d1ba
+      size: 6111
     - path: ../../src/horizon/utils/plots.py
       hash: md5
       md5: 00deb4fc0dfb155171937c382ea95f9e
       size: 11883
     - path: ../time-horizon-1-1/data/raw/runs.jsonl
       hash: md5
-      md5: 8df649bdb5e94e8b762d528b8b534f9c
-      size: 10707640
+      md5: 0d7aa8717a346d1b4f57bda29372fbf6
+      size: 15008064
     - path: data/raw/runs.jsonl
       hash: md5
-      md5: 19085f84231e4e8e010f87c3370b2fa6
-      size: 23466094
+      md5: 50ae5e0bdc42280f363572d6cded9f88
+      size: 24022538
     params:
       params.yaml:
         log_level: INFO
@@ -9871,8 +9903,8 @@ stages:
     outs:
     - path: plots/task_distribution_comparison.png
       hash: md5
-      md5: 8ba7dac182b4adba7a0c27c942796dbf
-      size: 66184
+      md5: 8004bd3f99ad4478f8388c1bbf8541d8
+      size: 55278
   plot_logistic_regression@double_line_2023_trendline:
     cmd: python -m horizon.plot.logistic --input-file 
       data/wrangled/logistic_fits/headline.csv --runs-file data/raw/runs.jsonl 
@@ -9882,24 +9914,24 @@ stages:
     deps:
     - path: ../../data/external/release_dates.yaml
       hash: md5
-      md5: 4fe0fadb5914a33c457f78f6bbc024e9
-      size: 2310
+      md5: ab22e7d1436da09901b454e60a77335e
+      size: 2442
     - path: ../../src/horizon/plot/logistic.py
       hash: md5
-      md5: ea59a86b905d807439c509f9b18cc9a8
-      size: 23052
+      md5: ef1ab4210b2eb452311a3337d1372198
+      size: 24388
     - path: ../../src/horizon/utils/plots.py
       hash: md5
       md5: 00deb4fc0dfb155171937c382ea95f9e
       size: 11883
     - path: data/raw/runs.jsonl
       hash: md5
-      md5: 19085f84231e4e8e010f87c3370b2fa6
-      size: 23466094
+      md5: 50ae5e0bdc42280f363572d6cded9f88
+      size: 24022538
     - path: data/wrangled/logistic_fits/headline.csv
       hash: md5
-      md5: 06f2e55e82d0fba5dfc9904a2c10534b
-      size: 5773
+      md5: 68b91bde90c961395b04534a33a8a4cd
+      size: 5786
     - path: matplotlibrc
       hash: md5
       md5: a6268afa6b0de2d0f934ff95c60851e4
@@ -10182,7 +10214,7 @@ stages:
           runs_file: data/raw/runs.jsonl
           weighting: invsqrt_task_weight
           categories: ftr
-          regularization: 0.1
+          regularization: 1e-05
           exclude: []
           success_percents:
           - 50
@@ -10282,5 +10314,5 @@ stages:
     outs:
     - path: plots/logistic/double_line_2023_trendline.png
       hash: md5
-      md5: 53ffb4b28a788edf22b3fb05cc4fe671
-      size: 200388
+      md5: 76037a914f1add1b7e4a49716b2769bd
+      size: 171150
