@@ -117,7 +117,7 @@ def agent_regression(
             values.extend([0, 0, 0])  # p{n}, p{n}q10, p{n}q90
         result = pd.Series(values, index=indices)  # type: ignore[reportCallIssue]
         if include_empirical_rates:
-            result = result._append(empirical_rates)
+            result = pd.concat([result, empirical_rates])
         return result
 
     model = logistic_regression(
@@ -160,7 +160,7 @@ def agent_regression(
 
     result = pd.Series(values, index=indices)  # type: ignore[reportCallIssue]
     if include_empirical_rates:
-        result = result._append(empirical_rates)
+        result = pd.concat([result, empirical_rates])
     return result
 
 
