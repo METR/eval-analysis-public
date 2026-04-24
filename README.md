@@ -60,6 +60,8 @@ cd reports/time-horizon-1-0
 dvc repro
 
 # Run the time-horizon-1-1 report
+# NOTE: time-horizon-1-0 must be reproduced first, as time-horizon-1-1
+# depends on its outputs (e.g. data/wrangled/logistic_fits/headline.csv).
 cd reports/time-horizon-1-1
 dvc repro
 ```
